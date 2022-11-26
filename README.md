@@ -1,2 +1,2 @@
-# FeatureIt
+# FeatureIt [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/NinjaRocks/FeatureIt/blob/master/LICENSE) [![.NET](https://github.com/NinjaRocks/FeatureIt/actions/workflows/build.yml/badge.svg)](https://github.com/NinjaRocks/FeatureIt/actions/workflows/build.yml) [![Lint Code Base](https://github.com/NinjaRocks/FeatureIt/actions/workflows/linter.yml/badge.svg)](https://github.com/NinjaRocks/FeatureIt/actions/workflows/linter.yml)
 FeatureIt - Library to implement feature toggles.
