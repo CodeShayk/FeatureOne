@@ -10,7 +10,7 @@ jobs:
   Run-Lint:
     runs-on: ubuntu-latest
     env:
-      github-token: '${{ secrets.GH_Packages }}'
+      github-token: '${{ secrets.GITHUB_TOKEN }}'
     steps:
       - name: Step-01 Checkout code
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
       semVersion: ${{ steps.gitversion.outputs.MajorMinorPatch }}
       branchName: ${{ steps.gitversion.outputs.branchName }}
     env:
-      working-directory: /home/runner/work/FeatureOn/FeatureOn
+      working-directory: /home/runner/work/FeatureOne/FeatureOne
 
     steps:
       - name: Step-01 Install GitVersion
@@ -79,7 +79,7 @@ jobs:
       semVersion: ${{ steps.gitversion.outputs.MajorMinorPatch }}
       branchName: ${{ steps.gitversion.outputs.branchName }}
     env:
-      working-directory: /home/runner/work/FeatureOn/FeatureOn
+      working-directory: /home/runner/work/FeatureOne/FeatureOne
 
     steps:
       - name: Step-01 Install GitVersion
@@ -131,8 +131,8 @@ jobs:
     outputs:
       semVersion: ${{ needs.Build-Release.outputs.semVersion }}
     env:
-      github-token: '${{ secrets.GH_Packages }}'
-      working-directory: /home/runner/work/FeatureOn/FeatureOn
+      github-token: '${{ secrets.GITHUB_TOKEN }}'
+      working-directory: /home/runner/work/FeatureOne/FeatureOne
     steps:
       - name: Step-01 Retrieve Build Artifacts
         uses: actions/download-artifact@v3
@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       nuget-token: '${{ secrets.NUGET_API_KEY }}'      
-      working-directory: /home/runner/work/FeatureOn/FeatureOn
+      working-directory: /home/runner/work/FeatureOne/FeatureOne
     steps:
       - name: Step-01 Retrieve Build Artifacts
         uses: actions/download-artifact@v3
@@ -166,10 +166,10 @@ jobs:
             -X POST \
             -H "Accept:application/vnd.github+json" \
             -H "Authorization:token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/ninjarocks/FeatureOn/releases \
-            -d '{"tag_name":v${{ needs.Package-Artifacts.outputs.semVersion }},"target_commitish":"master","name":"FeatureOn","body":"Relese version ${{ needs.Package.outputs.semVersion }}","draft":false,"prerelease":false,"generate_release_notes":false}'
+            https://api.github.com/ninjarocks/FeatureOne/releases \
+            -d '{"tag_name":v${{ needs.Package-Artifacts.outputs.semVersion }},"target_commitish":"master","name":"FeatureOne","body":"Relese version ${{ needs.Package.outputs.semVersion }}","draft":false,"prerelease":false,"generate_release_notes":false}'
 
       - name: Step-03 Publish to Nuget Org
-        run: dotnet nuget push ${{env.working-directory}}/src/FeatureOn/bin/Release/*.nupkg --skip-duplicate --api-key ${{ env.nuget-token }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ${{env.working-directory}}/src/FeatureOne/bin/Release/*.nupkg --skip-duplicate --api-key ${{ env.nuget-token }} --source https://api.nuget.org/v3/index.json
 
      

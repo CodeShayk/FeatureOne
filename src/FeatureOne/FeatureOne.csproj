@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    <GeneratedAssemblyInfoFile>AssemblyInfo.cs</GeneratedAssemblyInfoFile>
+    <PackRelease>true</PackRelease>
+    <IsPackable>true</IsPackable>
+    <AssemblyName>FeatureOne</AssemblyName>
+    <RootNamespace>FeatureOne</RootNamespace>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Title>FeatureOne</Title>
+    <Authors>najaf.shayk</Authors>
+    <Company>Ninja.Sha!4H</Company>
+    <Product>FeatureOne</Product>
+    <Description>Library to provide feature toggles for projects.</Description>
+    <Copyright>2023</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/NinjaRocks/FeatureOne</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>feature-toggle; feature toggle; .net6.0; featureOn</PackageTags>
+    <Version>1.0.0</Version>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Stores\Providers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

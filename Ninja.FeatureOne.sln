@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B5EFC87D-E5C5-488E-AA89-06D26027E4C7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E864826B-B5D2-4DAD-B53A-2A3976226B53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".misc", ".misc", "{9930EAFC-568F-4676-82AB-2B8F9D7535B3}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		GitVersion.yml = GitVersion.yml
+		License.md = License.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{FB8FCDD0-A3D4-4776-85E0-C47ECFB3D310}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\CI-Build.yml = .github\workflows\CI-Build.yml
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureOne", "src\FeatureOne\FeatureOne.csproj", "{65BD1F94-CEF4-4CC1-8482-3FF72BBF620F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureOne.Tests", "test\FeatureOne.Tests\FeatureOne.Tests.csproj", "{F51B62E7-1A8F-41DC-B027-074932A01D33}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65BD1F94-CEF4-4CC1-8482-3FF72BBF620F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BD1F94-CEF4-4CC1-8482-3FF72BBF620F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BD1F94-CEF4-4CC1-8482-3FF72BBF620F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BD1F94-CEF4-4CC1-8482-3FF72BBF620F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F51B62E7-1A8F-41DC-B027-074932A01D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F51B62E7-1A8F-41DC-B027-074932A01D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F51B62E7-1A8F-41DC-B027-074932A01D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F51B62E7-1A8F-41DC-B027-074932A01D33}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FB8FCDD0-A3D4-4776-85E0-C47ECFB3D310} = {9930EAFC-568F-4676-82AB-2B8F9D7535B3}
+		{65BD1F94-CEF4-4CC1-8482-3FF72BBF620F} = {B5EFC87D-E5C5-488E-AA89-06D26027E4C7}
+		{F51B62E7-1A8F-41DC-B027-074932A01D33} = {E864826B-B5D2-4DAD-B53A-2A3976226B53}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {745CC402-145C-4E31-BAB7-DA93F8292512}
+	EndGlobalSection
+EndGlobal
