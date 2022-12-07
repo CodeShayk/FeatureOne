@@ -3,7 +3,7 @@
     public class NamePostFix
     {
         public string Name { get; private set; }
-  
+
         public NamePostFix(string name, string postFix)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");

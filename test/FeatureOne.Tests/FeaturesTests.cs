@@ -1,12 +1,5 @@
-﻿
-using FeatureOne.Core;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Moq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FeatureOne.Tests
 {
@@ -28,7 +21,7 @@ namespace FeatureOne.Tests
             feature = new Mock<IFeature>();
 
             feature.Setup(x => x.Name).Returns(new FeatureName(featureName));
-            feature.Setup(x => x.IsEnabled(It.IsAny<IDictionary<string,string>>())).Returns(true);
+            feature.Setup(x => x.IsEnabled(It.IsAny<IDictionary<string, string>>())).Returns(true);
 
             store.Setup(x => x.FindStartsWith(It.IsAny<string>())).Returns(new[] { feature.Object });
 
@@ -55,7 +48,7 @@ namespace FeatureOne.Tests
             var output = features.IsEnabled(featureName, principal);
 
             Assert.That(output, Is.EqualTo(true));
-            
+
             store.Verify(x => x.FindStartsWith(featureName));
             feature.Verify(x => x.IsEnabled(It.IsAny<IDictionary<string, string>>()));
         }
@@ -81,7 +74,7 @@ namespace FeatureOne.Tests
 
             Assert.That(output, Is.EqualTo(false));
 
-            logger.Verify(x => x.Error(It.Is<string>(msg=> msg.Contains(featureName))));
+            logger.Verify(x => x.Error(It.Is<string>(msg => msg.Contains(featureName))));
         }
     }
 }
