@@ -10,8 +10,8 @@
         /// </summary>
         /// <remarks>
         /// Example:
-        /// Name - Feature-01
-        /// Toggle - Json string as
+        /// Key - Feature-01
+        /// Value - Json string as
         /// {
 		///   "operator":"all",
 		///    "conditions":[{
@@ -27,18 +27,6 @@
 	    /// }
         /// </remarks>
         /// <returns></returns>
-        FeatureRecord[] Get();
-    }
-
-    public class FeatureRecord
-    {
-        public FeatureRecord(string name, string toggle)
-        {
-            Name = name;
-            Toggle = toggle;
-        }
-
-        public string Name { get; set; }
-        public string Toggle { get; set; }
+        IEnumerable<KeyValuePair<string, string>> Get();
     }
 }
