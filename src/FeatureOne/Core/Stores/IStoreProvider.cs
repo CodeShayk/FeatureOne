@@ -11,7 +11,7 @@
         /// <remarks>
         /// Example:
         /// Name - Feature-01
-        /// Toggle - Json string as 
+        /// Toggle - Json string as
         /// {
 		///   "operator":"all",
 		///    "conditions":[{
@@ -23,7 +23,7 @@
 		///	        "type":"RegexCondition",
 		///	        "claim":"user_role",
 		///	        "expression":"^administrator$"
-		///     }]		  
+		///     }]
 	    /// }
         /// </remarks>
         /// <returns></returns>

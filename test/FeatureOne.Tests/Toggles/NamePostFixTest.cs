@@ -1,4 +1,5 @@
 ﻿using FeatureOne.Core;
+
 namespace FeatureOne.Tests.Toggles
 {
     [TestFixture]

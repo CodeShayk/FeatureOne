@@ -1,5 +1,4 @@
-﻿
-namespace FeatureOne.Core.Stores
+﻿namespace FeatureOne.Core.Stores
 {
     public class FeatureStore : IFeatureStore
     {

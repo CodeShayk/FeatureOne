@@ -6,7 +6,7 @@ namespace FeatureOne.Tests.Stores
 {
     [TestFixture]
     internal class ToggleDeserializerTests
-    {       
+    {
         [Test]
         public void TestDeSerialize()
         {
@@ -14,7 +14,6 @@ namespace FeatureOne.Tests.Stores
 
             var toggle = deserializer
                 .Deserializer("{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}");
-
 
             Assert.That(toggle.Operator, Is.EqualTo(Operator.All));
             Assert.That(toggle.Conditions.Length, Is.EqualTo(2));
@@ -30,7 +29,6 @@ namespace FeatureOne.Tests.Stores
                 Assert.That(((RegexCondition)toggle.Conditions[1]).Claim, Is.EqualTo("email"));
                 Assert.That(((RegexCondition)toggle.Conditions[1]).Expression, Is.EqualTo("*@gbk.com"));
             });
-
         }
     }
 }
