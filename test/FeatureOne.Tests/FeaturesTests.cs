@@ -25,11 +25,9 @@ namespace FeatureOne.Tests
 
             store.Setup(x => x.FindStartsWith(It.IsAny<string>())).Returns(new[] { feature.Object });
 
-            features = new Features(store.Object, new FeatureConfiguration
+            features = new Features(store.Object, new Configuration
             {
-                Logger = logger.Object,
-                SlidingExpiry = TimeSpan.FromSeconds(10),
-                UseCache = true
+                Logger = logger.Object
             });
 
             principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>

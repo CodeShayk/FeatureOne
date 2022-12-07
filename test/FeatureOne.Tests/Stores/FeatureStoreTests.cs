@@ -21,11 +21,11 @@ namespace FeatureOne.Tests.Stores
             storeProvider.Setup(x => x.Get())
                 .Returns(new[]
                 {
-                    new FeatureRecord("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
-                    new FeatureRecord("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
+                    new KeyValuePair<string,string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
+                    new KeyValuePair<string,string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
                 });
 
-            featureStore = new FeatureStore(storeProvider.Object, new ToggleDeserializer(), new FeatureConfiguration
+            featureStore = new FeatureStore(storeProvider.Object, new ToggleDeserializer(), new Configuration
             {
                 Logger = logger.Object
             });
@@ -71,8 +71,8 @@ namespace FeatureOne.Tests.Stores
             storeProvider.Setup(x => x.Get())
                .Returns(new[]
                {
-                    new FeatureRecord("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
-                    new FeatureRecord("feature-02", "Invalid Toggle String")
+                    new KeyValuePair<string,string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
+                    new KeyValuePair<string,string>("feature-02", "Invalid Toggle String")
                });
 
             var features = featureStore.GetAll();
@@ -90,6 +90,17 @@ namespace FeatureOne.Tests.Stores
             });
 
             logger.Verify(x => x.Error(It.Is<string>(msg => msg.Contains("feature-02"))), Times.Once());
+        }
+    }
+
+    public class CustomStoreProvider : IStoreProvider
+    {
+        public IEnumerable<KeyValuePair<string, string>> Get()
+        {
+            return new[] {
+                    new KeyValuePair<string, string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
+                    new KeyValuePair<string, string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
+                };
         }
     }
 }
