@@ -8,7 +8,7 @@
         /// <summary>
         /// Implement method to evaulate toggle condition.
         /// </summary>
-        /// <param name="claims">List of user claims; could be null</param>
+        /// <param name="claims">List of user claims; could be empty</param>
         /// <returns></returns>
         bool Evaluate(IDictionary<string, string> claims);
     }

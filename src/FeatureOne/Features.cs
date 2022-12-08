@@ -8,22 +8,19 @@ namespace FeatureOne
     public class Features
     {
         private readonly IFeatureStore featureStore;
-        private readonly Configuration Configuration;
+        private readonly IFeatureLogger logger;
         public static Features Current { get; private set; }
 
-        public Features(IFeatureStore featureStore) : this(featureStore, new Configuration
-        {
-            Logger = new NullLogger()
-        })
+        public Features(IFeatureStore featureStore) : this(featureStore, new NullLogger())
         { }
 
-        public Features(IFeatureStore featureStore, Configuration configuration)
+        public Features(IFeatureStore featureStore, IFeatureLogger logger)
         {
             this.featureStore = featureStore;
-            this.Configuration = configuration;
+            this.logger = logger;
         }
 
-        public static void Initialise(Func<Features> factory) => Current = factory();
+        public static void Initialize(Func<Features> factory) => Current = factory();
 
         /// <summary>
         /// Determines whether the feature is enabled for given claims principal.
@@ -58,24 +55,35 @@ namespace FeatureOne
             try
             {
                 if (claims == null)
-                    return false;
+                {
+                    logger?.Warn($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, Message='Empty claims'");
+                }
 
                 var featureName = new FeatureName(name);
 
                 var features = featureStore.FindStartsWith(featureName.Value).ToList();
                 if (!features.Any())
+                {
+                    logger?.Warn($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, Message='No features in store'");
                     return false;
+                }
 
                 var feature = features.FirstOrDefault(x => x.Name.Value.Equals(featureName.Value, StringComparison.OrdinalIgnoreCase));
 
                 if (feature == null)
+                {
+                    logger?.Warn($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, Message='Featrue not found'");
                     return false;
+                }
 
-                return feature.IsEnabled(claims);
+                var result = feature.IsEnabled(claims);
+                logger?.Info($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, result={result}");
+
+                return result;
             }
             catch (Exception ex)
             {
-                Configuration.Logger?.Error($"Action='Features.IsEnabled', Feature='{name}', Exception='{ex}'.");
+                logger?.Error($"FeatureOne, Action='Features.IsEnabled', Feature='{name}', Exception='{ex}'.");
                 return false;
             }
         }

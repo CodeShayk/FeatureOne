@@ -25,10 +25,7 @@ namespace FeatureOne.Tests
 
             store.Setup(x => x.FindStartsWith(It.IsAny<string>())).Returns(new[] { feature.Object });
 
-            features = new Features(store.Object, new Configuration
-            {
-                Logger = logger.Object
-            });
+            features = new Features(store.Object, logger.Object);
 
             principal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
             {

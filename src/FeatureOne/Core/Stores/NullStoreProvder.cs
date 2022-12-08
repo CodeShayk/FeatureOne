@@ -1,6 +1,6 @@
 ﻿namespace FeatureOne.Core.Stores
 {
-    public class NullStoreProvder : IStoreProvider
+    public class NullStoreProvder : IStorageProvider
     {
         public IEnumerable<KeyValuePair<string, string>> Get()
         {
