@@ -21,6 +21,10 @@
     <ProjectReference Include="..\..\src\FeatureOne\FeatureOne.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Registeration\" />
+  </ItemGroup>
+
 
 
 </Project>

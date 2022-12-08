@@ -3,18 +3,18 @@
     public class FeatureStore : IFeatureStore
     {
         private IStoreProvider storeProvider;
-        private readonly FeatureConfiguration Configuration;
+        private readonly Configuration Configuration;
         private IToggleDeserializer toggleDeserializer;
 
-        public FeatureStore(IStoreProvider storeProvider) : this(storeProvider, new ToggleDeserializer(), new FeatureConfiguration())
+        public FeatureStore(IStoreProvider storeProvider) : this(storeProvider, new ToggleDeserializer(), new Configuration())
         {
         }
 
-        public FeatureStore(IStoreProvider storeProvider, IToggleDeserializer toggleDeserializer) : this(storeProvider, toggleDeserializer, new FeatureConfiguration())
+        public FeatureStore(IStoreProvider storeProvider, IToggleDeserializer toggleDeserializer) : this(storeProvider, toggleDeserializer, new Configuration())
         {
         }
 
-        public FeatureStore(IStoreProvider storeProvider, IToggleDeserializer toggleDeserializer, FeatureConfiguration configuration)
+        public FeatureStore(IStoreProvider storeProvider, IToggleDeserializer toggleDeserializer, Configuration configuration)
         {
             this.storeProvider = storeProvider;
             Configuration = configuration;
@@ -37,11 +37,11 @@
             {
                 try
                 {
-                    result.Add(new Feature(feature.Name, toggleDeserializer.Deserializer(feature.Toggle)));
+                    result.Add(new Feature(feature.Key, toggleDeserializer.Deserializer(feature.Value)));
                 }
                 catch (Exception ex)
                 {
-                    Configuration.Logger?.Error($"Action='Failed to Deserialize', Feature='{feature.Name}', Exception='{ex}'.");
+                    Configuration.Logger?.Error($"Action='Failed to Deserialize', Feature='{feature.Key}', Exception='{ex}'.");
                 }
             }
 

@@ -8,17 +8,16 @@ namespace FeatureOne
     public class Features
     {
         private readonly IFeatureStore featureStore;
-        private readonly FeatureConfiguration Configuration;
+        private readonly Configuration Configuration;
         public static Features Current { get; private set; }
 
-        public Features(IFeatureStore featureStore) : this(featureStore, new FeatureConfiguration
+        public Features(IFeatureStore featureStore) : this(featureStore, new Configuration
         {
-            UseCache = true,
             Logger = new NullLogger()
         })
         { }
 
-        public Features(IFeatureStore featureStore, FeatureConfiguration configuration)
+        public Features(IFeatureStore featureStore, Configuration configuration)
         {
             this.featureStore = featureStore;
             this.Configuration = configuration;
