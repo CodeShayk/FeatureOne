@@ -1,23 +1,25 @@
-﻿namespace FeatureOne.Core.Stores
+﻿using System.Xml.Linq;
+
+namespace FeatureOne.Core.Stores
 {
     public class FeatureStore : IFeatureStore
     {
-        private IStoreProvider storeProvider;
-        private readonly Configuration Configuration;
+        private IStorageProvider storageProvider;
+        private IFeatureLogger logger;
         private IToggleDeserializer toggleDeserializer;
 
-        public FeatureStore(IStoreProvider storeProvider) : this(storeProvider, new ToggleDeserializer(), new Configuration())
+        public FeatureStore(IStorageProvider storageProvider) : this(storageProvider, new NullLogger(), new ToggleDeserializer())
         {
         }
 
-        public FeatureStore(IStoreProvider storeProvider, IToggleDeserializer toggleDeserializer) : this(storeProvider, toggleDeserializer, new Configuration())
+        public FeatureStore(IStorageProvider storageProvider, IFeatureLogger logger) : this(storageProvider, logger, new ToggleDeserializer())
         {
         }
 
-        public FeatureStore(IStoreProvider storeProvider, IToggleDeserializer toggleDeserializer, Configuration configuration)
+        public FeatureStore(IStorageProvider storageProvider, IFeatureLogger logger, IToggleDeserializer toggleDeserializer)
         {
-            this.storeProvider = storeProvider;
-            Configuration = configuration;
+            this.storageProvider = storageProvider;
+            this.logger = logger;
             this.toggleDeserializer = toggleDeserializer;
         }
 
@@ -28,7 +30,7 @@
 
         public IEnumerable<IFeature> GetAll()
         {
-            var features = storeProvider.Get();
+            var features = storageProvider.Get();
             if (features == null || !features.Any()) return Enumerable.Empty<IFeature>();
 
             var result = new List<IFeature>();
@@ -38,10 +40,11 @@
                 try
                 {
                     result.Add(new Feature(feature.Key, toggleDeserializer.Deserializer(feature.Value)));
+                    logger?.Info($"FeatureOne, Action='StorageProvider.Get', Feature='{feature.Key}', Message='Reterieved Success'");
                 }
                 catch (Exception ex)
                 {
-                    Configuration.Logger?.Error($"Action='Failed to Deserialize', Feature='{feature.Key}', Exception='{ex}'.");
+                    logger?.Error($"FeatureOne, Action='StorageProvider.Get', Feature='{feature.Key}', Toggle='{feature.Value}' Exception='{ex}'.");
                 }
             }
 

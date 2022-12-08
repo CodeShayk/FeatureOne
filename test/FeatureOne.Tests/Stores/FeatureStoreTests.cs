@@ -9,7 +9,7 @@ namespace FeatureOne.Tests.Stores
     [TestFixture]
     internal class FeatureStoreTests
     {
-        private Mock<IStoreProvider> storeProvider;
+        private Mock<IStorageProvider> storeProvider;
         private FeatureStore featureStore;
         private Mock<IFeatureLogger> logger;
 
@@ -17,7 +17,7 @@ namespace FeatureOne.Tests.Stores
         public void Setup()
         {
             logger = new Mock<IFeatureLogger>();
-            storeProvider = new Mock<IStoreProvider>();
+            storeProvider = new Mock<IStorageProvider>();
             storeProvider.Setup(x => x.Get())
                 .Returns(new[]
                 {
@@ -25,10 +25,7 @@ namespace FeatureOne.Tests.Stores
                     new KeyValuePair<string,string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
                 });
 
-            featureStore = new FeatureStore(storeProvider.Object, new ToggleDeserializer(), new Configuration
-            {
-                Logger = logger.Object
-            });
+            featureStore = new FeatureStore(storeProvider.Object, logger.Object);
         }
 
         [Test]
@@ -93,7 +90,7 @@ namespace FeatureOne.Tests.Stores
         }
     }
 
-    public class CustomStoreProvider : IStoreProvider
+    public class CustomStoreProvider : IStorageProvider
     {
         public IEnumerable<KeyValuePair<string, string>> Get()
         {
