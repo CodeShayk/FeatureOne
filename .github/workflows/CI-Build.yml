@@ -147,8 +147,7 @@ jobs:
         run: find -name "*.nupkg" -print -exec gpr push -k ${{env.github-token}} {} \;
 
   Release:
-    needs: [Package-Artifacts]
-    if:  startsWith(github.head_ref, 'release/')
+    needs: [Package-Artifacts, Build-Release]
     runs-on: ubuntu-latest
     env:
       nuget-token: '${{ secrets.NUGET_API_KEY }}'      
