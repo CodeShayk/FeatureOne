@@ -16,6 +16,8 @@
             if (Conditions == null)
                 return false;
 
+            claims ??= new Dictionary<string, string>();
+
             return Operator == Operator.Any
                  ? Conditions.Any(x => x.Evaluate(claims))
                  : Conditions.All(x => x.Evaluate(claims));
