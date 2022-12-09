@@ -93,6 +93,7 @@ Below is the serialized representation of toggle with regex condition.
 ```
 
 ### Step 3. Provide Storage Implementation.
+To use FeatureOne, you need to provide implementation of `Storage Provider` to get all the feature toggles from storage medium of choice. 
 Implement `IStorageProvider` interface to get configured feature toggles from storage.
 The interface has `Get()` method that returns a collection of `KeyValuePair<string, string>`  with `key` mapping to `featureName` and `value` mapping to json string representation of the `toggle`
 ```
@@ -113,19 +114,33 @@ The interface has `Get()` method that returns a collection of `KeyValuePair<stri
         IEnumerable<KeyValuePair<string, string>> Get();
     }
 ```
+Below is an example of dummy provider implementation. 
+> A production provider should be an implementation with `API` , `SQL` or `File system` storage backend. Ideally, you may also want to use `caching` of feature toggles in the production implementation to optimise calls to the storage medium.
+```
+public class CustomStoreProvider : IStorageProvider
+    {
+        public IEnumerable<KeyValuePair<string, string>> Get()
+        {
+            return new[] {
+                    new KeyValuePair<string, string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
+                    new KeyValuePair<string, string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
+                };
+        }
+    }
 
+```
 ### Step 4. Bootstrap Initialialization
 In bootstrap code, initialize the `Features` class with dependencies as shown below. 
 i. With `storage provider` implementation. 
 ```
-   var storageProvider = new SQlStoreProviderImpl();
+   var storageProvider = new SQlStorageProviderImpl();
    Features.Initialize(() => new Features(new FeatureStore(storageProvider)));
 ```
 
 ii. With `storage provider` and `logger` implementation. 
 ```
    var logger = new CustomLoggerImpl();
-   var storageProvider = new SQlStoreProviderImpl();
+   var storageProvider = new SQlStorageProviderImpl();
 
    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
 ```
@@ -133,7 +148,7 @@ ii. With `storage provider` and `logger` implementation.
 iii.  With `storage provider`, `logger` and custom `toggle deserializer` implementation.
 ```
    var logger = new CustomLoggerImpl();
-   var storageProvider = new SQlStoreProviderImpl();
+   var storageProvider = new SQlStorageProviderImpl();
    var toggleDeserializer = new CustomToggleDeserializer();
 
    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger, toggleDeserializer), logger));
@@ -190,26 +205,8 @@ Example below of custom condition .
   }
 
 ```
-### ii. Storage Provider
-To use FeatureOne, you need to provide implementation of `Storage Provider` to get all the feature toggles from storage medium of choice. 
-Implement `IStorageProvider` interface to return the key-value pairs with feature name and json string toggle. 
 
-Below is an example of dummy provider implementation. 
-> A production implementation should be a provider with `API` , `SQL` or `File system` storage. Ideally, you may also use `caching` of feature toggles in the production implementation to optimise calls to storage medium.
-```
-public class CustomStoreProvider : IStorageProvider
-    {
-        public IEnumerable<KeyValuePair<string, string>> Get()
-        {
-            return new[] {
-                    new KeyValuePair<string, string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
-                    new KeyValuePair<string, string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
-                };
-        }
-    }
-
-```
-### iii. Logger
+### ii. Logger
 You could optionally provide an implementation of a logger by wrapping your favourite logging libaray under `IFeatureLogger` interface. 
 Please see the interface definition below.
 >This implementation is optional and when no logger is provided FeatureOne will not log any errors, warnings or information.
