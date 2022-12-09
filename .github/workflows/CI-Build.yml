@@ -155,7 +155,7 @@ jobs:
             -H "Accept:application/vnd.github+json" \
             -H "Authorization:token ${{ env.github-token }}" \
             https://api.github.com/ninjarocks/FeatureOne/releases \
-            -d '{"tag_name":v${{  needs.Build-Release.outputs.semVersion }},"target_commitish":"master","name":"FeatureOne","body":"Relese version ${{  needs.Build-Release.outputs.semVersion }}","draft":false,"prerelease":false,"generate_release_notes":false}'
+            -d '{"tag_name":v1.0.0,"target_commitish":"master","name":"FeatureOne","body":"","draft":false,"prerelease":false,"generate_release_notes":false}'
 
       - name: Step-03 Release to Nuget Org
         if: ${{ startsWith(github.head_ref, 'release/')}}
