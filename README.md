@@ -92,7 +92,7 @@ Below is the serialized representation of toggle with regex condition.
  }
 ```
 
-### Step 3. Provide Storage Implementation.
+### Step 3. Provide Storage Provider Implementation.
 To use FeatureOne, you need to provide implementation of `Storage Provider` to get all the feature toggles from storage medium of choice. 
 Implement `IStorageProvider` interface to get configured feature toggles from storage.
 The interface has `Get()` method that returns a collection of `KeyValuePair<string, string>`  with `key` mapping to `featureName` and `value` mapping to json string representation of the `toggle`
@@ -130,14 +130,15 @@ public class CustomStoreProvider : IStorageProvider
 
 ```
 ### Step 4. Bootstrap Initialialization
-In bootstrap code, initialize the `Features` class with dependencies as shown below. 
+In bootstrap code, initialize the `Features` class with dependencies as shown below.
+
 i. With `storage provider` implementation. 
 ```
    var storageProvider = new SQlStorageProviderImpl();
    Features.Initialize(() => new Features(new FeatureStore(storageProvider)));
 ```
 
-ii. With `storage provider` and `logger` implementation. 
+ii. With `storage provider` and `logger` implementations. 
 ```
    var logger = new CustomLoggerImpl();
    var storageProvider = new SQlStorageProviderImpl();
@@ -145,7 +146,7 @@ ii. With `storage provider` and `logger` implementation.
    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
 ```
 
-iii.  With `storage provider`, `logger` and custom `toggle deserializer` implementation.
+iii.  With `storage provider`, `logger` and custom `toggle deserializer` implementations.
 ```
    var logger = new CustomLoggerImpl();
    var storageProvider = new SQlStorageProviderImpl();
