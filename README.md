@@ -114,15 +114,31 @@ The interface has `Get()` method that returns a collection of `KeyValuePair<stri
     }
 ```
 
-### Step 4. Bootstrap Initialialize 
-In startup code, initialize the Features class with dependencies as shown below. 
+### Step 4. Bootstrap Initialialization
+In bootstrap code, initialize the `Features` class with dependencies as shown below. 
+i. With `storage provider` implementation. 
+```
+   var storageProvider = new SQlStoreProviderImpl();
+   Features.Initialize(() => new Features(new FeatureStore(storageProvider)));
+```
+
+ii. With `storage provider` and `logger` implementation. 
 ```
    var logger = new CustomLoggerImpl();
    var storageProvider = new SQlStoreProviderImpl();
 
    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
-
 ```
+
+iii.  With `storage provider`, `logger` and custom `toggle deserializer` implementation.
+```
+   var logger = new CustomLoggerImpl();
+   var storageProvider = new SQlStoreProviderImpl();
+   var toggleDeserializer = new CustomToggleDeserializer();
+
+   Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger, toggleDeserializer), logger));
+```
+
 How to Extend FeatureOne
 --
 
