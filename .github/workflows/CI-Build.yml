@@ -132,6 +132,7 @@ jobs:
       semVersion: ${{ needs.Build-Release.outputs.semVersion }}
     env:
       github-token: '${{ secrets.GITHUB_TOKEN }}'
+      nuget-token: '${{ secrets.NUGET_API_KEY }}' 
       working-directory: /home/runner/work/FeatureOne/FeatureOne
     steps:
       - name: Step-01 Retrieve Build Artifacts
@@ -152,7 +153,7 @@ jobs:
             curl \
             -X POST \
             -H "Accept:application/vnd.github+json" \
-            -H "Authorization:token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization:token ${{ env.github-token }}" \
             https://api.github.com/ninjarocks/FeatureOne/releases \
             -d '{"tag_name":v${{  needs.Build-Release.outputs.semVersion }},"target_commitish":"master","name":"FeatureOne","body":"Relese version ${{  needs.Build-Release.outputs.semVersion }}","draft":false,"prerelease":false,"generate_release_notes":false}'
 
