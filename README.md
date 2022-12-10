@@ -175,7 +175,7 @@ The interface provides `evaluate()` method that returns a boolean result of eval
         bool Evaluate(IDictionary<string, string> claims);
     }
 ```
-`Please Note` The condition class should only include primitive data type properties for default deserialization. If you need to implement a much complex toggle condition with non-primitive properties then also provide custom implementation of `IToggleDeserializer` to support its deserialization.
+`Please Note` The condition class should only include `primitive` data type `properties` for default deserialization. If you need to implement a much complex toggle condition with non-primitive properties then also provide custom implementation of `IToggleDeserializer` to support its deserialization along with other conditions.
 
 Example below shows sample implementation of a custom condition.
 
