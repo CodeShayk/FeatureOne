@@ -150,7 +150,7 @@ iii.  With `storage provider`, `logger` and custom `toggle deserializer` impleme
 ```
    var logger = new CustomLoggerImpl();
    var storageProvider = new SQlStorageProviderImpl();
-   var toggleDeserializer = new CustomToggleDeserializer();
+   var toggleDeserializer = new CustomToggleDeserializerImpl();
 
    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger, toggleDeserializer), logger));
 ```
@@ -180,10 +180,10 @@ The interface provides `evaluate()` method that returns a boolean result of eval
 Example below shows sample implementation of a custom condition.
 
 ```
+   // toggle condition to show feature after given hour during the day.
    public class TimeCondition : ICondition
    {
-        // toggle to show feature after given hour during the day.
-	public int Hour {get; set;} = 12; // Primitive int property.
+        public int Hour {get; set;} = 12; // Primitive int property.
 
 	bool Evaluate(IDictionary<string, string> claims)
 	{
