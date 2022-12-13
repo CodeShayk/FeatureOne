@@ -187,7 +187,7 @@ Example below shows sample implementation of a custom condition.
 
 	bool Evaluate(IDictionary<string, string> claims)
 	{
-		return (DateTime.Now.Hour > 12);	 
+		return (DateTime.Now.Hour > Hour);	 
 	}
    }
 ```
