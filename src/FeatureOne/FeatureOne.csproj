@@ -17,16 +17,16 @@
     <Authors>najaf.shayk</Authors>
     <Company>Ninja.Sha!4H</Company>
     <Product>FeatureOne</Product>
-    <Description>.Net library to provide feature toggles.</Description>
+    <Description>.Net library to implement feature toggles.</Description>
     <Copyright>2023</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/NinjaRocks/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; .netstandard2.1; featureOne</PackageTags>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
-    <PackageReleaseNotes>Release Notes v1.0.4 - Ported to .net standard 2.1
+    <PackageReleaseNotes>Release Notes v1.0.6 - Ported to .net standard 2.1
 
 Core Functionality - Includes the main functionality of FeatureOne
 
