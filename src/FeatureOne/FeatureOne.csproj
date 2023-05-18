@@ -22,13 +22,30 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/NinjaRocks/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>feature-toggle; feature-flags; feature flags; feature toggle; .netstandard2.1; featureOn</PackageTags>
-    <Version>1.0.2</Version>
+    <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; .netstandard2.1; featureOne</PackageTags>
+    <Version>1.0.5</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageIcon>ninja-icon-16.png</PackageIcon>
+    <PackageReleaseNotes>Release Notes v1.0.4 - Ported to .net standard 2.1
+
+Core Functionality - Includes the main functionality of FeatureOne
+
+Implement Feature Toggles to drive availability of a features
+Implement Feature isEnabled check in codebase to run the status of each toggle.
+Add Simple and Regex conditions to toggle definitions.
+Extensibility - Provides an extension for custom implementations
+
+Implement custom Conditions.
+Implement custom Storage Provider.
+Implement custom Logger.</PackageReleaseNotes>
     </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\ninja-icon-16.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
@@ -39,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="7.0.2" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 
  </Project>
