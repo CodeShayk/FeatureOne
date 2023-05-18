@@ -1,4 +1,7 @@
-﻿namespace FeatureOne.Core.Stores
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FeatureOne.Core.Stores
 {
     public class NullStoreProvder : IStorageProvider
     {

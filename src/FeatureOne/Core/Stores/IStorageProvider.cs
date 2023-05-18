@@ -1,4 +1,6 @@
-﻿namespace FeatureOne.Core.Stores
+using System.Collections.Generic;
+
+namespace FeatureOne.Core.Stores
 {
     /// <summary>
     /// Interface to implement storage provider.

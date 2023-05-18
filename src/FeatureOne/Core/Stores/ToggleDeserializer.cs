@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+using System;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace FeatureOne.Core.Stores
