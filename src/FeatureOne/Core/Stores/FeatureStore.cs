@@ -1,4 +1,7 @@
-﻿using System.Xml.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace FeatureOne.Core.Stores
 {
@@ -31,7 +34,8 @@ namespace FeatureOne.Core.Stores
         public IEnumerable<IFeature> GetAll()
         {
             var features = storageProvider.Get();
-            if (features == null || !features.Any()) return Enumerable.Empty<IFeature>();
+            if (features == null || !features.Any())
+                return Enumerable.Empty<IFeature>();
 
             var result = new List<IFeature>();
 

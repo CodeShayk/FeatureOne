@@ -1,4 +1,5 @@
-﻿using FeatureOne.Core;
+using System.Collections.Generic;
+using FeatureOne.Core;
 
 namespace FeatureOne
 {

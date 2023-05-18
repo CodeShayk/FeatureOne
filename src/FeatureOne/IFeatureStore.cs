@@ -1,4 +1,6 @@
-﻿namespace FeatureOne
+using System.Collections.Generic;
+
+namespace FeatureOne
 {
     public interface IFeatureStore
     {

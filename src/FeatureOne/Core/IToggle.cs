@@ -1,4 +1,6 @@
-﻿namespace FeatureOne.Core
+using System.Collections.Generic;
+
+namespace FeatureOne.Core
 {
     public interface IToggle
     {

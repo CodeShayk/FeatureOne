@@ -1,4 +1,6 @@
-﻿namespace FeatureOne.Core.Toggles.Conditions
+using System.Collections.Generic;
+
+namespace FeatureOne.Core.Toggles.Conditions
 {
     public class SimpleCondition : ICondition
     {

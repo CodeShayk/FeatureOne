@@ -1,4 +1,7 @@
-﻿namespace FeatureOne.Core
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FeatureOne.Core
 {
     public class Toggle : IToggle
     {

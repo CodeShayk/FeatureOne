@@ -1,4 +1,6 @@
-﻿namespace FeatureOne
+using System;
+
+namespace FeatureOne
 {
     public static class Constants
     {

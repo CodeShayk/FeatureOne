@@ -1,4 +1,7 @@
-﻿namespace FeatureOne
+using System;
+using System.Collections.Generic;
+
+namespace FeatureOne
 {
     public class LambdaComparer<T> : IEqualityComparer<T>
     {
