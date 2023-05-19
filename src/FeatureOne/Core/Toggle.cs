@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,10 +6,14 @@ namespace FeatureOne.Core
 {
     public class Toggle : IToggle
     {
-        public Toggle(Operator @operator, ICondition[] conditions)
+        public Toggle() : this(Operator.Any, Array.Empty<ICondition>())
+        {
+        }
+
+        public Toggle(Operator @operator, params ICondition[] conditions)
         {
             Operator = @operator;
-            Conditions = conditions;
+            Conditions = conditions ?? Array.Empty<ICondition>();
         }
 
         public Operator Operator { get; set; }

@@ -1,17 +1,17 @@
-﻿using FeatureOne.Core.Stores;
 using FeatureOne.Core.Toggles.Conditions;
+using FeatureOne.SQL;
 using System.Text.Json.Nodes;
 
-namespace FeatureOne.Test.Toggles
+namespace FeatureOne.SQL.Tests.UnitTests
 {
     [TestFixture]
-    public sealed class ToggleConditionFactoryTest
+    public sealed class ConditionDeserializerTest
     {
         [Test]
         public void TestToggleConditionForNUllInput()
         {
             JsonObject jObj = null;
-            Assert.Throws<ArgumentNullException>(() => ConditionFactory.Create(jObj));
+            Assert.Throws<ArgumentNullException>(() => new ConditionDeserializer().Deserialize(jObj));
         }
 
         [Test]
@@ -19,8 +19,8 @@ namespace FeatureOne.Test.Toggles
         {
             var json = "{\r\n\t\t\t  \"type\":\"Simple\",\r\n\t\t\t  \"IsEnabled\":\"true\"\r\n\t\t}";
 
-            var jobject = JsonObject.Parse(json)?.AsObject();
-            var toggleCondition = ConditionFactory.Create(jobject);
+            var jobject = JsonNode.Parse(json)?.AsObject();
+            var toggleCondition = new ConditionDeserializer().Deserialize(jobject);
 
             Assert.IsInstanceOf(typeof(SimpleCondition), toggleCondition);
         }
@@ -30,8 +30,8 @@ namespace FeatureOne.Test.Toggles
         {
             var json = "{\r\n\t\t\t  \"type\":\"RegexCondition\",\r\n\t\t\t  \"claim\":\"email\",\r\n\t\t\t  \"expression\":\"*@gbk.com\"\r\n\t\t  }";
 
-            var jobject = JsonObject.Parse(json)?.AsObject();
-            var toggleCondition = ConditionFactory.Create(jobject);
+            var jobject = JsonNode.Parse(json)?.AsObject();
+            var toggleCondition = new ConditionDeserializer().Deserialize(jobject);
 
             Assert.IsInstanceOf(typeof(RegexCondition), toggleCondition);
         }

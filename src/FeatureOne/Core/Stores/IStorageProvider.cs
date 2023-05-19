@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace FeatureOne.Core.Stores
 {
     /// <summary>
@@ -8,14 +6,9 @@ namespace FeatureOne.Core.Stores
     public interface IStorageProvider
     {
         /// <summary>
-        /// Implement this method to get all feature toggless from storage.
+        /// Implement to get storage feature toggles by a given name.
         /// </summary>
-        /// <remarks>
-        /// Example:
-        /// Key : "Feature-01"
-        /// Value : "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"
-        /// </remarks>
-        /// <returns></returns>
-        IEnumerable<KeyValuePair<string, string>> Get();
+        /// <returns>Array of Features</returns>
+        IFeature[] GetByName(string name);
     }
 }

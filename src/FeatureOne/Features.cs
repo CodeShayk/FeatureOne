@@ -26,6 +26,16 @@ namespace FeatureOne
         public static void Initialize(Func<Features> factory) => Current = factory();
 
         /// <summary>
+        /// Determines whether the feature is enabled.
+        /// </summary>
+        /// <param name="name">feature name</param>
+        /// <returns></returns>
+        public bool IsEnabled(string name)
+        {
+            return IsEnabled(name, Enumerable.Empty<Claim>());
+        }
+
+        /// <summary>
         /// Determines whether the feature is enabled for given claims principal.
         /// </summary>
         /// <param name="name">feature name</param>

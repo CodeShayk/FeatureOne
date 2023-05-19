@@ -1,10 +1,14 @@
-# <img src="https://github.com/NinjaRocks/FeatureOne/blob/master/ninja-icon-16.png" alt="ninja" style="width:30px;"/> FeatureOne v1.0.2
+# <img src="https://github.com/NinjaRocks/FeatureOne/blob/master/ninja-icon-16.png" alt="ninja" style="width:30px;"/> FeatureOne v2.0.0
 [![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/NinjaRocks/FeatureOne/blob/master/License.md) [![CI](https://github.com/NinjaRocks/FeatureOne/actions/workflows/CI-Build.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/CI-Build.yml) [![GitHub Release](https://img.shields.io/github/v/release/ninjarocks/FeatureOne?logo=github&sort=semver)](https://github.com/ninjarocks/FeatureOne/releases/latest)
 [![CodeQL](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml) [![.Net Stardard](https://img.shields.io/badge/.Net%20Standard-2.1-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/2.1)
 
 .Net Library to implement feature toggles.
 --
-
+> #### Nuget Packages
+> ---
+> `FeatureOne` - Provides core funtionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. Please see below for more details.
+>
+>`FeatureOne.SQL` - Provides FeatureOne funtionality to implement feature toggles using `SQL` Storage backend.
 ### What is a feature toggle?
 > Feature toggle is a mechanism that allows code to be turned “on” or “off” remotely without the need for a deploy. Feature toggles are commonly used in applications to gradually roll out new features, allowing teams to test changes on a small subset of users before releasing them to everyone.
 
@@ -25,7 +29,7 @@ Add logical check in codebase to wrap the functionality under a `feature toggle`
 
 ```
  var featureName = "dashboard_widget"; // Name of functionality or feature to toggle.
- if(Features.Current.IsEnable(featureName, claimsPrincipal){ // See other IsEnable() overloads
+ if(Features.Current.IsEnable(featureName){ // See other IsEnable() overloads
 	showDashboardWidget();
 }
 ```
@@ -36,14 +40,15 @@ Add a `toggle` definition to storage ie. a store in database or file or other st
 A toggle constitutes a collection of `conditions` that evaluate separately when the toggle is run. You can additionally specify an `operator` in the toggle definition to determine the overall success to include success of `any` constituent condition or success of `all` consituent conditions.
 > Toggles run at runtime based on consitituent conditions that evaluate separately against user claims (generally logged in user principal).
 
-JSON Syntax for Feature Toggle is below
+Below is a serialized JSON representation of a Feature Toggle.
 ```
 {
   "feature_name":{ -- Feature name
-        "toggle":{ -- Toggle details for the feature 
+        "toggle":{ -- Toggle definition for the feature 
 
-            "operator":"any|all", -- Evaluate overall toggle to true 
-		                  -- when `any` condition is met or `all` conditions are met.
+            "operator":"any|all", -- Logical Operator - any (OR) & all (AND)
+                                  -- ie. Evaluate overall toggle to true when `any` condition is met or
+                                  --     `all` conditions are met.
            
             "conditions":[{ -- collection of conditions
                 "type":"simple|regex" -- type of condition
@@ -54,6 +59,7 @@ JSON Syntax for Feature Toggle is below
   }
 }
 ```
+
 ### Condition Types 
 There are two types of toggle conditions that can be used out of box. 
 
@@ -64,7 +70,7 @@ Below is the serialized representation of toggle with simple condition.
 ```
 {
   "dashboard_widget":{   
-	  "toggle"{       
+	  "toggle":{       
 	     "conditions":[{
 		   "type":"Simple",       -- Simple Condition.
 		   "isEnabled":true|false --  Enabled or disable the feature.
@@ -73,57 +79,91 @@ Below is the serialized representation of toggle with simple condition.
   }
 }
 ```
+C# representation of a feature with simple toggle is
+```
+var feature = new Feature
+{
+  Name ="dashboard_widget",   // Feature Name
+  Toggle = new Toggle         // Toggle definition
+  {
+    // Logical operator to be applied when evaluating consituent conditions.
+    Operator = Operator.Any,  // Default is Any (Logical OR)
+                              
+    Conditions = new[]
+    {
+        // Simple condition that can be set to true/false for feature to be enabled/disabled.
+        new SimpleCondition { IsEnabled = true }
+    }
+  }
+}
+```
 #### ii. Regex Condition
-`Regex` condition allows evaluating a regex expression against specified user claim to enable a given feature.
+`Regex` condition allows evaluating a regex expression against specified user claim value to enable a given feature.
 
 Below is the serialized representation of toggle with regex condition. 
 ```
  {
    "dashboard_widget":{  
-	  "toggle"{    
+	  "toggle":{    
 		                          
 		  "conditions":[{
 			  "type":"Regex",  -- Regex Condition
 			  "claim":"email", -- Claim 'email' to be used for evaluation.
-			  "expression":"*@gbk.com" -- Regex expression to be used for evaulation.
+			  "expression":"*@gbk.com" -- Regex expression to be used for evaluation.
 		   }]		  
 	  }	  
    }
  }
 ```
+C# representation of a feature with regex toggle is
+```
 
-### Step 3. Provide Storage Provider Implementation.
-To use FeatureOne, you need to provide implementation of `Storage Provider` to get all the feature toggles from storage medium of choice. 
-Implement `IStorageProvider` interface to get configured feature toggles from storage.
-The interface has `Get()` method that returns a collection of `KeyValuePair<string, string>`  with `key` mapping to `featureName` and `value` mapping to json string representation of the `toggle`
-```
-    /// <summary>
-    /// Interface to implement storage provider.
-    /// </summary>
-    public interface IStorageProvider
+var feature = new Feature
+{
+  Name ="dashboard_widget",   // Feature Name
+  Toggle = new Toggle         // Toggle definition
+  {
+    Operator = Operator.Any,  
+    Conditions = new[] 
     {
-        /// <summary>
-        ///  Implement this method to get all feature toggles from storage.
-        /// </summary>
-        /// <remarks>
-        /// Example:
-        ///  Key - "dashboard_widget"
-        ///  Value - "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"
-	/// </remarks>
-	/// <returns>KeyValuePair Array</returns>
-        IEnumerable<KeyValuePair<string, string>> Get();
+        // Regex condition that evalues role of user to be administrator to enable the feature.
+        new RegexCondition { Claim = "role", Expression = "administrator" }
     }
+  }
+}
 ```
+
+### Step 3. Implement Storage Provider.
+To use FeatureOne, you need to provide implementation for `Storage Provider` to get all the feature toggles from storage medium of choice. 
+Implement `IStorageProvider` interface to return feature toggles from storage.
+The interface has `GetByName()` method that returns an array of `IFeature`
+```
+  /// <summary>
+  /// Interface to implement storage provider.
+  /// </summary>
+  public interface IStorageProvider
+  {
+        /// <summary>
+        /// Implement to get storage feature toggles by a given name.
+        /// </summary>
+        /// <returns>Array of Features</returns>
+        IFeature[] GetByName(string name);
+  }
+```
+A production storage provider should be an implementation with `API` , `SQL` or `File system` storage backend.
+
+An implementation option is to store features as serialized json to backend medium. Ideally, you may also want to use `caching` in the production implementation to optimise calls to the storage backend.
+
+
 Below is an example of dummy provider implementation. 
-> A production provider should be an implementation with `API` , `SQL` or `File system` storage backend. Ideally, you may also want to use `caching` of feature toggles in the production implementation to optimise calls to the storage medium.
 ```
 public class CustomStoreProvider : IStorageProvider
     {
-        public IEnumerable<KeyValuePair<string, string>> Get()
+        public Feature[] GetByName(string name)
         {
             return new[] {
-                    new KeyValuePair<string, string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
-                    new KeyValuePair<string, string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
+                    new  Feature("feature-01",new Toggle(Operator.Any, new[]{ new SimpleCondition{IsEnabled=true}})),
+                    new  Feature("feature-02",new Toggle(Operator.All, new SimpleCondition { IsEnabled = false }, new RegexCondition{Claim="email", Expression= "*@gbk.com" }))
                 };
         }
     }
@@ -134,25 +174,16 @@ In bootstrap code, initialize the `Features` class with dependencies as shown be
 
 i. With `storage provider` implementation. 
 ```
-   var storageProvider = new SQlStorageProviderImpl();
+   var storageProvider = new CustomStorageProviderImpl();
    Features.Initialize(() => new Features(new FeatureStore(storageProvider)));
 ```
 
 ii. With `storage provider` and `logger` implementations. 
 ```
    var logger = new CustomLoggerImpl();
-   var storageProvider = new SQlStorageProviderImpl();
+   var storageProvider = new CustomStorageProviderImpl();
 
    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
-```
-
-iii.  With `storage provider`, `logger` and custom `toggle deserializer` implementations.
-```
-   var logger = new CustomLoggerImpl();
-   var storageProvider = new SQlStorageProviderImpl();
-   var toggleDeserializer = new CustomToggleDeserializerImpl();
-
-   Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger, toggleDeserializer), logger));
 ```
 
 How to Extend FeatureOne
@@ -175,39 +206,59 @@ The interface provides `evaluate()` method that returns a boolean result of eval
         bool Evaluate(IDictionary<string, string> claims);
     }
 ```
-`Please Note` The condition class should only include `primitive` data type `properties` for default deserialization. If you need to implement a much complex toggle condition with non-primitive properties then also provide custom implementation of `IToggleDeserializer` to support its deserialization along with other conditions.
-
 Example below shows sample implementation of a custom condition.
 
 ```
    // toggle condition to show feature after given hour during the day.
    public class TimeCondition : ICondition
    {
-        public int Hour {get; set;} = 12; // Primitive int property.
+        public int Hour {get; set;} = 12; 
 
-	bool Evaluate(IDictionary<string, string> claims)
+	public bool Evaluate(IDictionary<string, string> claims)
 	{
 		return (DateTime.Now.Hour > Hour);	 
 	}
    }
 ```
- Example usage of above condition in toggle to allow non-admin users access to a feature only after 14 hrs.
+ Example usage of above condition in toggle to allow non-admin users access to a feature only after 12 hrs.
+ C# representation of the feature is
+
+```
+var feature = new Feature
+{
+  Name ="feature_pen_test",   // Feature Name
+  Toggle = new Toggle         // Toggle definition
+  {
+    Operator = Operator.Any,  // Enabled when one of below conditions are true.
+    Conditions = new[]
+    {
+        // Custom condition - allow access after 12 o'clock
+        new TimeCondition { Hour = 12 },
+        // Regex condition for allowing admin users by role claim.
+        new RegexCondition { Claim = "role", Expression = "^administrator$"}
+    }
+  }
+}
+```
+JSON Serialized representation is
  ```
   {
+    "feature_pen_test":{   
+	  "toggle":{  
         "operator":"any", -- Any below condition evaluation to true should succeed the toggle.
         "conditions":[{             
-               "type":"Time", -- Time condition to all access to all after 14hrs
+               "type":"Time", -- Time condition to allow access after 12 o'clock.
                "Hour":14
         },
         {   
                "type":"Regex", -- Regex to allow admin access
-               "claim":"user_role",
+               "claim":"role",
                "expression":"^administrator$"
         }]
+    }
   }
 
 ```
-
 ### ii. Logger
 You could optionally provide an implementation of a logger by wrapping your favourite logging libaray under `IFeatureLogger` interface. 
 Please see the interface definition below.
@@ -243,6 +294,91 @@ Please see the interface definition below.
         void Warn(string message);
     }
 ```
+## FeatureOne.SQL - Feature toggles with SQL Backend.
+In addition to all above offerings, the FeatureOne.SQL package provides out of box SQL storage provider.
+
+SQL support can easily be installed as a separate nuget package.
+```
+$ dotnet add package FeatureOne.SQL --version 2.0.0
+```
+Supports Db Providers `MSSQL: System.Data.SqlClient`, `ODBC: System.Data.Odbc`, `OLEDB: System.Data.OleDb`, `SQLite: System.Data.SQLite`, `MySQL: MySql.Data.MySqlClient` & `PostgreSQL: Npgsql`.
+
+
+
+For any other SQL provider, You need to add provider factory to `DbProviderFactories.RegisterFactory("ProviderName", ProviderFactory)` and pass the provider specific `connection settings` in SQLConfiguration.
+### Database Setup
+> Requires creating a feature table with columns for feature name, toggle definition and feature archival.
+
+SQL SCRIPT below.
+```
+CREATE TABLE TFeatures (
+    Id              INT NOT NULL IDENTITY PRIMARY KEY,
+    Name            VARCHAR(255) NOT NULL,
+    Toggle          NVARCHAR(4000) NOT NULL,
+    Archived        BIT CONSTRAINT DF_TFeatures_Archived DEFAULT (0)
+);
+```
+
+### Example Table Record
+> Feature toggles need to be `scripted` to backend database in JSON format.
+
+Please see example entries below.
+
+| Name |Toggle | Archived |
+||||
+| dashboard_widget  |{ "conditions":[{ "type":"Simple", "isEnabled": true }] }  | false |
+|pen_test_dashboard| { "operator":"any", "conditions":[{ "type":"simple", "isEnabled":false}, { "type":"Regex", "claim":"email","expression":"^[a-zA-Z0-9_.+-]+@gbk.com" }]} | false|
+
+`Please Note` Any custom condition implementation should only include `primitive type` properties to work with `default` ICondition `deserialization`. When you need to implement a much complex toggle condition with `non-primitive` properties then you need to provide `custom` implementation of `IConditionDeserializer` to support its deserialization to toggle condition object.
+
+### Bootstrap initialization
+> See below bootstrap initialization for FeatureOne with SQL backend.
+#### SQL Configuration - Set connection string and other settings.
+```
+    var sqlConfiguration = new SQLConfiguration
+    {
+        ConnectionSettings = new ConnectionSettings
+        {
+            Providername = DbProviderName.MSSql, // provider Name for DbFactory registration.
+            ConnectionString ="Data Source=Powerstation; Initial Catalog=Features; Integrated Security=SSPI;"            
+        },
+        FeatureTable = new FeatureTable
+        {
+            TableName = "[Features].[dbo].[TFeatures]",  // Table and column name overrides.
+            NameColumn = "[Name]",
+            ToggleColumn = "[Toggle]",
+            ArchivedColumn = "[Archived]"
+        },
+        CacheSettings = new CacheSettings 
+        {
+            EnableCache = true,  // Enable cache with absolute expiry in Minutes.
+            ExpiryInMinutes = 60
+        }
+    }
+```
+i. With SQL configuration. 
+```
+   var storageProvider = new SQlStorageProvider(sqlConfiguration);
+   Features.Initialize(() => new Features(new FeatureStore(storageProvider)));
+```
+ii. With Custom logger implementation, default is no logger.
+```
+    var logger = new CustomLoggerImpl();
+    var storageProvider = new SQlStorageProvider(sqlConfiguration, logger);
+
+    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
+```
+
+iii. With other overloads - Custom cache and Toggle Condition deserializer.
+```
+    var toggleConditionDeserializer = CustomConditionDeserializerImpl(); // Implements IConditionDeserializer 
+    var featureCache = CustomFeatureCache(); // Implements ICache
+
+    var storageProvider = new SQlStorageProvider(sqlConfiguration, logger, featureCache, toggleConditionDeserializer);
+
+    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
+```
+
 Credits
 --
 Thank you for reading. Please fork, explore, contribute and report. Happy Coding !! :)

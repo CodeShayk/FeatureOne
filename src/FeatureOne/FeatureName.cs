@@ -18,5 +18,7 @@ namespace FeatureOne
         public string Value { get; }
 
         public static implicit operator string(FeatureName s) => s?.Value;
+
+        public static implicit operator FeatureName(string s) => new FeatureName(s);
     }
 }

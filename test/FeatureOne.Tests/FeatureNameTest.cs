@@ -1,4 +1,4 @@
-﻿namespace FeatureOne.Test
+namespace FeatureOne.Test
 {
     [TestFixture]
     public class FeatureNameTest
@@ -22,6 +22,17 @@
         public void TestNameForUnsupportedInputs(string input)
         {
             Assert.Throws<ArgumentException>(() => new FeatureName(input));
+        }
+
+        [Test]
+        public void TestForStringOperators()
+        {
+            var input = "x";
+            var ft1 = new FeatureName(input);
+            Assert.That((string)ft1, Is.EqualTo(input));
+
+            var ft2 = (FeatureName)input;
+            Assert.That(ft2.Value, Is.EqualTo(input));
         }
     }
 }
