@@ -1,56 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace FeatureOne.Core.Stores
 {
     public class FeatureStore : IFeatureStore
     {
-        private IStorageProvider storageProvider;
-        private IFeatureLogger logger;
-        private IToggleDeserializer toggleDeserializer;
+        private readonly IStorageProvider storageProvider;
+        private readonly IFeatureLogger logger;
 
-        public FeatureStore(IStorageProvider storageProvider) : this(storageProvider, new NullLogger(), new ToggleDeserializer())
+        public FeatureStore(IStorageProvider storageProvider) : this(storageProvider, new NullLogger())
         {
         }
 
-        public FeatureStore(IStorageProvider storageProvider, IFeatureLogger logger) : this(storageProvider, logger, new ToggleDeserializer())
-        {
-        }
-
-        public FeatureStore(IStorageProvider storageProvider, IFeatureLogger logger, IToggleDeserializer toggleDeserializer)
+        public FeatureStore(IStorageProvider storageProvider, IFeatureLogger logger)
         {
             this.storageProvider = storageProvider;
             this.logger = logger;
-            this.toggleDeserializer = toggleDeserializer;
         }
 
-        public IEnumerable<IFeature> FindStartsWith(string key)
+        public IEnumerable<IFeature> FindStartsWith(string name)
         {
-            return GetAll().Where(x => x.Name.Value.StartsWith(key, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public IEnumerable<IFeature> GetAll()
-        {
-            var features = storageProvider.Get();
+            var features = storageProvider.GetByName(name);
             if (features == null || !features.Any())
+            {
+                logger?.Info($"FeatureOne, Action='StorageProvider.Get', Message='Retrieved Features list was empty.'");
                 return Enumerable.Empty<IFeature>();
+            }
 
             var result = new List<IFeature>();
 
-            foreach (var feature in features)
-            {
-                try
-                {
-                    result.Add(new Feature(feature.Key, toggleDeserializer.Deserializer(feature.Value)));
-                    logger?.Info($"FeatureOne, Action='StorageProvider.Get', Feature='{feature.Key}', Message='Reterieved Success'");
-                }
-                catch (Exception ex)
-                {
-                    logger?.Error($"FeatureOne, Action='StorageProvider.Get', Feature='{feature.Key}', Toggle='{feature.Value}' Exception='{ex}'.");
-                }
-            }
+            foreach (var feature in features.Where(x => x.Toggle?.Conditions != null && x.Toggle.Conditions.Any()))
+                result.Add(feature);
 
             return result;
         }

@@ -9,6 +9,7 @@
     <ShowAsAssociation>
       <Property Name="Toggle" />
     </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="FeatureOne.Core.Toggles.Conditions.SimpleCondition">
     <Position X="12" Y="4.75" Width="1.5" />
@@ -24,7 +25,7 @@
       <HashCode>AAAAIAAAAAAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>Core\Toggles\Conditions\RegexCondition.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.61" />
+    <Lollipop Position="0.603" Collapsed="true" />
   </Class>
   <Class Name="FeatureOne.Core.Toggle">
     <Position X="8.25" Y="3.25" Width="1.5" />
@@ -38,68 +39,31 @@
     <Lollipop Position="0.7" />
   </Class>
   <Class Name="FeatureOne.Features">
-    <Position X="4.25" Y="7.75" Width="1.5" />
+    <Position X="4.25" Y="6.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AgAAAAAAAAAAAQAAAAGAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <HashCode>AgAAAAAAAAAAAQACAAGAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Features.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="featureStore" />
-      <Field Name="Configuration" />
+      <Field Name="logger" />
     </ShowAsAssociation>
   </Class>
   <Class Name="FeatureOne.Core.Stores.FeatureStore">
-    <Position X="7" Y="8.5" Width="1.75" />
-    <AssociationLine Name="Configuration" Type="FeatureOne.Configuration" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="8.75" Y="8.938" />
-        <Point X="9.705" Y="8.938" />
-        <Point X="9.705" Y="6.145" />
-        <Point X="8.5" Y="6.145" />
-      </Path>
-    </AssociationLine>
-    <AssociationLine Name="toggleDeserializer" Type="FeatureOne.Core.Stores.IToggleDeserializer" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="7.875" Y="9.988" />
-        <Point X="7.875" Y="10.622" />
-        <Point X="7.875" Y="10.622" />
-        <Point X="7.875" Y="10.75" />
-      </Path>
+    <Position X="6.5" Y="5.25" Width="1.75" />
+    <AssociationLine Name="storageProvider" Type="FeatureOne.Core.Stores.IStorageProvider">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.426" Y="0.311" />
+      </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAAggAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAgAAAAAAAAAAACAAA=</HashCode>
       <FileName>Core\Stores\FeatureStore.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="storeProvider" />
-      <Field Name="Configuration" />
-      <Field Name="toggleDeserializer" />
+      <Field Name="storageProvider" />
     </ShowAsAssociation>
-    <Lollipop Position="0.547" />
-  </Class>
-  <Class Name="FeatureOne.Configuration">
-    <Position X="7" Y="5.75" Width="1.5" />
-    <AssociationLine Name="Logger" Type="FeatureOne.IFeatureLogger" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="7.75" Y="5.75" />
-        <Point X="7.75" Y="5.375" />
-        <Point X="5.75" Y="5.375" />
-      </Path>
-    </AssociationLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAIAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Configuration.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Logger" />
-    </ShowAsAssociation>
-  </Class>
-  <Class Name="FeatureOne.Core.Stores.ToggleDeserializer">
-    <Position X="7" Y="12.25" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Core\Stores\ToggleDeserializer.cs</FileName>
-    </TypeIdentifier>
+    <Lollipop Position="0.547" Collapsed="true" />
   </Class>
   <Interface Name="FeatureOne.Core.ICondition">
     <Position X="11" Y="3.25" Width="1.5" />
@@ -123,31 +87,24 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="FeatureOne.IFeatureStore" Collapsed="true">
-    <Position X="7" Y="7.5" Width="1.5" />
+    <Position X="4.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAgAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IFeatureStore.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="FeatureOne.Core.Stores.IStoreProvider">
-    <Position X="11.5" Y="8.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Core\Stores\IStoreProvider.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="FeatureOne.Core.Stores.IToggleDeserializer">
-    <Position X="7" Y="10.75" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Core\Stores\IToggleDeserializer.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="FeatureOne.IFeatureLogger" Collapsed="true">
-    <Position X="4.25" Y="5.25" Width="1.5" />
+    <Position X="2" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAYAAAAAAAAAAAAAAAAEAAAAAAEAAAAA=</HashCode>
       <FileName>IFeatureLogger.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="FeatureOne.Core.Stores.IStorageProvider" Collapsed="true">
+    <Position X="6.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Core\Stores\IStorageProvider.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

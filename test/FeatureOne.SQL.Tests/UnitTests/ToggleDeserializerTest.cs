@@ -1,11 +1,11 @@
-﻿using FeatureOne.Core;
-using FeatureOne.Core.Stores;
+using FeatureOne.Core;
 using FeatureOne.Core.Toggles.Conditions;
+using FeatureOne.SQL;
 
-namespace FeatureOne.Tests.Stores
+namespace FeatureOne.SQL.Tests.UnitTests
 {
     [TestFixture]
-    internal class ToggleDeserializerTests
+    internal class ToggleDeserializerTest
     {
         [Test]
         public void TestDeSerialize()
@@ -13,7 +13,7 @@ namespace FeatureOne.Tests.Stores
             var deserializer = new ToggleDeserializer();
 
             var toggle = deserializer
-                .Deserializer("{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}");
+                .Deserialize("{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}");
 
             Assert.That(toggle.Operator, Is.EqualTo(Operator.All));
             Assert.That(toggle.Conditions.Length, Is.EqualTo(2));
@@ -23,6 +23,7 @@ namespace FeatureOne.Tests.Stores
                 Assert.IsInstanceOf<SimpleCondition>(toggle.Conditions[0]);
                 Assert.That(((SimpleCondition)toggle.Conditions[0]).IsEnabled, Is.EqualTo(false));
             });
+
             Assert.Multiple(() =>
             {
                 Assert.IsInstanceOf<RegexCondition>(toggle.Conditions[1]);

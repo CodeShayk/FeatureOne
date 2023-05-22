@@ -1,4 +1,4 @@
-﻿using FeatureOne.Core;
+using FeatureOne.Core;
 using FeatureOne.Core.Stores;
 using FeatureOne.Core.Toggles.Conditions;
 using Moq;
@@ -18,20 +18,20 @@ namespace FeatureOne.Tests.Stores
         {
             logger = new Mock<IFeatureLogger>();
             storeProvider = new Mock<IStorageProvider>();
-            storeProvider.Setup(x => x.Get())
+            storeProvider.Setup(x => x.GetByName(It.IsAny<string>()))
                 .Returns(new[]
                 {
-                    new KeyValuePair<string,string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
-                    new KeyValuePair<string,string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
-                });
+                    new  Feature("feature-01",new Toggle(Operator.Any, new[]{ new SimpleCondition{IsEnabled=true}})),
+                    new  Feature("feature-02",new Toggle(Operator.All, new SimpleCondition { IsEnabled = false }, new RegexCondition{Claim="email", Expression= "*@gbk.com" }))
+              });
 
             featureStore = new FeatureStore(storeProvider.Object, logger.Object);
         }
 
         [Test]
-        public void TestGetAllToReturnCorrectFeaturesConfiguredStoreInProvider()
+        public void TestFindToReturnCorrectFeaturesConfiguredStoreInProvider()
         {
-            var features = featureStore.GetAll();
+            var features = featureStore.FindStartsWith("feature");
 
             Assert.That(features.Count(), Is.EqualTo(2));
 
@@ -63,16 +63,16 @@ namespace FeatureOne.Tests.Stores
         }
 
         [Test]
-        public void TestGetAllToReturnAnyDeserializedFeaturesInStoreProvideAndLogErrorsForFailures()
+        public void TestFindToReturnAnyDeserializedFeaturesInStoreProvideAndLogErrorsForFailures()
         {
-            storeProvider.Setup(x => x.Get())
+            storeProvider.Setup(x => x.GetByName(It.IsAny<string>()))
                .Returns(new[]
                {
-                    new KeyValuePair<string,string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
-                    new KeyValuePair<string,string>("feature-02", "Invalid Toggle String")
-               });
+                    new  Feature("feature-01",new Toggle(Operator.Any, new[]{ new SimpleCondition{IsEnabled=true}})),
+                    new  Feature("feature-02",new Toggle(Operator.All, null))
+                 });
 
-            var features = featureStore.GetAll();
+            var features = featureStore.FindStartsWith("feature");
 
             Assert.That(features.Count(), Is.EqualTo(1));
 
@@ -85,19 +85,6 @@ namespace FeatureOne.Tests.Stores
                 Assert.IsInstanceOf<SimpleCondition>(feature01.Toggle.Conditions[0]);
                 Assert.That(((SimpleCondition)feature01.Toggle.Conditions[0]).IsEnabled, Is.EqualTo(true));
             });
-
-            logger.Verify(x => x.Error(It.Is<string>(msg => msg.Contains("feature-02"))), Times.Once());
-        }
-    }
-
-    public class CustomStoreProvider : IStorageProvider
-    {
-        public IEnumerable<KeyValuePair<string, string>> Get()
-        {
-            return new[] {
-                    new KeyValuePair<string, string>("feature-01", "{\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": true}]}"),
-                    new KeyValuePair<string, string>("feature-02", "{\"operator\":\"all\",\"conditions\":[{\"type\":\"Simple\",\"isEnabled\": false}, {\"type\":\"RegexCondition\",\"claim\":\"email\",\"expression\":\"*@gbk.com\"}]}")
-                };
         }
     }
 }

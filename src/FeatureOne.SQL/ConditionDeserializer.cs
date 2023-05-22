@@ -5,10 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using FeatureOne.Core;
 
-namespace FeatureOne.Core.Stores
+namespace FeatureOne.SQL
 {
-    public static class ConditionFactory
+    internal class ConditionDeserializer : IConditionDeserializer
     {
         private static Type[] loaddedTypes;
 
@@ -17,32 +18,36 @@ namespace FeatureOne.Core.Stores
             get
             {
                 if (loaddedTypes == null || loaddedTypes.Length == 0)
-                    loaddedTypes = Assembly.GetExecutingAssembly().GetTypes();
+                    loaddedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                        .Where(p => typeof(ICondition).IsAssignableFrom(p)).ToArray();
 
                 return loaddedTypes;
             }
         }
 
-        public static ICondition Create(JsonObject JsonObject)
+        public ICondition Deserialize(JsonObject condition)
         {
-            if (JsonObject == null)
-                throw new ArgumentNullException(nameof(JsonObject));
+            if (condition == null)
+                throw new ArgumentNullException(nameof(condition));
 
-            var typeName = JsonObject?["type"]?.ToString();
+            var typeName = condition?["type"]?.ToString();
 
             var toggle = CreateInstance(new NamePostFix(typeName, "Condition"));
 
-            HydrateToggle(toggle, JsonObject);
+            HydrateToggle(toggle, condition);
 
             return toggle;
         }
 
-        public static ICondition[] Create(JsonObject[] conditions)
+        private static ICondition CreateInstance(NamePostFix conditionName)
         {
-            if (conditions == null)
-                throw new ArgumentNullException(nameof(conditions));
+            var type = LoaddedTypes
+                .FirstOrDefault(p => typeof(ICondition).IsAssignableFrom(p) && p.Name.Equals(conditionName.Name, StringComparison.OrdinalIgnoreCase));
 
-            return conditions.Select(s => Create(s)).ToArray();
+            if (type == null)
+                throw new Exception($"Could not find a toggle type for: '{conditionName.Name}'");
+
+            return (ICondition)Activator.CreateInstance(type, true);
         }
 
         private static void HydrateToggle(ICondition toggleCondition, JsonObject state)
@@ -74,17 +79,6 @@ namespace FeatureOne.Core.Stores
                 .ToArray();
 
             return propertyInfos;
-        }
-
-        private static ICondition CreateInstance(NamePostFix conditionName)
-        {
-            var type = LoaddedTypes
-                .FirstOrDefault(p => typeof(ICondition).IsAssignableFrom(p) && p.Name.Equals(conditionName.Name, StringComparison.OrdinalIgnoreCase));
-
-            if (type == null)
-                throw new Exception($"Could not find a toggle type for: '{conditionName.Name}'");
-
-            return (ICondition)Activator.CreateInstance(type, true);
         }
     }
 }

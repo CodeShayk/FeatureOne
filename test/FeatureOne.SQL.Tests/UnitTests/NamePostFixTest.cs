@@ -1,6 +1,4 @@
-﻿using FeatureOne.Core;
-
-namespace FeatureOne.Tests.Toggles
+namespace FeatureOne.SQL.Tests.UnitTests
 {
     [TestFixture]
     public class NamePostFixTest

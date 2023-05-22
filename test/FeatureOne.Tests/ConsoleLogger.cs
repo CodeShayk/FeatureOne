@@ -1,4 +1,4 @@
-﻿namespace FeatureOne.Tests.Registeration
+namespace FeatureOne.Tests
 {
     public class ConsoleLogger : IFeatureLogger
     {
