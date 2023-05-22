@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Runtime.Caching;
 using FeatureOne.Core;
 using FeatureOne.Core.Stores;
 
@@ -22,12 +21,12 @@ namespace FeatureOne.SQL.StorageProvider
             this.cache = cache ?? new FeatureCache();
         }
 
-        internal SQLStorageProvider(IDbRepository repository, IToggleDeserializer deserializer, ICache cache)
+        public SQLStorageProvider(IDbRepository repository, IToggleDeserializer deserializer, ICache cache, CacheSettings cacheSettings)
         {
             this.repository = repository;
             this.deserializer = deserializer;
             this.cache = cache;
-            this.cacheSettings = new CacheSettings();
+            this.cacheSettings = cacheSettings ?? new CacheSettings();
         }
 
         public IFeature[] GetByName(string name)

@@ -17,8 +17,8 @@
     <Authors>ninja.shayk</Authors>
     <Company>Ninja.Sha!4H</Company>
     <Product>FeatureOne</Product>
-    <Description>.Net library to implement feature toggles using SQL backend.</Description>
-    <Copyright>2023</Copyright>
+    <Description>.Net library to implement feature toggles with SQL backend.</Description>
+    <Copyright>Copyright (c) 2023 Ninja Sha!4h</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/NinjaRocks/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -27,13 +27,15 @@
     <PackageLicenseFile>License.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v2.0.0. - Breaking changes to previous release.
+      Release Notes v2.0.0. - SQL Storage Provider 
       Core Functionality :-
-      - Contract changes to IStorageProvider - Get() method returns array of IFeature type.
-      - To Implement Feature Toggles to hide/show program features.
-      - Provides Out of box Simple and Regex toggle conditions .
-      - Provides extensibility to implement custom toggle conditions for any bespoke use case.
-      - Provides extensibility to implement backend storage. No Backend storage exists by default.
+      Added support for SQL storage provider for Feature Toggle.
+       - Supports MSSQL, SQLite, ODBC, OLEDB, MySQL, PostgreSQL Db providers.
+       - Provides memory caching - enabled via configuration.
+       - Added extensibility for Custom implementations-
+          - Provides extension point to support more SQL providers.
+          - Provides extenion point for custom caching.
+          - Provides extension point for custom deserializer for Toggle Conditions.
     </PackageReleaseNotes>
   </PropertyGroup>
 

@@ -41,7 +41,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
             Assert.IsNotNull(provider.deserializer);
             Assert.IsNotNull(provider.cache);
 
-            provider = new SQLStorageProvider(new Mock<IDbRepository>().Object, new Mock<IToggleDeserializer>().Object, new Mock<ICache>().Object);
+            provider = new SQLStorageProvider(new Mock<IDbRepository>().Object, new Mock<IToggleDeserializer>().Object, new Mock<ICache>().Object, null);
 
             Assert.IsNotNull(provider.cacheSettings);
             Assert.That(provider.cacheSettings, Is.Not.EqualTo(cacheSettings));
@@ -59,9 +59,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
             repository.Setup(x => x.GetByName("Foo")).Returns(new[] { new DbRecord { Name = "Foo", Toggle = "Toggle" } });
 
             var deserializer = new Mock<IToggleDeserializer>();
-            var provider = new SQLStorageProvider(repository.Object, deserializer.Object, cache.Object);
-
-            provider.cacheSettings = new CacheSettings();
+            var provider = new SQLStorageProvider(repository.Object, deserializer.Object, cache.Object, new CacheSettings());
 
             var result = provider.GetByName("Foo");
 
@@ -81,9 +79,9 @@ namespace FeatureOne.SQL.Tests.UnitTests
 
             repository.Setup(x => x.GetByName("Foo")).Returns(dbRecords);
             var deserializer = new Mock<IToggleDeserializer>();
-            var provider = new SQLStorageProvider(repository.Object, deserializer.Object, cache.Object);
+            var cacheSettings = new CacheSettings { EnableCache = true, ExpiryInMinutes = 4 };
 
-            provider.cacheSettings = new CacheSettings { EnableCache = true, ExpiryInMinutes = 4 };
+            var provider = new SQLStorageProvider(repository.Object, deserializer.Object, cache.Object, cacheSettings);
 
             var result = provider.GetByName("Foo");
 
