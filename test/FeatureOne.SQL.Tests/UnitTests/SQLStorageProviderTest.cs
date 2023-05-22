@@ -1,4 +1,3 @@
-using System.Runtime.Caching;
 using FeatureOne.SQL.StorageProvider;
 using Moq;
 

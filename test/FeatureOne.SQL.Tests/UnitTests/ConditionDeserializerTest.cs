@@ -1,6 +1,5 @@
-using FeatureOne.Core.Toggles.Conditions;
-using FeatureOne.SQL;
 using System.Text.Json.Nodes;
+using FeatureOne.Core.Toggles.Conditions;
 
 namespace FeatureOne.SQL.Tests.UnitTests
 {
