@@ -1,4 +1,4 @@
-﻿using FeatureOne.Core;
+using FeatureOne.Core;
 using Moq;
 
 namespace FeatureOne.Test

@@ -17,7 +17,7 @@
     <Authors>ninja.shayk</Authors>
     <Company>Ninja.Sha!4H</Company>
     <Product>FeatureOne</Product>
-    <Description>.Net library to implement feature toggles.</Description>
+    <Description>.Net library to implement feature toggles (no storage backend).</Description>
     <Copyright>Copyright (c) 2023 Ninja Sha!4h</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/NinjaRocks/FeatureOne</RepositoryUrl>

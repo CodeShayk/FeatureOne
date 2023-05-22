@@ -1,5 +1,5 @@
-﻿using Moq;
 using System.Security.Claims;
+using Moq;
 
 namespace FeatureOne.Tests
 {

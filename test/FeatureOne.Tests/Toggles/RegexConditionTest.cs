@@ -1,4 +1,4 @@
-﻿using FeatureOne.Core.Toggles.Conditions;
+using FeatureOne.Core.Toggles.Conditions;
 
 namespace FeatureOne.Test.Toggles
 {

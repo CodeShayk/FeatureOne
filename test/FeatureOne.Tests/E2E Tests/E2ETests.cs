@@ -1,5 +1,5 @@
-using FeatureOne.Core.Stores;
 using System.Security.Claims;
+using FeatureOne.Core.Stores;
 
 namespace FeatureOne.Tests.Registeration
 {
