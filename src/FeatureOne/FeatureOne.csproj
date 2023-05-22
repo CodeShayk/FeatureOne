@@ -14,7 +14,7 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>FeatureOne</Title>
-    <Authors>najaf.shayk</Authors>
+    <Authors>ninja.shayk</Authors>
     <Company>Ninja.Sha!4H</Company>
     <Product>FeatureOne</Product>
     <Description>.Net library to implement feature toggles.</Description>
@@ -53,3 +53,4 @@
   </ItemGroup>
 
 </Project>
+
