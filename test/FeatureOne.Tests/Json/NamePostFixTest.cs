@@ -1,4 +1,6 @@
-namespace FeatureOne.SQL.Tests.UnitTests
+using FeatureOne.Json;
+
+namespace FeatureOne.Tests.Json
 {
     [TestFixture]
     public class NamePostFixTest

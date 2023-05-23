@@ -7,7 +7,7 @@ namespace FeatureOne.Tests
             Console.WriteLine(message);
         }
 
-        public void Error(string message)
+        public void Error(string message, Exception e)
         {
             Console.WriteLine(message);
         }

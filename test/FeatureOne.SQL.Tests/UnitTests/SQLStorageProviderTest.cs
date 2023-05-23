@@ -1,3 +1,6 @@
+using System.Runtime.Caching;
+using FeatureOne.Cache;
+using FeatureOne.Json;
 using FeatureOne.SQL.StorageProvider;
 using Moq;
 
@@ -24,7 +27,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
             Assert.IsNotNull(provider.deserializer);
             Assert.IsNotNull(provider.cache);
 
-            provider = new SQLStorageProvider(configuration, new Mock<IFeatureLogger>().Object);
+            provider = new SQLStorageProvider(configuration);
 
             Assert.IsNotNull(provider.cacheSettings);
             Assert.That(provider.cacheSettings, Is.EqualTo(cacheSettings));
@@ -32,7 +35,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
             Assert.IsNotNull(provider.deserializer);
             Assert.IsNotNull(provider.cache);
 
-            provider = new SQLStorageProvider(new SQLConfiguration(), new Mock<IFeatureLogger>().Object, new Mock<ICache>().Object, new Mock<IConditionDeserializer>().Object);
+            provider = new SQLStorageProvider(new SQLConfiguration(), new Mock<ICache>().Object, new Mock<IConditionDeserializer>().Object);
 
             Assert.IsNotNull(provider.cacheSettings);
             Assert.That(provider.cacheSettings, Is.Not.EqualTo(cacheSettings));
@@ -66,7 +69,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
             deserializer.Verify(x => x.Deserialize(It.IsAny<string>()), Times.Once());
 
             cache.Verify(x => x.Get(It.IsAny<string>()), Times.Never());
-            cache.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<int>()), Times.Never());
+            cache.Verify(x => x.Add(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<CacheItemPolicy>()), Times.Never());
         }
 
         [Test]
@@ -78,7 +81,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
 
             repository.Setup(x => x.GetByName("Foo")).Returns(dbRecords);
             var deserializer = new Mock<IToggleDeserializer>();
-            var cacheSettings = new CacheSettings { EnableCache = true, ExpiryInMinutes = 4 };
+            var cacheSettings = new CacheSettings { EnableCache = true, Expiry = new CacheExpiry { InMinutes = 4 } };
 
             var provider = new SQLStorageProvider(repository.Object, deserializer.Object, cache.Object, cacheSettings);
 
@@ -88,7 +91,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
             deserializer.Verify(x => x.Deserialize(It.IsAny<string>()), Times.Once());
 
             cache.Verify(x => x.Get("Foo"), Times.Once());
-            cache.Verify(x => x.Add("Foo", dbRecords, 4), Times.Once());
+            cache.Verify(x => x.Add("Foo", dbRecords, It.IsAny<CacheItemPolicy>()), Times.Once());
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace FeatureOne.SQL
+namespace FeatureOne.Json
 {
     public class NamePostFix
     {

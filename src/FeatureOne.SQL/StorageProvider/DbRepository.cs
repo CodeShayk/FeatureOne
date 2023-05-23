@@ -15,12 +15,10 @@ namespace FeatureOne.SQL.StorageProvider
     internal class DbRepository : IDbRepository
     {
         private readonly SQLConfiguration sqlConfiguration;
-        private readonly IFeatureLogger logger;
 
-        public DbRepository(SQLConfiguration sqlConfiguration, IFeatureLogger logger)
+        public DbRepository(SQLConfiguration configuration)
         {
-            this.sqlConfiguration = sqlConfiguration ?? throw new ArgumentNullException(nameof(SQLConfiguration));
-            this.logger = logger;
+            this.sqlConfiguration = configuration ?? throw new ArgumentNullException(nameof(SQLConfiguration));
 
             var names = DbProviderFactories.GetProviderInvariantNames();
 
@@ -46,52 +44,34 @@ namespace FeatureOne.SQL.StorageProvider
         public DbRecord[] GetByName(string name)
         {
             var dbRecords = new List<DbRecord>();
-            try
+
+            var factory = DbProviderFactories.GetFactory(sqlConfiguration.ConnectionSettings.ProviderName);
+
+            if (factory == null)
+                throw new InvalidOperationException($"Provider: {sqlConfiguration.ConnectionSettings.ProviderName} is not supported. Please register entry in DbProviderFactories ");
+
+            using (var connection = factory.CreateConnection())
             {
-                var factory = DbProviderFactories.GetFactory(sqlConfiguration.ConnectionSettings.ProviderName);
+                connection.ConnectionString = sqlConfiguration.ConnectionSettings.ConnectionString;
 
-                if (factory == null)
-                    throw new InvalidOperationException($"Provider: {sqlConfiguration.ConnectionSettings.ProviderName} is not supported. Please register entry in DbProviderFactories ");
+                connection.Open();
 
-                using (var connection = factory.CreateConnection())
+                using (var command = connection.CreateCommand())
                 {
-                    connection.ConnectionString = sqlConfiguration.ConnectionSettings.ConnectionString;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = sqlConfiguration.FeatureTable.CreateSQL(name);
 
-                    connection.Open();
-                    try
-                    {
-                        using (var command = connection.CreateCommand())
-                        {
-                            command.CommandType = CommandType.Text;
-                            command.CommandText = sqlConfiguration.FeatureTable.CreateSQL(name);
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                        dbRecords.Add(new DbRecord { Name = reader.GetString(0), Toggle = reader.GetString(1) });
 
-                            var reader = command.ExecuteReader();
-                            while (reader.Read())
-                                dbRecords.Add(new DbRecord { Name = reader.GetString(0), Toggle = reader.GetString(1) });
-
-                            reader.Close();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        logger?.Error($"FeatureOne.SQL, Action='Repository.GetByName()', Exception='{e}'.");
-                    }
-                    finally
-                    {
-                        connection.Close();
-                    }
+                    reader.Close();
                 }
 
-                logger?.Error($"FeatureOne.SQL, Action='Repository.GetByName()', Success=Feature Count'{dbRecords.Count}'.");
-
-                return dbRecords.ToArray();
-            }
-            catch (Exception ex)
-            {
-                logger?.Error($"FeatureOne.SQL, Action='Repository.GetByName()', Exception='{ex}'.");
+                connection.Close();
             }
 
-            return Array.Empty<DbRecord>();
+            return dbRecords.ToArray();
         }
     }
 }

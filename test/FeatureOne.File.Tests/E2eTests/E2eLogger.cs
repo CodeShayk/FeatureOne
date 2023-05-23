@@ -1,10 +1,10 @@
-namespace FeatureOne.SQL.Tests.E2e
+namespace FeatureOne.File.Tests.E2eTests
 {
     internal class E2eLogger : IFeatureLogger
     {
         public void Debug(string message) => Console.WriteLine("Debug:" + message);
 
-        public void Error(string message) => Console.WriteLine("Error:" + message);
+        public void Error(string message, Exception e) => Console.WriteLine("Error:" + message + e.ToString());
 
         public void Info(string message) => Console.WriteLine("Info:" + message);
 

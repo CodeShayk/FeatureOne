@@ -17,26 +17,30 @@
     <Authors>ninja.shayk</Authors>
     <Company>Ninja.Sha!4H</Company>
     <Product>FeatureOne</Product>
-    <Description>.Net library to implement feature toggles (no storage backend).</Description>
+    <Description>.Net library to implement feature toggles (Need to implement storage backend).</Description>
     <Copyright>Copyright (c) 2023 Ninja Sha!4h</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/NinjaRocks/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; .netstandard2.1; featureOne</PackageTags>
-    <Version>2.0.0</Version>
+    <Version>2.0.4</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v2.0.0. - Breaking changes to previous release.
-      Core Functionality :-
-      - Contract changes to IStorageProvider - Get() method returns array of IFeature type.
+      Release Notes v2.0.4. Core Functionality :-
       - To Implement Feature Toggles to hide/show program features.
       - Provides Out of box Simple and Regex toggle conditions .
-      - Provides extensibility to implement custom toggle conditions for any bespoke use case.
-      - Provides extensibility to implement backend storage. No Backend storage exists by default.
+      - Provides extensibility for custom implementation
+          - to implement custom toggle conditions for any bespoke use case.
+          - to implement backend storage. No Backend storage exists by default.
     </PackageReleaseNotes>
     </PropertyGroup>
-
+  
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+  </ItemGroup>
+  
   <ItemGroup>
     <None Include="..\..\LICENSE.md">
       <Pack>True</Pack>

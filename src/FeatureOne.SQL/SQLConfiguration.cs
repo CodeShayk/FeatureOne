@@ -1,3 +1,5 @@
+using FeatureOne.Cache;
+
 namespace FeatureOne.SQL
 {
     public class SQLConfiguration
@@ -107,21 +109,5 @@ namespace FeatureOne.SQL
         /// Feature archived column name.
         /// </summary>
         public string ArchivedColumn { get; set; } = "Archived";
-    }
-
-    /// <summary>
-    /// Cache settings for storage provider.
-    /// </summary>
-    public class CacheSettings
-    {
-        /// <summary>
-        /// Use cache when true, default is false for no cache.
-        /// </summary>
-        public bool EnableCache { get; set; } = false;
-
-        /// <summary>
-        /// Cache item expiry value in minutes.
-        /// </summary>
-        public int ExpiryInMinutes { get; set; } = 60;
     }
 }

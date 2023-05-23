@@ -1,7 +1,7 @@
 using System.Text.Json.Nodes;
 using FeatureOne.Core;
 
-namespace FeatureOne.SQL
+namespace FeatureOne.Json
 {
     /// <summary>
     /// Implement to provide deserialization strategy of condition types.

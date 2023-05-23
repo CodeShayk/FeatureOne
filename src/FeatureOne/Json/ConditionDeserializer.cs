@@ -7,9 +7,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using FeatureOne.Core;
 
-namespace FeatureOne.SQL
+namespace FeatureOne.Json
 {
-    internal class ConditionDeserializer : IConditionDeserializer
+    public class ConditionDeserializer : IConditionDeserializer
     {
         private static Type[] loaddedTypes;
 

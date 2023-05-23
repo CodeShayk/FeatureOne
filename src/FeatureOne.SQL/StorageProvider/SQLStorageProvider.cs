@@ -1,22 +1,26 @@
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using FeatureOne.Cache;
 using FeatureOne.Core;
 using FeatureOne.Core.Stores;
+using FeatureOne.Json;
+
+[assembly: InternalsVisibleTo("FeatureOne.SQL.Tests")]
 
 namespace FeatureOne.SQL.StorageProvider
 {
     public class SQLStorageProvider : IStorageProvider
     {
-        internal IDbRepository repository;
-        internal IToggleDeserializer deserializer;
-        internal ICache cache;
+        internal readonly IDbRepository repository;
+        internal readonly IToggleDeserializer deserializer;
+        internal readonly ICache cache;
+        internal readonly CacheSettings cacheSettings;
 
-        internal CacheSettings cacheSettings;
-
-        public SQLStorageProvider(SQLConfiguration sqlConfiguration, IFeatureLogger logger = null, ICache cache = null, IConditionDeserializer conditionDeserializer = null)
+        public SQLStorageProvider(SQLConfiguration configuration, ICache cache = null, IConditionDeserializer conditionDeserializer = null)
         {
-            this.cacheSettings = sqlConfiguration?.CacheSettings ?? new CacheSettings();
-            this.repository = new DbRepository(sqlConfiguration, logger ?? new NullLogger());
+            this.cacheSettings = configuration?.CacheSettings ?? new CacheSettings();
+            this.repository = new DbRepository(configuration);
             this.deserializer = new ToggleDeserializer(conditionDeserializer ?? new ConditionDeserializer());
             this.cache = cache ?? new FeatureCache();
         }
@@ -24,13 +28,16 @@ namespace FeatureOne.SQL.StorageProvider
         public SQLStorageProvider(IDbRepository repository, IToggleDeserializer deserializer, ICache cache, CacheSettings cacheSettings)
         {
             this.repository = repository;
-            this.deserializer = deserializer;
-            this.cache = cache;
+            this.deserializer = deserializer ?? new ToggleDeserializer(new ConditionDeserializer());
+            this.cache = cache ?? new FeatureCache();
             this.cacheSettings = cacheSettings ?? new CacheSettings();
         }
 
         public IFeature[] GetByName(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name));
+
             DbRecord[] dbFeatures = null;
 
             if (cacheSettings.EnableCache)
@@ -40,7 +47,10 @@ namespace FeatureOne.SQL.StorageProvider
                 dbFeatures = repository.GetByName(name);
 
             if (cacheSettings.EnableCache)
-                cache.Add(name, dbFeatures, cacheSettings.ExpiryInMinutes);
+            {
+                var policy = cacheSettings.Expiry.GetPolicy();
+                cache.Add(name, dbFeatures, policy);
+            }
 
             return dbFeatures != null && dbFeatures.Any()
                 ? dbFeatures.Where(x => !string.IsNullOrEmpty(x.Toggle)).Select(f => new Feature(f.Name, deserializer.Deserialize(f.Toggle))).ToArray()

@@ -1,6 +1,6 @@
 using FeatureOne.Core;
 
-namespace FeatureOne.SQL
+namespace FeatureOne.Json
 {
     public interface IToggleDeserializer
     {
