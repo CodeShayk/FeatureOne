@@ -7,10 +7,11 @@
 > #### Nuget Packages
 > ---
 > `FeatureOne` - Provides core funtionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. Please see below for more details.
->  
->`FeatureOne.SQL` - Provides SQL storage provider for implementing feature toggles using `SQL` backend.
-
->`FeatureOne.File` - Provides File storage provider for implementing feature toggles using `File System` backend.
+>
+> Backend Storage Providers
+>i. `FeatureOne.SQL` - Provides SQL storage provider for implementing feature toggles using `SQL` backend.
+>
+>ii. `FeatureOne.File` - Provides File storage provider for implementing feature toggles using `File System` backend.
 
 ## Concept
 ### What is a feature toggle?
