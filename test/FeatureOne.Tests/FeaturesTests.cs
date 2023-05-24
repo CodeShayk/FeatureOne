@@ -69,7 +69,7 @@ namespace FeatureOne.Tests
 
             Assert.That(output, Is.EqualTo(false));
 
-            logger.Verify(x => x.Error(It.Is<string>(msg => msg.Contains(featureName))));
+            logger.Verify(x => x.Error(It.Is<string>(msg => msg.Contains(featureName)), It.IsAny<Exception>()));
         }
     }
 }

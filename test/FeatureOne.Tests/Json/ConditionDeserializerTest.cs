@@ -1,7 +1,8 @@
 using System.Text.Json.Nodes;
 using FeatureOne.Core.Toggles.Conditions;
+using FeatureOne.Json;
 
-namespace FeatureOne.SQL.Tests.UnitTests
+namespace FeatureOne.Tests.Json
 {
     [TestFixture]
     public sealed class ConditionDeserializerTest

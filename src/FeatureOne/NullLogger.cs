@@ -1,4 +1,6 @@
-﻿namespace FeatureOne
+using System;
+
+namespace FeatureOne
 {
     public class NullLogger : IFeatureLogger
     {
@@ -11,7 +13,7 @@
         public void Warn(string message)
         { }
 
-        public void Error(string message)
+        public void Error(string message, Exception ex)
         { }
     }
 }

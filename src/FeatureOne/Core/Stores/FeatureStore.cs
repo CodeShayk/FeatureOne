@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,19 +21,28 @@ namespace FeatureOne.Core.Stores
 
         public IEnumerable<IFeature> FindStartsWith(string name)
         {
-            var features = storageProvider.GetByName(name);
-            if (features == null || !features.Any())
+            try
             {
-                logger?.Info($"FeatureOne, Action='StorageProvider.Get', Message='Retrieved Features list was empty.'");
-                return Enumerable.Empty<IFeature>();
+                var features = storageProvider.GetByName(name);
+                if (features == null || !features.Any())
+                {
+                    logger?.Info($"FeatureOne, Action='StorageProvider.Get', Message='Retrieved Features list was empty.'");
+                    return Enumerable.Empty<IFeature>();
+                }
+
+                var result = new List<IFeature>();
+
+                foreach (var feature in features.Where(x => x.Toggle?.Conditions != null && x.Toggle.Conditions.Any()))
+                    result.Add(feature);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger?.Error($"FeatureOne, Action='StorageProvider.Get'", ex);
             }
 
-            var result = new List<IFeature>();
-
-            foreach (var feature in features.Where(x => x.Toggle?.Conditions != null && x.Toggle.Conditions.Any()))
-                result.Add(feature);
-
-            return result;
+            return Enumerable.Empty<IFeature>();
         }
     }
 }

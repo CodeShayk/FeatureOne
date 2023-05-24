@@ -1,4 +1,4 @@
-# <img src="https://github.com/NinjaRocks/FeatureOne/blob/master/ninja-icon-16.png" alt="ninja" style="width:30px;"/> FeatureOne v2.0.0
+# <img src="https://github.com/NinjaRocks/FeatureOne/blob/master/ninja-icon-16.png" alt="ninja" style="width:30px;"/> FeatureOne v2.0.4
 [![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/NinjaRocks/FeatureOne/blob/master/License.md) [![CI](https://github.com/NinjaRocks/FeatureOne/actions/workflows/CI-Build.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/CI-Build.yml) [![GitHub Release](https://img.shields.io/github/v/release/ninjarocks/FeatureOne?logo=github&sort=semver)](https://github.com/ninjarocks/FeatureOne/releases/latest)
 [![CodeQL](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml) [![.Net Stardard](https://img.shields.io/badge/.Net%20Standard-2.1-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/2.1)
 
@@ -7,8 +7,12 @@
 > #### Nuget Packages
 > ---
 > `FeatureOne` - Provides core funtionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. Please see below for more details.
->
->`FeatureOne.SQL` - Provides FeatureOne funtionality to implement feature toggles using `SQL` Storage backend.
+>  
+>`FeatureOne.SQL` - Provides SQL storage provider for implementing feature toggles using `SQL` backend.
+
+>`FeatureOne.File` - Provides File storage provider for implementing feature toggles using `File System` backend.
+
+## Concept
 ### What is a feature toggle?
 > Feature toggle is a mechanism that allows code to be turned “on” or “off” remotely without the need for a deploy. Feature toggles are commonly used in applications to gradually roll out new features, allowing teams to test changes on a small subset of users before releasing them to everyone.
 
@@ -221,6 +225,7 @@ Example below shows sample implementation of a custom condition.
    }
 ```
  Example usage of above condition in toggle to allow non-admin users access to a feature only after 12 hrs.
+
  C# representation of the feature is
 
 ```
@@ -259,6 +264,9 @@ JSON Serialized representation is
   }
 
 ```
+
+`Please Note` Any custom condition implementation should only include `primitive type` properties to work with `default` ICondition `deserialization`. When you need to implement a much complex toggle condition with `non-primitive` properties then you need to provide `custom` implementation of `IConditionDeserializer` to support its deserialization to toggle condition object.
+
 ### ii. Logger
 You could optionally provide an implementation of a logger by wrapping your favourite logging libaray under `IFeatureLogger` interface. 
 Please see the interface definition below.
@@ -279,7 +287,8 @@ Please see the interface definition below.
         /// Implement the error log method
         /// </summary>
         /// <param name="message">log message</param>
-        void Error(string message);
+        /// <param name="message">exception</param>
+        void Error(string message, Exception ex = null);
 
         /// <summary>
         /// Implement the info log method
@@ -295,11 +304,11 @@ Please see the interface definition below.
     }
 ```
 ## FeatureOne.SQL - Feature toggles with SQL Backend.
-In addition to all above offerings, the FeatureOne.SQL package provides out of box SQL storage provider.
+In addition to all FeatureOne offerings, the `FeatureOne.SQL` package provides out of box SQL storage provider.
 
 SQL support can easily be installed as a separate nuget package.
 ```
-$ dotnet add package FeatureOne.SQL --version 2.0.0
+$ dotnet add package FeatureOne.SQL --version {latest}
 ```
 Supports Db Providers `MSSQL: System.Data.SqlClient`, `ODBC: System.Data.Odbc`, `OLEDB: System.Data.OleDb`, `SQLite: System.Data.SQLite`, `MySQL: MySql.Data.MySqlClient` & `PostgreSQL: Npgsql`.
 
@@ -329,30 +338,39 @@ Please see example entries below.
 | dashboard_widget  |{ "conditions":[{ "type":"Simple", "isEnabled": true }] }  | false |
 |pen_test_dashboard| { "operator":"any", "conditions":[{ "type":"simple", "isEnabled":false}, { "type":"Regex", "claim":"email","expression":"^[a-zA-Z0-9_.+-]+@gbk.com" }]} | false|
 
-`Please Note` Any custom condition implementation should only include `primitive type` properties to work with `default` ICondition `deserialization`. When you need to implement a much complex toggle condition with `non-primitive` properties then you need to provide `custom` implementation of `IConditionDeserializer` to support its deserialization to toggle condition object.
-
 ### Bootstrap initialization
 > See below bootstrap initialization for FeatureOne with SQL backend.
+
+
 #### SQL Configuration - Set connection string and other settings.
 ```
     var sqlConfiguration = new SQLConfiguration
     {
+        // provider specific connection settings.
         ConnectionSettings = new ConnectionSettings
         {
-            Providername = DbProviderName.MSSql, // provider Name for DbFactory registration.
+            Providername = DbProviderName.MSSql, 
             ConnectionString ="Data Source=Powerstation; Initial Catalog=Features; Integrated Security=SSPI;"            
         },
+
+        // Table and column name overrides.
         FeatureTable = new FeatureTable
         {
-            TableName = "[Features].[dbo].[TFeatures]",  // Table and column name overrides.
+            TableName = "[Features].[dbo].[TFeatures]",  
             NameColumn = "[Name]",
             ToggleColumn = "[Toggle]",
             ArchivedColumn = "[Archived]"
         },
+
+        // Enable cache with absolute expiry in Minutes.
         CacheSettings = new CacheSettings 
         {
-            EnableCache = true,  // Enable cache with absolute expiry in Minutes.
-            ExpiryInMinutes = 60
+            EnableCache = true,  
+            Expiry = new CacheExpiry
+            {
+                InMinutes = 60,
+                Type = CacheExpiryType.Absolute
+            }
         }
     }
 ```
@@ -374,10 +392,95 @@ iii. With other overloads - Custom cache and Toggle Condition deserializer.
     var toggleConditionDeserializer = CustomConditionDeserializerImpl(); // Implements IConditionDeserializer 
     var featureCache = CustomFeatureCache(); // Implements ICache
 
-    var storageProvider = new SQlStorageProvider(sqlConfiguration, logger, featureCache, toggleConditionDeserializer);
+    var storageProvider = new SQlStorageProvider(sqlConfiguration, featureCache, toggleConditionDeserializer);
 
     Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
 ```
+
+## FeatureOne.File - Feature toggles with File system Backend.
+In addition to all FeatureOne offerings, the `FeatureOne.File` package provides out of box File storage provider.
+
+File support can easily be installed as a separate nuget package.
+```
+$ dotnet add package FeatureOne.File --version {latest}
+```
+### File Setup
+> Requires creating a feature file with JSON feature toggles as shown below.
+
+File - `Features.json`
+```
+{
+	"gbk_dashboard": {
+		"toggle": {
+			"operator": "any",
+			"conditions": [{
+					"type": "simple",
+					"isEnabled": false
+				},
+				{
+					"type": "Regex",
+					"claim": "email",
+					"expression": "^[a-zA-Z0-9_.+-]+@gbk.com"
+				}
+			]
+		}
+	},
+	"dashboard_widget": {
+		"toggle": {
+			"conditions": [{
+				"type": "simple",
+				"isEnabled": true
+			}]
+		}
+	}
+}
+```
+### Bootstrap initialization
+> See below bootstrap initialization for FeatureOne with SQL backend.
+
+
+#### File Configuration - Set file path string and cache settings.
+```
+    var configuration = new FileConfiguration
+    {
+        // Absolute path to the feature file.
+        FilePath ="C:\Work\Features.json",
+        
+        // Enable cache with absolute expiry in Minutes.
+        CacheSettings = new CacheSettings 
+        {
+            EnableCache = true,  
+            Expiry = new CacheExpiry
+            {
+                InMinutes = 60,
+                Type = CacheExpiryType.Absolute
+            }
+        }
+    }
+```
+i. With File configuration. 
+```
+   var storageProvider = new FileStorageProvider(configuration);
+   Features.Initialize(() => new Features(new FeatureStore(configuration)));
+```
+ii. With Custom logger implementation, default is no logger.
+```
+    var logger = new CustomLoggerImpl();
+    var storageProvider = new FileStorageProvider(configuration, logger);
+
+    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
+```
+
+iii. With other overloads - Custom cache and Toggle Condition deserializer.
+```
+    var toggleConditionDeserializer = CustomConditionDeserializerImpl(); // Implements IConditionDeserializer 
+    var featureCache = CustomFeatureCache(); // Implements ICache
+
+    var storageProvider = new FileStorageProvider(configuration, featureCache, toggleConditionDeserializer);
+
+    Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
+```
+
 
 Credits
 --

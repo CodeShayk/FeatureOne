@@ -1,5 +1,10 @@
-namespace FeatureOne.SQL
+using System.Runtime.Caching;
+
+namespace FeatureOne.Cache
 {
+    /// <summary>
+    /// Implement to provide cache
+    /// </summary>
     public interface ICache
     {
         /// <summary>
@@ -8,7 +13,7 @@ namespace FeatureOne.SQL
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="expiry"></param>
-        void Add(string key, object value, int expiry);
+        void Add(string key, object value, CacheItemPolicy policy);
 
         /// <summary>
         /// Get item from cache

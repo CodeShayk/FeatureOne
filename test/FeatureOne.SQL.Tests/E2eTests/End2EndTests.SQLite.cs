@@ -3,7 +3,7 @@ using FeatureOne.Core.Stores;
 using FeatureOne.SQL.StorageProvider;
 using NUnit.Framework.Internal;
 
-namespace FeatureOne.SQL.Tests.E2e
+namespace FeatureOne.SQL.Tests.E2eTests
 {
     public class End2EndTests
     {

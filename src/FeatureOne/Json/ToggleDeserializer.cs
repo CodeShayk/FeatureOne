@@ -5,11 +5,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using FeatureOne.Core;
 
-[assembly: InternalsVisibleTo("FeatureOne.SQL.Tests")]
-
-namespace FeatureOne.SQL
+namespace FeatureOne.Json
 {
-    internal class ToggleDeserializer : IToggleDeserializer
+    public class ToggleDeserializer : IToggleDeserializer
     {
         private readonly IConditionDeserializer conditionDeserializer;
 

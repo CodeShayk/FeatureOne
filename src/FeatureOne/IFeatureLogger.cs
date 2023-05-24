@@ -1,3 +1,5 @@
+using System;
+
 namespace FeatureOne
 {
     /// <summary>
@@ -15,7 +17,7 @@ namespace FeatureOne
         /// Implement the error log method
         /// </summary>
         /// <param name="message">log message</param>
-        void Error(string message);
+        void Error(string message, Exception ex = null);
 
         /// <summary>
         /// Implement the info log method

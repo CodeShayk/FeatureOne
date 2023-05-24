@@ -1,0 +1,28 @@
+{
+  "gbk_dashboard": {
+    "toggle": {
+      "operator": "any",
+      "conditions": [
+        {
+          "type": "simple",
+          "isEnabled": false
+        },
+        {
+          "type": "Regex",
+          "claim": "email",
+          "expression": "^[a-zA-Z0-9_.+-]+@gbk.com"
+        }
+      ]
+    }
+  },
+  "dashboard_widget": {
+    "toggle": {
+      "conditions": [
+        {
+          "type": "simple",
+          "isEnabled": true
+        }
+      ]
+    }
+  }
+}

@@ -1,7 +1,8 @@
 using FeatureOne.Core;
 using FeatureOne.Core.Toggles.Conditions;
+using FeatureOne.Json;
 
-namespace FeatureOne.SQL.Tests.UnitTests
+namespace FeatureOne.Tests.Json
 {
     [TestFixture]
     internal class ToggleDeserializerTest
