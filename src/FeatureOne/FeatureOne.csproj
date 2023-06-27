@@ -27,7 +27,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v2.0.4. Core Functionality :-
+      Release Notes v3.0.0 Core Functionality :- Targets .Net 6.0
       - To Implement Feature Toggles to hide/show program features.
       - Provides Out of box Simple and Regex toggle conditions .
       - Provides extensibility for custom implementation

@@ -26,7 +26,7 @@
     <PackageLicenseFile>License.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v2.0.4. - File Storage Provider
+      Release Notes v3.0.0. - Targets .Net 6.0
       Adds support for File system storage provider for implementing Feature Toggles stored on file.
       - Provides memory caching enabled via configuration.
       - Added extensibility for Custom implementations-

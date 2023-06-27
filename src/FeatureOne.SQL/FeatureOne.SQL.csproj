@@ -27,7 +27,7 @@
     <PackageLicenseFile>License.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v2.0.4. - SQL Storage Provider 
+      Release Notes v3.0.0. - Targets .Net 6.0 
       Adds support for SQL storage provider for implementing Feature Toggles.
        - Supports MSSQL, SQLite, ODBC, OLEDB, MySQL, PostgreSQL Db providers.
        - Provides memory caching - enabled via configuration.
