@@ -10,7 +10,7 @@ jobs:
   Run-Lint:
     runs-on: ubuntu-latest
     env:
-      github-token: '${{ env.GITHUB_TOKEN }}'
+      github-token: '${{ secrets.GH_PACKAGES }}'
     steps:
       - name: Step-01 Checkout code
         uses: actions/checkout@v3
@@ -22,7 +22,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           FILTER_REGEX_INCLUDE: .*src/.*
           DEFAULT_BRANCH: master
-          GITHUB_TOKEN: '${{ env.github-token }}'
+          GITHUB_TOKEN: '${{ secrets.GH_PACKAGES }}'
   Build-Beta:
     if: ${{ !startsWith(github.head_ref, 'release/')}}
     runs-on: ubuntu-latest
@@ -131,7 +131,7 @@ jobs:
     outputs:
       semVersion: ${{ needs.Build-Release.outputs.semVersion }}
     env:
-      github-token: '${{ env.GITHUB_TOKEN }}'
+      github-token: '${{ secrets.GH_PACKAGES }}'
       nuget-token: '${{ secrets.NUGET_API_KEY }}' 
       working-directory: /home/runner/work/FeatureOne/FeatureOne
     steps:
