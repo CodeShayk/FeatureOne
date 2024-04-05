@@ -2,13 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Data.Odbc;
-using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.Data.SQLite;
-using System.Linq;
-using MySql.Data.MySqlClient;
-using Npgsql;
 
 namespace FeatureOne.SQL.StorageProvider
 {
@@ -16,29 +9,10 @@ namespace FeatureOne.SQL.StorageProvider
     {
         private readonly SQLConfiguration sqlConfiguration;
 
-        public DbRepository(SQLConfiguration configuration)
+        public DbRepository(SQLConfiguration sqlConfiguration)
         {
-            this.sqlConfiguration = configuration ?? throw new ArgumentNullException(nameof(SQLConfiguration));
-
-            var names = DbProviderFactories.GetProviderInvariantNames();
-
-            if (!names.Any(x => x.Equals("System.Data.SqlClient") && SqlClientFactory.Instance != null))
-                DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
-
-            if (!names.Any(x => x.Equals("System.Data.Odbc")) && OdbcFactory.Instance != null)
-                DbProviderFactories.RegisterFactory("System.Data.Odbc", OdbcFactory.Instance);
-
-            if (!names.Any(x => x.Equals("System.Data.OleDb")) && OleDbFactory.Instance != null)
-                DbProviderFactories.RegisterFactory("System.Data.OleDb", OleDbFactory.Instance);
-
-            if (!names.Any(x => x.Equals("System.Data.SQLite")) && SQLiteFactory.Instance != null)
-                DbProviderFactories.RegisterFactory("System.Data.SQLite", SQLiteFactory.Instance);
-
-            if (!names.Any(x => x.Equals("MySql.Data.MySqlClient")) && MySqlClientFactory.Instance != null)
-                DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
-
-            if (!names.Any(x => x.Equals("Npgsql")) && NpgsqlFactory.Instance != null)
-                DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
+            this.sqlConfiguration = sqlConfiguration ??
+                throw new ArgumentNullException(nameof(SQLConfiguration));
         }
 
         public DbRecord[] GetByName(string name)

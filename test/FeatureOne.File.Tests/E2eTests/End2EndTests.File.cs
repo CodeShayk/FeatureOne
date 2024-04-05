@@ -27,22 +27,22 @@ namespace FeatureOne.File.Tests.E2eTests
         public void TestForDashboardWidgetToBeEnabled()
         {
             var enabled = Features.Current.IsEnabled("dashboard_widget");
-            Assert.IsTrue(enabled);
+            Assert.That(enabled == true);
         }
 
         [Test]
         public void TestForGBKDashboardToBeEnabledForUsersWithGBKEmails()
         {
             var enabled = Features.Current.IsEnabled("gbk_dashboard");
-            Assert.False(enabled);
+            Assert.That(enabled == false);
 
             var user1_claims = new[] { new Claim("email", "ninja@udt.com") };
             enabled = Features.Current.IsEnabled("gbk_dashboard", user1_claims);
-            Assert.False(enabled);
+            Assert.That(enabled == false);
 
             var user2_claims = new[] { new Claim("email", "ninja@gbk.com") };
             enabled = Features.Current.IsEnabled("gbk_dashboard", user2_claims);
-            Assert.True(enabled);
+            Assert.That(enabled == true);
         }
     }
 }

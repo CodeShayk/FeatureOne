@@ -21,35 +21,35 @@ namespace FeatureOne.SQL.Tests.UnitTests
 
             var provider = new SQLStorageProvider(configuration);
 
-            Assert.IsNotNull(provider.cacheSettings);
+            Assert.That(provider.cacheSettings != null);
             Assert.That(provider.cacheSettings, Is.EqualTo(cacheSettings));
-            Assert.IsNotNull(provider.repository);
-            Assert.IsNotNull(provider.deserializer);
-            Assert.IsNotNull(provider.cache);
+            Assert.That(provider.repository != null);
+            Assert.That(provider.deserializer != null);
+            Assert.That(provider.cache != null);
 
             provider = new SQLStorageProvider(configuration);
 
-            Assert.IsNotNull(provider.cacheSettings);
+            Assert.That(provider.cacheSettings != null);
             Assert.That(provider.cacheSettings, Is.EqualTo(cacheSettings));
-            Assert.IsNotNull(provider.repository);
-            Assert.IsNotNull(provider.deserializer);
-            Assert.IsNotNull(provider.cache);
+            Assert.That(provider.repository != null);
+            Assert.That(provider.deserializer != null);
+            Assert.That(provider.cache != null);
 
             provider = new SQLStorageProvider(new SQLConfiguration(), new Mock<ICache>().Object, new Mock<IConditionDeserializer>().Object);
 
-            Assert.IsNotNull(provider.cacheSettings);
+            Assert.That(provider.cacheSettings != null);
             Assert.That(provider.cacheSettings, Is.Not.EqualTo(cacheSettings));
-            Assert.IsNotNull(provider.repository);
-            Assert.IsNotNull(provider.deserializer);
-            Assert.IsNotNull(provider.cache);
+            Assert.That(provider.repository != null);
+            Assert.That(provider.deserializer != null);
+            Assert.That(provider.cache != null);
 
             provider = new SQLStorageProvider(new Mock<IDbRepository>().Object, new Mock<IToggleDeserializer>().Object, new Mock<ICache>().Object, null);
 
-            Assert.IsNotNull(provider.cacheSettings);
+            Assert.That(provider.cacheSettings != null);
             Assert.That(provider.cacheSettings, Is.Not.EqualTo(cacheSettings));
-            Assert.IsNotNull(provider.repository);
-            Assert.IsNotNull(provider.deserializer);
-            Assert.IsNotNull(provider.cache);
+            Assert.That(provider.repository != null);
+            Assert.That(provider.deserializer != null);
+            Assert.That(provider.cache != null);
         }
 
         [Test]

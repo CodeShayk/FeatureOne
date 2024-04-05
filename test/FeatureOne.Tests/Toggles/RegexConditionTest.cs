@@ -15,7 +15,7 @@ namespace FeatureOne.Test.Toggles
         public void EvaluateToggleToFalseWhenNoCliamFound()
         {
             var condition = new RegexCondition { Claim = "email", Expression = GmailDotCom };
-            Assert.IsFalse(condition.Evaluate(claims));
+            Assert.That(!condition.Evaluate(claims));
         }
 
         public void EvaluateToggleConditionToTrueOnMatchIsHit()

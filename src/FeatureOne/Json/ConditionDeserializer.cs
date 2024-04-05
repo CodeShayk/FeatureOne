@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -17,9 +18,12 @@ namespace FeatureOne.Json
         {
             get
             {
-                if (loaddedTypes == null || loaddedTypes.Length == 0)
-                    loaddedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                        .Where(p => typeof(ICondition).IsAssignableFrom(p)).ToArray();
+                if (loaddedTypes != null && loaddedTypes.Length > 0)
+                    return loaddedTypes;
+
+                loaddedTypes = Assembly.GetExecutingAssembly().GetTypes()
+                        .Where(mytype => mytype.GetInterfaces().Contains(typeof(ICondition)))
+                        .ToArray();
 
                 return loaddedTypes;
             }
@@ -42,7 +46,7 @@ namespace FeatureOne.Json
         private static ICondition CreateInstance(NamePostFix conditionName)
         {
             var type = LoaddedTypes
-                .FirstOrDefault(p => typeof(ICondition).IsAssignableFrom(p) && p.Name.Equals(conditionName.Name, StringComparison.OrdinalIgnoreCase));
+               .FirstOrDefault(p => p.Name.Equals(conditionName.Name, StringComparison.OrdinalIgnoreCase));
 
             if (type == null)
                 throw new Exception($"Could not find a toggle type for: '{conditionName.Name}'");

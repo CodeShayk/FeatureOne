@@ -14,10 +14,10 @@ namespace FeatureOne.Tests.Json
             Assert.That(new NamePostFix(input, "Condition").Name, Is.EqualTo(output));
         }
 
-        [TestCase(null, null)]
-        public void TestNameForNullInputs(string input, string postfix)
+        [Test]
+        public void TestNameForNullInputs()
         {
-            Assert.Throws<ArgumentNullException>(() => new NamePostFix(input, postfix));
+            Assert.Throws<ArgumentNullException>(() => new NamePostFix(null, null));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace FeatureOne.SQL.Tests.UnitTests
         {
             var table = new FeatureTable();
             var sql = table.CreateSQL("Foo");
-            Assert.AreEqual("Select Name, Toggle From TFeatures Where Archived = 0 and Name = 'Foo'", sql);
+            Assert.That("Select Name, Toggle From TFeatures Where Archived = 0 and Name = 'Foo'" == sql);
         }
     }
 }

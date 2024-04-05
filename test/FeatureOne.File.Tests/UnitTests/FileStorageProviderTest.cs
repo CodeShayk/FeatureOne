@@ -25,23 +25,23 @@ namespace FeatureOne.SQL.Tests.UnitTests
             var provider = new FileStorageProvider(configuration);
 
             Assert.That(provider.configuration, Is.EqualTo(configuration));
-            Assert.IsNotNull(provider.reader);
-            Assert.IsNotNull(provider.deserializer);
-            Assert.IsNotNull(provider.cache);
+            Assert.That(provider.reader != null);
+            Assert.That(provider.deserializer != null);
+            Assert.That(provider.cache != null);
 
             provider = new FileStorageProvider(configuration, new Mock<ICache>().Object, new Mock<IConditionDeserializer>().Object);
 
             Assert.That(provider.configuration, Is.EqualTo(configuration));
-            Assert.IsNotNull(provider.reader);
-            Assert.IsNotNull(provider.deserializer);
-            Assert.IsNotNull(provider.cache);
+            Assert.That(provider.reader != null);
+            Assert.That(provider.deserializer != null);
+            Assert.That(provider.cache != null);
 
             provider = new FileStorageProvider(configuration, new Mock<IFileReader>().Object, new Mock<IToggleDeserializer>().Object, new Mock<ICache>().Object);
 
             Assert.That(provider.configuration, Is.EqualTo(configuration));
-            Assert.IsNotNull(provider.reader);
-            Assert.IsNotNull(provider.deserializer);
-            Assert.IsNotNull(provider.cache);
+            Assert.That(provider.reader != null);
+            Assert.That(provider.deserializer != null);
+            Assert.That(provider.cache != null);
         }
 
         [Test]

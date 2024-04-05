@@ -22,7 +22,7 @@ namespace FeatureOne.Tests.Json
             var jobject = JsonNode.Parse(json)?.AsObject();
             var toggleCondition = new ConditionDeserializer().Deserialize(jobject);
 
-            Assert.IsInstanceOf(typeof(SimpleCondition), toggleCondition);
+            Assert.That(toggleCondition is SimpleCondition);
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace FeatureOne.Tests.Json
             var jobject = JsonNode.Parse(json)?.AsObject();
             var toggleCondition = new ConditionDeserializer().Deserialize(jobject);
 
-            Assert.IsInstanceOf(typeof(RegexCondition), toggleCondition);
+            Assert.That(toggleCondition is RegexCondition);
         }
     }
 }

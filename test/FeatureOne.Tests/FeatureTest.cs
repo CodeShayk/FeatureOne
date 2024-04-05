@@ -22,7 +22,7 @@ namespace FeatureOne.Test
                     new Toggle(Operator.All,
                         new[] { new RegexCondition { Claim = "email", Expression = "1234@ioHub.com" } }));
 
-            Assert.IsInstanceOf<RegexCondition>(feature.Toggle.Conditions[0]);
+            Assert.That(feature.Toggle.Conditions[0] is RegexCondition);
             Assert.That(feature.Name.Value, Is.EqualTo("feat-01"));
         }
 

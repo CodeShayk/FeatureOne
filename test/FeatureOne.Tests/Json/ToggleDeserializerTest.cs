@@ -20,13 +20,13 @@ namespace FeatureOne.Tests.Json
 
             Assert.Multiple(() =>
             {
-                Assert.IsInstanceOf<SimpleCondition>(toggle.Conditions[0]);
+                Assert.That(toggle.Conditions[0] is SimpleCondition);
                 Assert.That(((SimpleCondition)toggle.Conditions[0]).IsEnabled, Is.EqualTo(false));
             });
 
             Assert.Multiple(() =>
             {
-                Assert.IsInstanceOf<RegexCondition>(toggle.Conditions[1]);
+                Assert.That(toggle.Conditions[1] is RegexCondition);
                 Assert.That(((RegexCondition)toggle.Conditions[1]).Claim, Is.EqualTo("email"));
                 Assert.That(((RegexCondition)toggle.Conditions[1]).Expression, Is.EqualTo("*@gbk.com"));
             });

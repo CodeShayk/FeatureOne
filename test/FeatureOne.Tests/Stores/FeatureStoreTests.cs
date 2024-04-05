@@ -41,7 +41,7 @@ namespace FeatureOne.Tests.Stores
 
             Assert.Multiple(() =>
             {
-                Assert.IsInstanceOf<SimpleCondition>(feature01.Toggle.Conditions[0]);
+                Assert.That(feature01.Toggle.Conditions[0] is SimpleCondition);
                 Assert.That(((SimpleCondition)feature01.Toggle.Conditions[0]).IsEnabled, Is.EqualTo(true));
             });
 
@@ -51,12 +51,12 @@ namespace FeatureOne.Tests.Stores
 
             Assert.Multiple(() =>
             {
-                Assert.IsInstanceOf<SimpleCondition>(feature02.Toggle.Conditions[0]);
+                Assert.That(feature02.Toggle.Conditions[0] is SimpleCondition);
                 Assert.That(((SimpleCondition)feature02.Toggle.Conditions[0]).IsEnabled, Is.EqualTo(false));
             });
             Assert.Multiple(() =>
             {
-                Assert.IsInstanceOf<RegexCondition>(feature02.Toggle.Conditions[1]);
+                Assert.That(feature02.Toggle.Conditions[1] is RegexCondition);
                 Assert.That(((RegexCondition)feature02.Toggle.Conditions[1]).Claim, Is.EqualTo("email"));
                 Assert.That(((RegexCondition)feature02.Toggle.Conditions[1]).Expression, Is.EqualTo("*@gbk.com"));
             });
@@ -82,7 +82,7 @@ namespace FeatureOne.Tests.Stores
 
             Assert.Multiple(() =>
             {
-                Assert.IsInstanceOf<SimpleCondition>(feature01.Toggle.Conditions[0]);
+                Assert.That(feature01.Toggle.Conditions[0] is SimpleCondition);
                 Assert.That(((SimpleCondition)feature01.Toggle.Conditions[0]).IsEnabled, Is.EqualTo(true));
             });
         }
