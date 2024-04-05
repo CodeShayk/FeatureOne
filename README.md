@@ -1,6 +1,7 @@
-# <img src="https://github.com/NinjaRocks/FeatureOne/blob/master/ninja-icon-16.png" alt="ninja" style="width:30px;"/> FeatureOne v3.0.0
+
+# <img src="https://github.com/NinjaRocks/FeatureOne/blob/master/ninja-icon-16.png" alt="ninja" style="width:30px;"/> FeatureOne v4.0.0
 [![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/NinjaRocks/FeatureOne/blob/master/License.md) [![build-master](https://github.com/NinjaRocks/FeatureOne/actions/workflows/Build-Master.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/Build-Master.yml) [![GitHub Release](https://img.shields.io/github/v/release/ninjarocks/FeatureOne?logo=github&sort=semver)](https://github.com/ninjarocks/FeatureOne/releases/latest)
-[![CodeQL](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml) [![.Net](https://img.shields.io/badge/.Net%206.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/6)
+[![CodeQL](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml) [![.Net](https://img.shields.io/badge/.Net-8.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 .Net Library to implement feature toggles.
 --
@@ -311,12 +312,24 @@ SQL support can easily be installed as a separate nuget package.
 ```
 $ dotnet add package FeatureOne.SQL --version {latest}
 ```
-Supports Db Providers `MSSQL: System.Data.SqlClient`, `ODBC: System.Data.Odbc`, `OLEDB: System.Data.OleDb`, `SQLite: System.Data.SQLite`, `MySQL: MySql.Data.MySqlClient` & `PostgreSQL: Npgsql`.
+### Step 1 - Configure Database Provider
+To register a database provider, You need to add the relevant db factory with a specific `ProviderName` to `DbProviderFactories` in the bootstrap code.
+ie. 
+`DbProviderFactories.RegisterFactory("ProviderName", ProviderFactory)`
 
+After adding the provider factory you need to pass the same provider in the `connection settings` of SQLConfiguration.
 
+>  Below is the list of most common provider factories yu could configure.
+>
+  - MSSQL - DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
+  - ODBC - DbProviderFactories.RegisterFactory("System.Data.Odbc", OdbcFactory.Instance);
+  - OleDb - DbProviderFactories.RegisterFactory("System.Data.OleDb", OleDbFactory.Instance);
+  - SQLite - DbProviderFactories.RegisterFactory("System.Data.SQLite", SQLiteFactory.Instance);
+  - MySQL - DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+  - PostgreSQL - DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
+>
 
-For any other SQL provider, You need to add provider factory to `DbProviderFactories.RegisterFactory("ProviderName", ProviderFactory)` and pass the provider specific `connection settings` in SQLConfiguration.
-### Database Setup
+### STEP 2 - Setup Feature Table (Database)
 > Requires creating a feature table with columns for feature name, toggle definition and feature archival.
 
 SQL SCRIPT below.
@@ -329,7 +342,7 @@ CREATE TABLE TFeatures (
 );
 ```
 
-### Example Table Record
+#### Example Table Record
 > Feature toggles need to be `scripted` to backend database in JSON format.
 
 Please see example entries below.
@@ -339,8 +352,8 @@ Please see example entries below.
 | dashboard_widget  |{ "conditions":[{ "type":"Simple", "isEnabled": true }] }  | false |
 |pen_test_dashboard| { "operator":"any", "conditions":[{ "type":"simple", "isEnabled":false}, { "type":"Regex", "claim":"email","expression":"^[a-zA-Z0-9_.+-]+@gbk.com" }]} | false|
 
-### Bootstrap initialization
-> See below bootstrap initialization for FeatureOne with SQL backend.
+### STEP 3 - Bootstrap initialization
+> See below bootstrap initialization for FeatureOne with MS SQL backend.
 
 
 #### SQL Configuration - Set connection string and other settings.
@@ -350,7 +363,7 @@ Please see example entries below.
         // provider specific connection settings.
         ConnectionSettings = new ConnectionSettings
         {
-            Providername = DbProviderName.MSSql, 
+            Providername = "System.Data.SqlClient",  -- same provider name as register with db factory.
             ConnectionString ="Data Source=Powerstation; Initial Catalog=Features; Integrated Security=SSPI;"            
         },
 
@@ -377,6 +390,9 @@ Please see example entries below.
 ```
 i. With SQL configuration. 
 ```
+   -- Register db factory
+   DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
+
    var storageProvider = new SQlStorageProvider(sqlConfiguration);
    Features.Initialize(() => new Features(new FeatureStore(storageProvider)));
 ```

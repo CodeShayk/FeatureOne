@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -14,27 +14,29 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>FeatureOne.SQL</Title>
-    <Authors>ninja.shayk</Authors>
-    <Company>Ninja.Sha!4H</Company>
+    <Authors>Tech Ninja Labs</Authors>
+    <Company>Tech Ninja Labs</Company>
     <Product>FeatureOne</Product>
-    <Description>.Net library to implement feature toggles with SQL backend.</Description>
-    <Copyright>Copyright (c) 2023 Ninja Sha!4h</Copyright>
+    <Description>.Net library to implement feature toggles with SQL storage.</Description>
+    <Copyright>Copyright (c) 2024 Tech Ninja Labs</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/NinjaRocks/FeatureOne</RepositoryUrl>
+    <RepositoryUrl>https://github.com/TechNinjaLabs/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; .netstandard2.1; featureOne; SQL-Backend; SQL-Toggles; SQL</PackageTags>
-    <Version>3.0.0</Version>
+    <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; .net8.0; featureOne; SQL-Backend; SQL-Toggles; SQL</PackageTags>
+    <Version>4.0.0</Version>
     <PackageLicenseFile>License.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v3.0.0. - Targets .Net 6.0 
-      Adds support for SQL storage provider for implementing Feature Toggles.
-       - Supports MSSQL, SQLite, ODBC, OLEDB, MySQL, PostgreSQL Db providers.
-       - Provides memory caching - enabled via configuration.
-       - Added extensibility for Custom implementations-
-          - Provides extension point to support more SQL providers.
-          - Provides extenion point for custom caching.
-          - Provides extension point for custom deserializer for Toggle Conditions.
+      Release Notes v4.0.0. - Targets .Net 8.0
+      Library to Implement Feature Toggles to hide/show program features with SQL storage.
+      - Supports configuring all Db providers - MSSQL, SQLite, ODBC, OLEDB, MySQL, PostgreSQL.
+      - Provides Out of box Simple and Regex toggle conditions.
+      - Provides the support for default memory caching via configuration.
+      - Provides extensibility for custom implementations ie.
+      -- Provides extensibility for implementing custom toggle conditions for bespoke use cases.
+      -- Provides extensibility to plugin other SQL providers.
+      -- Provides extensibility for implementing custom caching providers.
+      -- Provides extensibility for implementing custom toggle deserializer for bespoke scenarios.
     </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -54,14 +56,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="7.0.4" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="System.Data.Odbc" Version="7.0.0" />
-    <PackageReference Include="System.Data.OleDb" Version="7.0.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.86" />
-    <PackageReference Include="MySql.Data" Version="8.0.33" />
-    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>

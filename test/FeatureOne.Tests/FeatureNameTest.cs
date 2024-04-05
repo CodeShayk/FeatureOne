@@ -13,7 +13,7 @@ namespace FeatureOne.Test
             Assert.That(new FeatureName(input).Value, Is.EqualTo(input));
         }
 
-        [TestCase(null)]
+        [TestCase("")]
         [TestCase("x~")]
         [TestCase("x/")]
         [TestCase(@"x\")]
