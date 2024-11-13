@@ -7,11 +7,11 @@
 .Net Library to implement feature toggles.
 --
 #### Nuget Packages
-| Latest  | Details | 
-| -------- | --------|
-| ![NuGet Version](https://img.shields.io/nuget/v/FeatureOne?style=for-the-badge&label=FeatureOne&labelColor=green) | Provides core funtionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. Please see below for more details. |
-| ![NuGet Version](https://img.shields.io/nuget/v/FeatureOne.SQL?style=for-the-badge&label=FeatureOne.SQL&labelColor=green) | Provides SQL storage provider for implementing feature toggles using `SQL` backend. |
-|![NuGet Version](https://img.shields.io/nuget/v/FeatureOne.File?style=for-the-badge&label=FeatureOne.File&labelColor=green) | Provides File storage provider for implementing feature toggles using `File System` backend. |
+| Package  | Latest | Details | 
+| --------| --------| --------|
+|FeatureOne |[![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Provides core funtionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. Please see below for more details. |
+|FeatureOne.SQL| [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | Provides SQL storage provider for implementing feature toggles using `SQL` backend. |
+|FeatureOne.EntityFramework |[![NuGet version](https://badge.fury.io/nu/FeatureOne.EntityFramework.svg)](https://badge.fury.io/nu/FeatureOne.EntityFramework) | Provides File storage provider for implementing feature toggles using `File System` backend. |
 
 ## Concept
 ### What is a feature toggle?
