@@ -11,7 +11,7 @@
 | --------| --------| --------|
 |FeatureOne |[![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Provides core funtionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. Please see below for more details. |
 |FeatureOne.SQL| [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | Provides SQL storage provider for implementing feature toggles using `SQL` backend. |
-|FeatureOne.EntityFramework |[![NuGet version](https://badge.fury.io/nu/FeatureOne.EntityFramework.svg)](https://badge.fury.io/nu/FeatureOne.EntityFramework) | Provides File storage provider for implementing feature toggles using `File System` backend. |
+|FeatureOne.File |[![NuGet version](https://badge.fury.io/nu/FeatureOne.File.svg)](https://badge.fury.io/nu/FeatureOne.File) | Provides File storage provider for implementing feature toggles using `File System` backend. |
 
 ## Concept
 ### What is a feature toggle?
