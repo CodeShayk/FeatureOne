@@ -1,5 +1,5 @@
 
-# FeatureOne v5.0.0
+# <img src="https://github.com/NinjaRocks/FeatureOne/blob/master/ninja-icon-16.png" alt="ninja" style="width:30px;"/> FeatureOne v5.0.0
 [![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/NinjaRocks/FeatureOne/blob/master/License.md) [![build-master](https://github.com/NinjaRocks/FeatureOne/actions/workflows/Build-Master.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/Build-Master.yml) [![GitHub Release](https://img.shields.io/github/v/release/ninjarocks/FeatureOne?logo=github&sort=semver)](https://github.com/ninjarocks/FeatureOne/releases/latest)
 [![CodeQL](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/NinjaRocks/FeatureOne/actions/workflows/codeql.yml) [![.Net](https://img.shields.io/badge/.Net-9.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 
