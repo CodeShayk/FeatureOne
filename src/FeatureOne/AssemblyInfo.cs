@@ -11,7 +11,7 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Tech Ninja Labs")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Code Shayk")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("2024")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute(".Net Library to implement feature toggles.")]

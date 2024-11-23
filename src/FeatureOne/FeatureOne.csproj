@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -14,20 +14,20 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>FeatureOne</Title>
-    <Authors>Tech Ninja Labs</Authors>
-    <Company>Tech Ninja Labs</Company>
+    <Authors>Code Shayk</Authors>
+    <Company>Code Shayk</Company>
     <Product>FeatureOne</Product>
     <Description>.Net library to implement feature toggles.</Description>
-    <Copyright>Copyright (c) 2024 Tech Ninja Labs</Copyright>
+    <Copyright>Copyright (c) 2024 Code Shayk</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/TechNinjaLabs/FeatureOne</RepositoryUrl>
+    <RepositoryUrl>https://github.com/CodeShayk/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; net8.0; featureOne</PackageTags>
-    <Version>4.0.0</Version>
+    <Version>5.0.0</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v4.0.0 Core Functionality :- Targets .Net 8.0
+      Release Notes v5.0.0 Core Functionality :- Targets .Net 9.0
       Library to Implement Feature Toggles to hide/show program features. Does not contain storage provider.
       - Provides Out of box Simple and Regex toggle conditions.
       - Provides extensibility for custom implementations ie.
@@ -35,11 +35,12 @@
       -- Provides extensibility to implement custom toggle conditions for bespoke use cases.
       -- Provides extensibility for custom toggle deserializer for bespoke scenarios.
     </PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/CodeShayk/FeatureOne/wiki</PackageProjectUrl>
     </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.3" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
   
   <ItemGroup>
