@@ -35,6 +35,7 @@
       -- Provides extensibility to implement custom toggle conditions for bespoke use cases.
       -- Provides extensibility for custom toggle deserializer for bespoke scenarios.
     </PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/CodeShayk/FeatureOne/wiki</PackageProjectUrl>
     </PropertyGroup>
   
   <ItemGroup>

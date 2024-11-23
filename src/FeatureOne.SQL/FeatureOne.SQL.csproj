@@ -38,6 +38,7 @@
       -- Provides extensibility for implementing custom caching providers.
       -- Provides extensibility for implementing custom toggle deserializer for bespoke scenarios.
     </PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/CodeShayk/FeatureOne/wiki</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
