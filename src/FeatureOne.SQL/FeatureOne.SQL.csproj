@@ -20,7 +20,7 @@
     <Description>.Net library to implement feature toggles with SQL storage.</Description>
     <Copyright>Copyright (c) 2024 Code Shayk</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/TechNinjaLabs/FeatureOne</RepositoryUrl>
+    <RepositoryUrl>https://github.com/CodeShayk/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; .net8.0; featureOne; SQL-Backend; SQL-Toggles; SQL</PackageTags>
     <Version>5.0.0</Version>
