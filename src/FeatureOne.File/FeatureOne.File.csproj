@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
@@ -13,20 +13,20 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>FeatureOne.File</Title>
-    <Authors>Tech Ninja Labs</Authors>
-    <Company>Tech Ninja Labs</Company>
+    <Authors>Code Shayk</Authors>
+    <Company>Code Shayk</Company>
     <Product>FeatureOne</Product>
     <Description>.Net library to implement feature toggles with File system storage.</Description>
-    <Copyright>Copyright (c) 2024 Tech Ninja Labs</Copyright>
+    <Copyright>Copyright (c) 2024 Code Shayk</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/TechNinjaLabs/FeatureOne</RepositoryUrl>
+    <RepositoryUrl>https://github.com/codeshayk/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; .net8.0; featureOne; File-system; File-Backend; File-Toggles;</PackageTags>
-    <Version>4.0.0</Version>
+    <Version>5.0.0</Version>
     <PackageLicenseFile>License.md</PackageLicenseFile>
     <PackageIcon>ninja-icon-16.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v4.0.0. - Targets .Net 8.0
+      Release Notes v4.0.0. - Targets .Net 9.0
       Library to Implement Feature Toggles to hide/show program features with File system storage.
       - Provides Out of box Simple and Regex toggle conditions.
       - Provides Out of box support for File system storage provider to store toggles on disk file.
