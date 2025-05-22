@@ -47,7 +47,7 @@ NuGet\Install-Package FeatureOne.File
 
 ### ii. Developer Guide
 
-Please see [Developer Guide](/DeveloperGuide.md) for details on how to implement schemio in your project.
+Please see [Developer Guide](/DeveloperGuide.md) for details on how to implement FeatureOne in your project.
 
 ## Support
 
