@@ -24,7 +24,10 @@ namespace FeatureOne.Core
             if (Conditions == null)
                 return false;
 
-            claims ??= new Dictionary<string, string>();
+            if (claims == null)
+            {
+                claims = new Dictionary<string, string>();
+            }
 
             return Operator == Operator.Any
                  ? Conditions.Any(x => x.Evaluate(claims))
