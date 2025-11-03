@@ -10,7 +10,7 @@ public class DefaultLoggerTest
         var logger = new DefaultLogger(null); // Pass null as the ILogger service
         var testMessage = "Test message";
         var testException = new Exception("Test exception");
-        
+
         // Act & Assert
         Assert.DoesNotThrow(() => logger.Info(testMessage));
         Assert.DoesNotThrow(() => logger.Debug(testMessage));

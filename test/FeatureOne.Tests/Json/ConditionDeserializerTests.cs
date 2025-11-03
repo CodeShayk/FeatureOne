@@ -22,10 +22,10 @@ namespace FeatureOne.Tests.Json
                 ["type"] = "Simple",
                 ["isEnabled"] = "true"
             };
-            
+
             // Act
             var condition = _deserializer.Deserialize(json);
-            
+
             // Assert
             Assert.That(condition, Is.InstanceOf<SimpleCondition>());
         }
@@ -39,10 +39,10 @@ namespace FeatureOne.Tests.Json
                 ["type"] = "SimpleCondition",
                 ["isEnabled"] = "true"
             };
-            
+
             // Act
             var condition = _deserializer.Deserialize(json);
-            
+
             // Assert
             Assert.That(condition, Is.InstanceOf<SimpleCondition>());
         }
@@ -57,10 +57,10 @@ namespace FeatureOne.Tests.Json
                 ["claim"] = "role",
                 ["expression"] = "admin"
             };
-            
+
             // Act
             var condition = _deserializer.Deserialize(json);
-            
+
             // Assert
             Assert.That(condition, Is.InstanceOf<RegexCondition>());
         }
@@ -75,10 +75,10 @@ namespace FeatureOne.Tests.Json
                 ["claim"] = "role",
                 ["expression"] = "admin"
             };
-            
+
             // Act
             var condition = _deserializer.Deserialize(json);
-            
+
             // Assert
             Assert.That(condition, Is.InstanceOf<RegexCondition>());
         }
@@ -93,10 +93,10 @@ namespace FeatureOne.Tests.Json
                 ["startDate"] = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"),
                 ["endDate"] = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")
             };
-            
+
             // Act
             var condition = _deserializer.Deserialize(json);
-            
+
             // Assert
             Assert.That(condition, Is.InstanceOf<DateRangeCondition>());
         }
@@ -111,10 +111,10 @@ namespace FeatureOne.Tests.Json
                 ["startDate"] = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"),
                 ["endDate"] = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")
             };
-            
+
             // Act
             var condition = _deserializer.Deserialize(json);
-            
+
             // Assert
             Assert.That(condition, Is.InstanceOf<DateRangeCondition>());
         }
@@ -127,7 +127,7 @@ namespace FeatureOne.Tests.Json
             {
                 ["type"] = "NonExistentCondition"
             };
-            
+
             // Act & Assert
             Assert.Throws<Exception>(() => _deserializer.Deserialize(json));
         }
@@ -138,17 +138,18 @@ namespace FeatureOne.Tests.Json
             // Arrange
             var simpleJson = new JsonObject { ["type"] = "Simple", ["isEnabled"] = "true" };
             var regexJson = new JsonObject { ["type"] = "Regex", ["claim"] = "role", ["expression"] = "admin" };
-            var dateRangeJson = new JsonObject { 
-                ["type"] = "DateRange", 
+            var dateRangeJson = new JsonObject
+            {
+                ["type"] = "DateRange",
                 ["startDate"] = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"),
                 ["endDate"] = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")
             };
-            
+
             // Act
             var simpleCondition = _deserializer.Deserialize(simpleJson);
             var regexCondition = _deserializer.Deserialize(regexJson);
             var dateRangeCondition = _deserializer.Deserialize(dateRangeJson);
-            
+
             // Assert
             Assert.That(simpleCondition, Is.InstanceOf<SimpleCondition>());
             Assert.That(regexCondition, Is.InstanceOf<RegexCondition>());
@@ -160,10 +161,10 @@ namespace FeatureOne.Tests.Json
         {
             // Arrange
             var json = new JsonObject { ["type"] = "simple", ["isEnabled"] = "true" }; // lowercase
-            
+
             // Act
             var condition = _deserializer.Deserialize(json);
-            
+
             // Assert
             Assert.That(condition, Is.InstanceOf<SimpleCondition>());
         }
@@ -173,7 +174,7 @@ namespace FeatureOne.Tests.Json
         {
             // Arrange
             var json = new JsonObject { ["type"] = "SimpleAttacker" }; // Similar to "Simple" but not valid
-            
+
             // Act & Assert
             Assert.Throws<Exception>(() => _deserializer.Deserialize(json));
         }

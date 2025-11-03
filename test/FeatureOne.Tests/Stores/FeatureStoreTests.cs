@@ -35,15 +35,15 @@ namespace FeatureOne.Tests.Stores
             // Arrange - Setup mock storage provider with feature named "FeatureA"
             var mockProvider = new Mock<IStorageProvider>();
             mockProvider.Setup(p => p.GetByName("FeatureA"))
-                        .Returns(new IFeature[] { 
-                            new Feature("FeatureA", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true })) 
+                        .Returns(new IFeature[] {
+                            new Feature("FeatureA", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true }))
                         });
-            
+
             var store = new FeatureStore(mockProvider.Object);
-            
+
             // Act
             var result = store.FindStartsWith("FeatureA").ToList();
-            
+
             // Assert
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].Name.Value, Is.EqualTo("FeatureA"));
@@ -55,17 +55,17 @@ namespace FeatureOne.Tests.Stores
             // Arrange - Setup mock with features: "FeatureA", "FeatureASubFeature", "FeatureB"
             var mockProvider = new Mock<IStorageProvider>();
             mockProvider.Setup(p => p.GetByName(It.IsAny<string>()))
-                        .Returns(new IFeature[] { 
+                        .Returns(new IFeature[] {
                             new Feature("FeatureA", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true })),
                             new Feature("FeatureASubFeature", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true })),
                             new Feature("FeatureB", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true }))
                         });
-            
+
             var store = new FeatureStore(mockProvider.Object);
-            
+
             // Act
             var result = store.FindStartsWith("FeatureA").ToList();
-            
+
             // Assert
             Assert.That(result.Count, Is.EqualTo(2)); // Should return both FeatureA and FeatureA.SubFeature
             var names = result.Select(f => f.Name.Value).OrderBy(n => n).ToList();
@@ -79,15 +79,15 @@ namespace FeatureOne.Tests.Stores
             // Arrange
             var mockProvider = new Mock<IStorageProvider>();
             mockProvider.Setup(p => p.GetByName(It.IsAny<string>()))
-                        .Returns(new IFeature[] { 
+                        .Returns(new IFeature[] {
                             new Feature("TestFeature", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true }))
                         });
-            
+
             var store = new FeatureStore(mockProvider.Object);
-            
+
             // Act
             var result = store.FindStartsWith("").ToList();
-            
+
             // Assert
             Assert.That(result.Count, Is.EqualTo(0));
         }
@@ -98,15 +98,15 @@ namespace FeatureOne.Tests.Stores
             // Arrange
             var mockProvider = new Mock<IStorageProvider>();
             mockProvider.Setup(p => p.GetByName(It.IsAny<string>()))
-                        .Returns(new IFeature[] { 
+                        .Returns(new IFeature[] {
                             new Feature("FeatureA", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true }))
                         });
-            
+
             var store = new FeatureStore(mockProvider.Object);
-            
+
             // Act
             var result = store.FindStartsWith("featurea").ToList(); // lowercase prefix
-            
+
             // Assert
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result[0].Name.Value, Is.EqualTo("FeatureA"));
@@ -118,15 +118,15 @@ namespace FeatureOne.Tests.Stores
             // Arrange
             var mockProvider = new Mock<IStorageProvider>();
             mockProvider.Setup(p => p.GetByName("NonMatch"))
-                        .Returns(new IFeature[] { 
+                        .Returns(new IFeature[] {
                             new Feature("FeatureA", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true }))
                         });
-            
+
             var store = new FeatureStore(mockProvider.Object);
-            
+
             // Act
             var result = store.FindStartsWith("NonMatch").ToList();
-            
+
             // Assert
             Assert.That(result.Count, Is.EqualTo(0));
         }
@@ -140,18 +140,18 @@ namespace FeatureOne.Tests.Stores
             {
                 features.Add(new Feature($"Feature{i}", new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true })));
             }
-            
+
             var mockProvider = new Mock<IStorageProvider>();
             mockProvider.Setup(p => p.GetByName("Feature"))
                         .Returns(features.ToArray());
-            
+
             var store = new FeatureStore(mockProvider.Object);
-            
+
             // Act
             var startTime = DateTime.Now;
             var result = store.FindStartsWith("Feature").ToList();
             var endTime = DateTime.Now;
-            
+
             // Assert - Should complete in reasonable time
             Assert.That((endTime - startTime).TotalMilliseconds, Is.LessThan(1000)); // Should complete in under 1 second
             // Count how many start with "Feature"
@@ -164,17 +164,17 @@ namespace FeatureOne.Tests.Stores
             // Arrange
             var mockProvider = new Mock<IStorageProvider>();
             var featureWithNoConditions = new Feature("FeatureA", new Toggle(Operator.Any)); // No conditions
-            var featureWithValidConditions = new Feature("FeatureB", 
+            var featureWithValidConditions = new Feature("FeatureB",
                 new Toggle(Operator.Any, new SimpleCondition { IsEnabled = true }));
-            
+
             mockProvider.Setup(p => p.GetByName("Feature"))
                         .Returns(new[] { featureWithNoConditions, featureWithValidConditions });
-            
+
             var store = new FeatureStore(mockProvider.Object);
-            
+
             // Act
             var result = store.FindStartsWith("Feature").ToList();
-            
+
             // Assert
             // Should only include features with valid toggle conditions
             Assert.That(result.Count, Is.EqualTo(1));

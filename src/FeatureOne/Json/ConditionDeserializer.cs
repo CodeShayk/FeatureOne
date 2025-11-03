@@ -41,12 +41,12 @@ namespace FeatureOne.Json
             // NamePostFix transforms both "Simple" and "SimpleCondition" to "SimpleCondition"
             // So we look up the processed name
             var processedName = conditionName.Name;
-            
+
             if (SafeConditionTypes.TryGetValue(processedName, out Type type))
             {
                 return (ICondition)Activator.CreateInstance(type, true);
             }
-            
+
             // This shouldn't normally happen with correct inputs since NamePostFix standardizes the format
             throw new Exception($"Could not find a toggle type for: '{processedName}'. Only supported types are: {string.Join(", ", SafeConditionTypes.Keys)}");
         }

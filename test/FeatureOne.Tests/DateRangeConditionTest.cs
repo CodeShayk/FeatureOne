@@ -12,14 +12,14 @@ public class DateRangeConditionTest
             StartDate = DateTime.Now.AddDays(-1),
             EndDate = DateTime.Now.AddDays(1)
         };
-        
+
         // Act
         var result = condition.Evaluate(new Dictionary<string, string>());
-        
+
         // Assert
         Assert.That(result, Is.True);
     }
-    
+
     [Test]
     public void DateRangeCondition_BeforeStartDate_ShouldReturnFalse()
     {
@@ -29,14 +29,14 @@ public class DateRangeConditionTest
             StartDate = DateTime.Now.AddDays(1),
             EndDate = DateTime.Now.AddDays(2)
         };
-        
+
         // Act
         var result = condition.Evaluate(new Dictionary<string, string>());
-        
+
         // Assert
         Assert.That(result, Is.False);
     }
-    
+
     [Test]
     public void DateRangeCondition_AfterEndDate_ShouldReturnFalse()
     {
@@ -46,14 +46,14 @@ public class DateRangeConditionTest
             StartDate = DateTime.Now.AddDays(-2),
             EndDate = DateTime.Now.AddDays(-1)
         };
-        
+
         // Act
         var result = condition.Evaluate(new Dictionary<string, string>());
-        
+
         // Assert
         Assert.That(result, Is.False);
     }
-    
+
     [Test]
     public void DateRangeCondition_NullStartDate_OnlyEndDate()
     {
@@ -63,14 +63,14 @@ public class DateRangeConditionTest
             StartDate = null,
             EndDate = DateTime.Now.AddDays(1)
         };
-        
+
         // Act
         var result = condition.Evaluate(new Dictionary<string, string>());
-        
+
         // Assert - Should be within range since there's no start date
         Assert.That(result, Is.True);
     }
-    
+
     [Test]
     public void DateRangeCondition_NullEndDate_OnlyStartDate()
     {
@@ -80,14 +80,14 @@ public class DateRangeConditionTest
             StartDate = DateTime.Now.AddDays(-1),
             EndDate = null
         };
-        
+
         // Act
         var result = condition.Evaluate(new Dictionary<string, string>());
-        
+
         // Assert - Should be within range since there's no end date
         Assert.That(result, Is.True);
     }
-    
+
     [Test]
     public void DateRangeCondition_BothDatesNull_ShouldReturnTrue()
     {
@@ -97,10 +97,10 @@ public class DateRangeConditionTest
             StartDate = null,
             EndDate = null
         };
-        
+
         // Act
         var result = condition.Evaluate(new Dictionary<string, string>());
-        
+
         // Assert
         Assert.That(result, Is.True);
     }

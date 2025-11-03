@@ -12,10 +12,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = DateTime.Now.AddDays(-1),
                 EndDate = DateTime.Now.AddDays(1)
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.True);
         }
@@ -29,10 +29,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = DateTime.Now.AddDays(-10),
                 EndDate = DateTime.Now.AddDays(-5)
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.False);
         }
@@ -46,10 +46,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = DateTime.Now.AddDays(-1),
                 EndDate = null // No end limit
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.True);
         }
@@ -63,10 +63,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = null, // No start limit
                 EndDate = DateTime.Now.AddDays(1)
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.True);
         }
@@ -80,10 +80,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = null,
                 EndDate = null
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.True);
         }
@@ -98,10 +98,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = today,
                 EndDate = today.AddDays(2)
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.True);
         }
@@ -116,10 +116,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = today.AddDays(-2),
                 EndDate = today
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.True);
         }
@@ -133,10 +133,10 @@ namespace FeatureOne.Tests.Toggles.Conditions
                 StartDate = DateTime.Now.AddDays(5), // Future start
                 EndDate = DateTime.Now.AddDays(10)   // Future end
             };
-            
+
             // Act
             var result = condition.Evaluate(new Dictionary<string, string>());
-            
+
             // Assert
             Assert.That(result, Is.False);
         }
@@ -147,14 +147,14 @@ namespace FeatureOne.Tests.Toggles.Conditions
             // Arrange
             var expectedStart = DateTime.Now.AddDays(-5);
             var expectedEnd = DateTime.Now.AddDays(5);
-            
+
             // Act
             var condition = new DateRangeCondition
             {
                 StartDate = expectedStart,
                 EndDate = expectedEnd
             };
-            
+
             // Assert
             Assert.That(condition.StartDate.Value.Date, Is.EqualTo(expectedStart.Date));
             Assert.That(condition.EndDate.Value.Date, Is.EqualTo(expectedEnd.Date));

@@ -1,7 +1,7 @@
-using Microsoft.Extensions.DependencyInjection;
-using FeatureOne.File.Extensions;
 using FeatureOne.Cache;
+using FeatureOne.File.Extensions;
 using FeatureOne.Json;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 namespace FeatureOne.File.Tests.Extensions;
@@ -34,7 +34,7 @@ public class FeatureOneFileExtensionsTest
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(
             () => services.AddFeatureOneWithFileStorage(configuration));
-        
+
         Assert.That(exception.Message, Does.Contain("FileConfiguration is required."));
     }
 

@@ -12,7 +12,7 @@ public class FeatureNameValidationTest
         Assert.DoesNotThrow(() => new FeatureName("Valid-Name"));
         Assert.DoesNotThrow(() => new FeatureName("A")); // Single character
         Assert.DoesNotThrow(() => new FeatureName("ValidNameWith123Numbers"));
-        
+
         // Test invalid names
         Assert.Throws<ArgumentException>(() => new FeatureName(null));
         Assert.Throws<ArgumentException>(() => new FeatureName(""));

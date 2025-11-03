@@ -1,7 +1,7 @@
-using Microsoft.Extensions.DependencyInjection;
-using FeatureOne.SQL.Extensions;
 using FeatureOne.Cache;
 using FeatureOne.Json;
+using FeatureOne.SQL.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 namespace FeatureOne.SQL.Tests.Extensions;
@@ -14,13 +14,13 @@ public class FeatureOneSQLExtensionsTest
     {
         // Arrange
         var services = new ServiceCollection();
-        var configuration = new SQLConfiguration 
-        { 
-            ConnectionSettings = new ConnectionSettings 
-            { 
-                ConnectionString = "Data Source=:memory:", 
-                ProviderName = "System.Data.SQLite" 
-            } 
+        var configuration = new SQLConfiguration
+        {
+            ConnectionSettings = new ConnectionSettings
+            {
+                ConnectionString = "Data Source=:memory:",
+                ProviderName = "System.Data.SQLite"
+            }
         };
 
         // Act
@@ -41,7 +41,7 @@ public class FeatureOneSQLExtensionsTest
         // Act & Assert
         var exception = Assert.Throws<ArgumentNullException>(
             () => services.AddFeatureOneWithSQLStorage(configuration));
-        
+
         Assert.That(exception.Message, Does.Contain("SQLConfiguration is required."));
     }
 
@@ -50,13 +50,13 @@ public class FeatureOneSQLExtensionsTest
     {
         // Arrange
         var services = new ServiceCollection();
-        var configuration = new SQLConfiguration 
-        { 
-            ConnectionSettings = new ConnectionSettings 
-            { 
-                ConnectionString = "Data Source=:memory:", 
-                ProviderName = "System.Data.SQLite" 
-            } 
+        var configuration = new SQLConfiguration
+        {
+            ConnectionSettings = new ConnectionSettings
+            {
+                ConnectionString = "Data Source=:memory:",
+                ProviderName = "System.Data.SQLite"
+            }
         };
         var mockDeserializer = new Mock<IToggleDeserializer>();
 
@@ -72,13 +72,13 @@ public class FeatureOneSQLExtensionsTest
     {
         // Arrange
         var services = new ServiceCollection();
-        var configuration = new SQLConfiguration 
-        { 
-            ConnectionSettings = new ConnectionSettings 
-            { 
-                ConnectionString = "Data Source=:memory:", 
-                ProviderName = "System.Data.SQLite" 
-            } 
+        var configuration = new SQLConfiguration
+        {
+            ConnectionSettings = new ConnectionSettings
+            {
+                ConnectionString = "Data Source=:memory:",
+                ProviderName = "System.Data.SQLite"
+            }
         };
         var mockCache = new Mock<ICache>();
 
@@ -94,13 +94,13 @@ public class FeatureOneSQLExtensionsTest
     {
         // Arrange
         var services = new ServiceCollection();
-        var configuration = new SQLConfiguration 
-        { 
-            ConnectionSettings = new ConnectionSettings 
-            { 
-                ConnectionString = "Data Source=:memory:", 
-                ProviderName = "System.Data.SQLite" 
-            } 
+        var configuration = new SQLConfiguration
+        {
+            ConnectionSettings = new ConnectionSettings
+            {
+                ConnectionString = "Data Source=:memory:",
+                ProviderName = "System.Data.SQLite"
+            }
         };
         var mockDeserializer = new Mock<IToggleDeserializer>();
         var mockCache = new Mock<ICache>();
@@ -117,13 +117,13 @@ public class FeatureOneSQLExtensionsTest
     {
         // Arrange
         var services = new ServiceCollection();
-        var configuration = new SQLConfiguration 
-        { 
-            ConnectionSettings = new ConnectionSettings 
-            { 
-                ConnectionString = "Data Source=:memory:", 
-                ProviderName = "System.Data.SQLite" 
-            } 
+        var configuration = new SQLConfiguration
+        {
+            ConnectionSettings = new ConnectionSettings
+            {
+                ConnectionString = "Data Source=:memory:",
+                ProviderName = "System.Data.SQLite"
+            }
         };
 
         // Act

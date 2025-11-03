@@ -26,10 +26,10 @@ namespace FeatureOne.File.Extensions
                 throw new ArgumentNullException("FileConfiguration is required.");
 
             return services
-                    .AddFeatureOne(provider=>
+                    .AddFeatureOne(provider =>
                     new FileStorageProvider(configuration,
                     new FileReader(configuration),
-                    deserializer?? new ToggleDeserializer(new ConditionDeserializer()),
+                    deserializer ?? new ToggleDeserializer(new ConditionDeserializer()),
                     cache ?? new FeatureCache()));
         }
     }

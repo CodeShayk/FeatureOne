@@ -11,13 +11,13 @@ namespace FeatureOne.Core.Toggles.Conditions
         public bool Evaluate(IDictionary<string, string> claims)
         {
             var now = DateTime.Now.Date;  // Use just the date part for comparison
-            
+
             if (StartDate.HasValue && now < StartDate.Value.Date)
                 return false;
-                
+
             if (EndDate.HasValue && now > EndDate.Value.Date)
                 return false;
-                
+
             return true;
         }
     }

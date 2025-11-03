@@ -11,6 +11,7 @@ namespace FeatureOne
         {
             this.logger = logger;
         }
+
         public void Info(string message)
         {
             logger?.LogInformation(message);
@@ -19,7 +20,6 @@ namespace FeatureOne
         public void Debug(string message)
         {
             logger?.LogDebug(message);
-
         }
 
         public void Warn(string message)

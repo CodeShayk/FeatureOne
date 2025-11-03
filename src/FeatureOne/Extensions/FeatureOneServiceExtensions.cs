@@ -1,6 +1,6 @@
+using System;
 using FeatureOne;
 using FeatureOne.Core.Stores;
-using System;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -20,13 +20,12 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             if (storageProviderFactory == null)
                 throw new ArgumentNullException(nameof(storageProviderFactory));
-                     
 
             return services
                 .AddSingleton<IStorageProvider>(provider => storageProviderFactory(provider))
-                .AddSingleton<IFeatureLogger, DefaultLogger>(provider=> new DefaultLogger(provider.GetService<ILogger<IFeatureLogger>>()))
+                .AddSingleton<IFeatureLogger, DefaultLogger>(provider => new DefaultLogger(provider.GetService<ILogger<IFeatureLogger>>()))
                 .AddSingleton<IFeatureStore>(provider => new FeatureStore(provider.GetRequiredService<IStorageProvider>(), provider.GetRequiredService<IFeatureLogger>()))
-                .AddSingleton<IFeatures, Features>(provider => new Features(provider.GetRequiredService<IFeatureStore>(), provider.GetRequiredService<IFeatureLogger>()));              
-        }       
+                .AddSingleton<IFeatures, Features>(provider => new Features(provider.GetRequiredService<IFeatureStore>(), provider.GetRequiredService<IFeatureLogger>()));
+        }
     }
 }

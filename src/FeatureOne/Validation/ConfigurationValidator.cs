@@ -33,7 +33,7 @@ namespace FeatureOne.Validation
                 return ValidateRegexCondition(regexCondition);
             else if (condition is DateRangeCondition dateRangeCondition)
                 return ValidateDateRangeCondition(dateRangeCondition);
-            
+
             return new ValidationResult(true, null);
         }
 
@@ -55,7 +55,7 @@ namespace FeatureOne.Validation
 
         private ValidationResult ValidateDateRangeCondition(DateRangeCondition condition)
         {
-            if (condition.StartDate.HasValue && condition.EndDate.HasValue && 
+            if (condition.StartDate.HasValue && condition.EndDate.HasValue &&
                 condition.StartDate.Value > condition.EndDate.Value)
                 return new ValidationResult(false, "Start date cannot be after end date");
 
@@ -124,7 +124,7 @@ namespace FeatureOne.Validation
                 // If we can't parse it, be conservative
                 return true;
             }
-            
+
             return false;
         }
 
@@ -137,12 +137,12 @@ namespace FeatureOne.Validation
 
             for (int i = 0; i < chars.Length; i++)
             {
-                if (chars[i] == '(' && (i == 0 || chars[i-1] != '\\')) // Not escaped
+                if (chars[i] == '(' && (i == 0 || chars[i - 1] != '\\')) // Not escaped
                 {
                     groupDepth++;
                     maxDepth = Math.Max(maxDepth, groupDepth);
                 }
-                else if (chars[i] == ')' && (i == 0 || chars[i-1] != '\\')) // Not escaped
+                else if (chars[i] == ')' && (i == 0 || chars[i - 1] != '\\')) // Not escaped
                 {
                     groupDepth--;
                 }
@@ -167,7 +167,7 @@ namespace FeatureOne.Validation
         private bool HasSpecificDangerousPatterns(string pattern)
         {
             // Check for specific patterns known to cause ReDoS
-            
+
             // Look for nested quantifiers like ([^...]*.*)+ or (.*[^...]+)*
             if (Regex.IsMatch(pattern, @"\([^+*]*[\*\+][^+*]*\)[\*\+]", RegexOptions.IgnoreCase))
             {

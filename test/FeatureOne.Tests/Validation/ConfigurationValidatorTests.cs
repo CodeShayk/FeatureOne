@@ -16,7 +16,7 @@ namespace FeatureOne.Tests.Validation
         {
             // Act
             var result = _validator.ValidateFeatureName("ValidFeatureName123");
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
@@ -27,7 +27,7 @@ namespace FeatureOne.Tests.Validation
         {
             // Act
             var result = _validator.ValidateFeatureName("Invalid Feature Name");
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -38,7 +38,7 @@ namespace FeatureOne.Tests.Validation
         {
             // Act
             var result = _validator.ValidateFeatureName("Invalid@Name!");
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -49,7 +49,7 @@ namespace FeatureOne.Tests.Validation
         {
             // Act
             var result = _validator.ValidateFeatureName("");
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -60,7 +60,7 @@ namespace FeatureOne.Tests.Validation
         {
             // Act
             var result = _validator.ValidateFeatureName(null);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -71,10 +71,10 @@ namespace FeatureOne.Tests.Validation
         {
             // Arrange
             var condition = new SimpleCondition { IsEnabled = true };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
@@ -89,10 +89,10 @@ namespace FeatureOne.Tests.Validation
                 Claim = "role",
                 Expression = "admin"
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
@@ -107,10 +107,10 @@ namespace FeatureOne.Tests.Validation
                 Claim = null,
                 Expression = "admin"
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -125,10 +125,10 @@ namespace FeatureOne.Tests.Validation
                 Claim = "role",
                 Expression = null
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -143,10 +143,10 @@ namespace FeatureOne.Tests.Validation
                 Claim = "test",
                 Expression = @"^([a-zA-Z0-9]+)+$" // Known dangerous ReDoS pattern from test case
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -161,10 +161,10 @@ namespace FeatureOne.Tests.Validation
                 StartDate = DateTime.Now.AddDays(-1),
                 EndDate = DateTime.Now.AddDays(1)
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
@@ -179,10 +179,10 @@ namespace FeatureOne.Tests.Validation
                 StartDate = DateTime.Now.AddDays(10), // Future start
                 EndDate = DateTime.Now.AddDays(5)    // Past end (invalid range)
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
@@ -197,10 +197,10 @@ namespace FeatureOne.Tests.Validation
                 StartDate = DateTime.Now.AddDays(-5), // Past start
                 EndDate = DateTime.Now.AddDays(5)    // Future end (valid range)
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
@@ -215,10 +215,10 @@ namespace FeatureOne.Tests.Validation
                 StartDate = null, // No start limit
                 EndDate = null    // No end limit
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
@@ -233,10 +233,10 @@ namespace FeatureOne.Tests.Validation
                 StartDate = DateTime.Now.AddDays(-5), // Valid start date
                 EndDate = null                        // No end limit
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
@@ -251,10 +251,10 @@ namespace FeatureOne.Tests.Validation
                 StartDate = null,                      // No start limit
                 EndDate = DateTime.Now.AddDays(5)     // Valid end date
             };
-            
+
             // Act
             var result = _validator.ValidateCondition(condition);
-            
+
             // Assert
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.ErrorMessage, Is.Null);
