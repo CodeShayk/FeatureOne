@@ -1,8 +1,8 @@
 using System.Runtime.Caching;
 using FeatureOne.Cache;
 using FeatureOne.File;
-using FeatureOne.Json;
 using FeatureOne.File.StorageProvider;
+using FeatureOne.Json;
 using Moq;
 
 namespace FeatureOne.SQL.Tests.UnitTests

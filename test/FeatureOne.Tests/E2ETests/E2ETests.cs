@@ -1,7 +1,6 @@
 using System.Security.Claims;
-using FeatureOne.Core.Stores;
 
-namespace FeatureOne.Tests.Registeration
+namespace FeatureOne.Tests.E2ETests
 {
     [TestFixture]
     internal class E2ETests

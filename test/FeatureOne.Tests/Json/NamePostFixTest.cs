@@ -1,5 +1,3 @@
-using FeatureOne.Json;
-
 namespace FeatureOne.Tests.Json
 {
     [TestFixture]

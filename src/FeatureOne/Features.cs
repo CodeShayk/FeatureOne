@@ -2,19 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using FeatureOne.Validation;
 
 namespace FeatureOne
 {
     /// <summary>
     /// Class to enable checking if a feature is enabled
     /// </summary>
-    public class Features
+    public class Features : IFeatures
     {
         private readonly IFeatureStore featureStore;
         private readonly IFeatureLogger logger;
+        private static readonly ConfigurationValidator validator = new ConfigurationValidator();
         public static Features Current { get; private set; }
 
-        public Features(IFeatureStore featureStore) : this(featureStore, new NullLogger())
+        public Features(IFeatureStore featureStore) : this(featureStore, new DefaultLogger(null))
         { }
 
         public Features(IFeatureStore featureStore, IFeatureLogger logger)
@@ -72,6 +74,14 @@ namespace FeatureOne
                     logger?.Warn($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, Message='Empty claims'");
                 }
 
+                // Validate feature name
+                var validation = validator.ValidateFeatureName(name);
+                if (!validation.IsValid)
+                {
+                    logger?.Error($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, Message='Invalid feature name: {validation.ErrorMessage}'");
+                    return false;
+                }
+
                 var featureName = new FeatureName(name);
 
                 var features = featureStore.FindStartsWith(featureName.Value).ToList();
@@ -85,7 +95,7 @@ namespace FeatureOne
 
                 if (feature == null)
                 {
-                    logger?.Warn($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, Message='Featrue not found'");
+                    logger?.Warn($"FeatureOne, Action='Features.IsEnabled', Feature= {name}, Message='Feature not found'");
                     return false;
                 }
 

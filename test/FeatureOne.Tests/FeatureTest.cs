@@ -1,5 +1,3 @@
-using FeatureOne.Core;
-using FeatureOne.Core.Toggles.Conditions;
 using Moq;
 
 namespace FeatureOne.Test

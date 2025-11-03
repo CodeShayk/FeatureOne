@@ -6,27 +6,21 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using FeatureOne.Core;
+using FeatureOne.Core.Toggles.Conditions;
 
 namespace FeatureOne.Json
 {
     public class ConditionDeserializer : IConditionDeserializer
     {
-        private static Type[] loaddedTypes;
-
-        private static Type[] LoaddedTypes
+        private static readonly Dictionary<string, Type> SafeConditionTypes = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
         {
-            get
-            {
-                if (loaddedTypes != null && loaddedTypes.Length > 0)
-                    return loaddedTypes;
-
-                loaddedTypes = Assembly.GetExecutingAssembly().GetTypes()
-                        .Where(mytype => mytype.GetInterfaces().Contains(typeof(ICondition)))
-                        .ToArray();
-
-                return loaddedTypes;
-            }
-        }
+            { "Simple", typeof(SimpleCondition) },
+            { "SimpleCondition", typeof(SimpleCondition) },
+            { "Regex", typeof(RegexCondition) },
+            { "RegexCondition", typeof(RegexCondition) },
+            { "DateRange", typeof(DateRangeCondition) },
+            { "DateRangeCondition", typeof(DateRangeCondition) }
+        };
 
         public ICondition Deserialize(JsonObject condition)
         {
@@ -42,15 +36,19 @@ namespace FeatureOne.Json
             return toggle;
         }
 
-        private static ICondition CreateInstance(NamePostFix conditionName)
+        public ICondition CreateInstance(NamePostFix conditionName)
         {
-            var type = LoaddedTypes
-               .FirstOrDefault(p => p.Name.Equals(conditionName.Name, StringComparison.OrdinalIgnoreCase));
+            // NamePostFix transforms both "Simple" and "SimpleCondition" to "SimpleCondition"
+            // So we look up the processed name
+            var processedName = conditionName.Name;
 
-            if (type == null)
-                throw new Exception($"Could not find a toggle type for: '{conditionName.Name}'");
+            if (SafeConditionTypes.TryGetValue(processedName, out Type type))
+            {
+                return (ICondition)Activator.CreateInstance(type, true);
+            }
 
-            return (ICondition)Activator.CreateInstance(type, true);
+            // This shouldn't normally happen with correct inputs since NamePostFix standardizes the format
+            throw new Exception($"Could not find a toggle type for: '{processedName}'. Only supported types are: {string.Join(", ", SafeConditionTypes.Keys)}");
         }
 
         private static void HydrateToggle(ICondition toggleCondition, JsonObject state)

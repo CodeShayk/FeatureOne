@@ -1,5 +1,3 @@
-using FeatureOne.Core.Toggles.Conditions;
-
 namespace FeatureOne.Test.Toggles
 {
     [TestFixture]
@@ -18,6 +16,7 @@ namespace FeatureOne.Test.Toggles
             Assert.That(!condition.Evaluate(claims));
         }
 
+        [Test]
         public void EvaluateToggleConditionToTrueOnMatchIsHit()
         {
             claims.Add("email", "kl12.sha123@ninja.com");
@@ -25,12 +24,13 @@ namespace FeatureOne.Test.Toggles
             Assert.That(condition.Evaluate(claims), Is.EqualTo(true));
         }
 
+        [Test]
         public void EvaluateToggleConditionToFalseOnMatchIsMiss()
         {
             claims.Add("email", "kl12.sha123@yahoo.com");
             var condition = new RegexCondition { Claim = "email", Expression = GmailDotCom };
 
-            Assert.That(condition.Evaluate(claims), Is.Not.EqualTo(false));
+            Assert.That(condition.Evaluate(claims), Is.EqualTo(false)); // Fixed: was Is.Not.EqualTo(false)
         }
     }
 }

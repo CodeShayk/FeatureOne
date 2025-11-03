@@ -1,7 +1,3 @@
-using FeatureOne.Core;
-using FeatureOne.Core.Toggles.Conditions;
-using FeatureOne.Json;
-
 namespace FeatureOne.Tests.Json
 {
     [TestFixture]

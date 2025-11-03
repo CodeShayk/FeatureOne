@@ -1,5 +1,3 @@
-using FeatureOne.Core;
-
 namespace FeatureOne.Tests
 {
     internal class ReleaseOnCondition : ICondition
