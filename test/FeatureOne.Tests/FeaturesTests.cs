@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Moq;
-using NUnit.Framework;
 
 namespace FeatureOne.Tests
 {

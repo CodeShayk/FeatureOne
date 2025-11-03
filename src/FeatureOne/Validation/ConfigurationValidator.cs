@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using FeatureOne.Core;
 using FeatureOne.Core.Toggles.Conditions;
-using FeatureOne;
 
 namespace FeatureOne.Validation
 {

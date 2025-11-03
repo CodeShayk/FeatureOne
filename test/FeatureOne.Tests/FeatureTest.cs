@@ -1,7 +1,4 @@
-using FeatureOne.Core;
-using FeatureOne.Core.Toggles.Conditions;
 using Moq;
-using NUnit.Framework;
 
 namespace FeatureOne.Test
 {

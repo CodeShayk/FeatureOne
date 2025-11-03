@@ -1,4 +1,3 @@
-using System;
 using FeatureOne.Cache;
 
 namespace FeatureOne.SQL

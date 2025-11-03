@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using FeatureOne.Core.Toggles.Conditions;
-using NUnit.Framework;
-
 namespace FeatureOne.Tests.Toggles.Conditions
 {
     [TestFixture]
