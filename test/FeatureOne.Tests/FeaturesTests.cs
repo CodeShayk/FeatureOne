@@ -1,8 +1,10 @@
 using System.Security.Claims;
 using Moq;
+using NUnit.Framework;
 
 namespace FeatureOne.Tests
 {
+    [TestFixture]
     public class FeaturesTests
     {
         private Mock<IFeatureStore> store;
@@ -42,7 +44,7 @@ namespace FeatureOne.Tests
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims));
             var output = features.IsEnabled(featureName, principal);
 
-            Assert.That(output, Is.EqualTo(true));
+            Assert.That(output, Is.True);
 
             store.Verify(x => x.FindStartsWith(featureName));
             feature.Verify(x => x.IsEnabled(It.IsAny<IDictionary<string, string>>()));
@@ -54,7 +56,7 @@ namespace FeatureOne.Tests
             featureName = "non-existing-feature";
             var output = features.IsEnabled(featureName, principal);
 
-            Assert.That(output, Is.EqualTo(false));
+            Assert.That(output, Is.False);
 
             store.Verify(x => x.FindStartsWith(featureName));
         }
@@ -67,7 +69,7 @@ namespace FeatureOne.Tests
 
             var output = features.IsEnabled(featureName, principal);
 
-            Assert.That(output, Is.EqualTo(false));
+            Assert.That(output, Is.False);
 
             logger.Verify(x => x.Error(It.Is<string>(msg => msg.Contains(featureName)), It.IsAny<Exception>()));
         }

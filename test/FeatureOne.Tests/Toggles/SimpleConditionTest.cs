@@ -1,4 +1,6 @@
 using FeatureOne.Core.Toggles.Conditions;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace FeatureOne.Test.Toggles
 {
@@ -10,7 +12,7 @@ namespace FeatureOne.Test.Toggles
         public void Evaluate_returns_IsEnabled(bool isEnabled)
         {
             var toggle = new SimpleCondition { IsEnabled = isEnabled };
-            Assert.That(toggle.Evaluate(null), Is.EqualTo(isEnabled));
+            Assert.That(toggle.Evaluate(new Dictionary<string, string>()), Is.EqualTo(isEnabled));
         }
     }
 }
