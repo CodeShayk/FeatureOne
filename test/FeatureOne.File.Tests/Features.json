@@ -24,5 +24,17 @@
         }
       ]
     }
+  },
+  "tier_feature": {
+    "toggle": {
+      "conditions": [
+        {
+          "type": "Relational",
+          "claim": "tier",
+          "operator": "GreaterThanOrEqual",
+          "value": "gold"
+        }
+      ]
+    }
   }
 }
