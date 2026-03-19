@@ -16,8 +16,8 @@ namespace FeatureOne.Core.Toggles.Conditions
 
             if (!claims.Any(x => x.Key != null && x.Key.Equals(Claim)))
                 return false;
-            
-            var claimValue = claims.First(x => x.Key.Equals(Claim)).Value?.Trim()    ?? string.Empty;    
+
+            var claimValue = claims.First(x => x.Key.Equals(Claim)).Value?.Trim() ?? string.Empty;
             var comparisonValue = Value?.Trim() ?? string.Empty;
 
             switch (Operator)
@@ -35,7 +35,6 @@ namespace FeatureOne.Core.Toggles.Conditions
                 default:
                     return false;
             }
-            
         }
     }
     public enum RelationalOperator
