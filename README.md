@@ -1,5 +1,4 @@
-
-# <img src="https://github.com/CodeShayk/FeatureOne/blob/master/images/feature-flag.png" alt="feature-flag" style="width:30px;"/> FeatureOne v5.2.0
+# <img src="https://github.com/CodeShayk/FeatureOne/blob/master/images/feature-flag.png" alt="feature-flag" style="width:60px;"/> FeatureOne v5.2.0
 [![GitHub Release](https://img.shields.io/github/v/release/CodeShayk/FeatureOne?logo=github&sort=semver)](https://github.com/CodeShayk/FeatureOne/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/CodeShayk/FeatureOne/blob/master/License.md) [![build-master](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml/badge.svg)](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml)
 [![CodeQL](https://github.com/CodeShayk/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/CodeShayk/FeatureOne/actions/workflows/codeql.yml)
