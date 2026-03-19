@@ -1,4 +1,4 @@
-next-version: 5.1.0
+next-version: 5.2.0
 tag-prefix: '[vV]'
 mode: ContinuousDeployment
 branches:

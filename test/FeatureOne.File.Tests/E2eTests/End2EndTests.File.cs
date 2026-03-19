@@ -44,5 +44,21 @@ namespace FeatureOne.File.Tests.E2eTests
             enabled = Features.Current.IsEnabled("gbk_dashboard", user2_claims);
             Assert.That(enabled == true);
         }
+
+        [Test]
+        public void TestForTierFeatureToBeEnabledForGoldAndAbove()
+        {
+            var bronze_claims = new[] { new Claim("tier", "bronze") };
+            var enabled = Features.Current.IsEnabled("tier_feature", bronze_claims);
+            Assert.That(enabled == false);
+
+            var gold_claims = new[] { new Claim("tier", "gold") };
+            enabled = Features.Current.IsEnabled("tier_feature", gold_claims);
+            Assert.That(enabled == true);
+
+            var platinum_claims = new[] { new Claim("tier", "platinum") };
+            enabled = Features.Current.IsEnabled("tier_feature", platinum_claims);
+            Assert.That(enabled == true);
+        }
     }
 }

@@ -1,20 +1,19 @@
-
-# <img src="https://github.com/CodeShayk/FeatureOne/blob/master/images/feature-flag.png" alt="feature" style="width:60px;"/> FeatureOne v5.1.0
+# <img src="https://github.com/CodeShayk/FeatureOne/blob/master/images/feature-flag.png" alt="feature-flag" style="width:60px;"/> FeatureOne v5.2.0
 [![GitHub Release](https://img.shields.io/github/v/release/CodeShayk/FeatureOne?logo=github&sort=semver)](https://github.com/CodeShayk/FeatureOne/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/CodeShayk/FeatureOne/blob/master/License.md) [![build-master](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml/badge.svg)](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml)
 [![CodeQL](https://github.com/CodeShayk/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/CodeShayk/FeatureOne/actions/workflows/codeql.yml)
-[![.Net](https://img.shields.io/badge/.Net_Framework-4.6.2-blue)](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net46)
-[![.Net](https://img.shields.io/badge/.Net_Standard-2.1-blue)](https://dotnet.microsoft.com/en-us/download/netstandard/2.1)
+[![.Net](https://img.shields.io/badge/.Net_Standard-2.1-green)](https://dotnet.microsoft.com/en-us/download/netstandard/2.1)
 [![.Net](https://img.shields.io/badge/.Net-9.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+[![.Net](https://img.shields.io/badge/.Net-10.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 
 .Net Library to implement feature toggles.
 --
 #### Nuget Packages
 | Package  | Latest | Details | 
 | --------| --------| --------|
-|FeatureOne |[![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Provides core functionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. **v5.1.0**: Security fixes, DI integration, DateRangeCondition. |
-|FeatureOne.SQL| [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | Provides SQL storage provider for implementing feature toggles using `SQL` backend. **v5.1.0**: Security fixes, DI integration, enhanced configuration. |
-|FeatureOne.File |[![NuGet version](https://badge.fury.io/nu/FeatureOne.File.svg)](https://badge.fury.io/nu/FeatureOne.File) | Provides File storage provider for implementing feature toggles using `File System` backend. **v5.1.0**: Security fixes, DI integration, enhanced configuration. |
+|FeatureOne |[![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Provides core functionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. **v5.2.0**: RelationalCondition, net10.0 support, package upgrades, expanded test coverage. |
+|FeatureOne.SQL| [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | Provides SQL storage provider for implementing feature toggles using `SQL` backend. **v5.2.0**: net10.0 support, package upgrades. |
+|FeatureOne.File |[![NuGet version](https://badge.fury.io/nu/FeatureOne.File.svg)](https://badge.fury.io/nu/FeatureOne.File) | Provides File storage provider for implementing feature toggles using `File System` backend. **v5.2.0**: net10.0 support, package upgrades. |
 
 ## Concept
 ### What is a feature toggle?
@@ -62,6 +61,8 @@ The following previous versions are available:
 
 | Version                                                         | Release Notes                                                         |
 | ----------------------------------------------------------------| ----------------------------------------------------------------------|
+| [`v5.2.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.2.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.2.0) |
+| [`v5.1.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.1.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.1.0) |
 | [`v5.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.0.0) |
 | [`v4.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v4.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v4.0.0) |
 | [`v3.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v3.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v3.0.0) |
@@ -73,6 +74,7 @@ The following previous versions are available:
 |--------|-------------|------|-------------|---------------------|
 | v5.0.0 | Previous | Initial | Core feature toggle functionality | N/A (Initial release) |
 | v5.1.0 | Nov 03, 2025 | Minor | **Security fixes** (ReDoS protection, secure type loading), **architectural improvements** (prefix matching, dependency injection), **new features** (DateRangeCondition, configuration validation), **DI integration** | High - maintains all existing functionality with minor security-related behavioral changes |
+| v5.2.0 | Mar 18, 2026 | Minor | **New condition** (RelationalCondition with 5 relational operators), **target framework** (added net10.0, removed netstandard2.0 and net8.0), **package upgrades** (all MS packages to 10.0.5), **expanded test coverage** (98%+ line coverage) | High - fully backward compatible, additive changes only |
 
 ## Credits
 Thank you for reading. Please fork, explore, contribute and report. Happy Coding !! :)

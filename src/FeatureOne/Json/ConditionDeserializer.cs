@@ -19,7 +19,9 @@ namespace FeatureOne.Json
             { "Regex", typeof(RegexCondition) },
             { "RegexCondition", typeof(RegexCondition) },
             { "DateRange", typeof(DateRangeCondition) },
-            { "DateRangeCondition", typeof(DateRangeCondition) }
+            { "DateRangeCondition", typeof(DateRangeCondition) },
+            { "Relational", typeof(RelationalCondition) },
+            { "RelationalCondition", typeof(RelationalCondition) }
         };
 
         public ICondition Deserialize(JsonObject condition)

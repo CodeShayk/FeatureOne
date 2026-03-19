@@ -96,18 +96,18 @@ var feature = new Feature
 #### ii. Regex Condition
 `Regex` condition allows evaluating a regex expression against specified user claim value to enable a given feature.
 
-Below is the serialized representation of toggle with regex condition. 
+Below is the serialized representation of toggle with regex condition.
 ```
  {
-   "dashboard_widget":{  
-	  "toggle":{    
-		                          
+   "dashboard_widget":{
+	  "toggle":{
+
 		  "conditions":[{
 			  "type":"Regex",  -- Regex Condition
 			  "claim":"email", -- Claim 'email' to be used for evaluation.
 			  "expression":"*@gbk.com" -- Regex expression to be used for evaluation.
-		   }]		  
-	  }	  
+		   }]
+	  }
    }
  }
 ```
@@ -119,11 +119,65 @@ var feature = new Feature
   Name ="dashboard_widget",   // Feature Name
   Toggle = new Toggle         // Toggle definition
   {
-    Operator = Operator.Any,  
-    Conditions = new[] 
+    Operator = Operator.Any,
+    Conditions = new[]
     {
         // Regex condition that evalues role of user to be administrator to enable the feature.
         new RegexCondition { Claim = "role", Expression = "administrator" }
+    }
+  }
+}
+```
+
+#### iii. Relational Condition
+`Relational` condition (class `RelationalCondition`) allows evaluating a user claim value against a fixed value using a relational operator. This is useful for enabling features based on user tiers, roles, or any string-comparable claim.
+
+Supported operators (`RelationalOperator` enum):
+
+| Operator | Description |
+|---|---|
+| `Equals` | Claim value equals the configured value |
+| `NotEquals` | Claim value does not equal the configured value |
+| `GreaterThan` | Claim value is lexicographically greater than the configured value |
+| `GreaterThanOrEqual` | Claim value is lexicographically greater than or equal to the configured value |
+| `LessThanOrEqual` | Claim value is lexicographically less than or equal to the configured value |
+| `LessThan` | Defined in enum but **not yet implemented** — always returns `false` |
+
+> **Note:** String comparison is ordinal (via `string.Compare`). Both the claim value and the configured value are trimmed of leading/trailing whitespace before comparison.
+
+Below is the serialized representation of a toggle with a logical condition.
+```
+{
+  "dashboard_widget":{
+    "toggle":{
+      "operator":"any",
+      "conditions":[{
+        "type":"Relational",           -- Relational Condition
+        "claim":"tier",                -- Claim name to evaluate
+        "operator":"GreaterThanOrEqual", -- Relational operator
+        "value":"gold"                 -- Value to compare the claim against
+      }]
+    }
+  }
+}
+```
+C# representation of a feature with a logical condition toggle is
+```
+var feature = new Feature
+{
+  Name = "dashboard_widget",   // Feature Name
+  Toggle = new Toggle          // Toggle definition
+  {
+    Operator = Operator.Any,
+    Conditions = new[]
+    {
+        // Relational condition — enable feature for users with tier >= "gold" (lexicographic order).
+        new RelationalCondition
+        {
+            Claim    = "tier",
+            Operator = RelationalOperator.GreaterThanOrEqual,
+            Value    = "gold"
+        }
     }
   }
 }
