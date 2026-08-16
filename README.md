@@ -1,82 +1,134 @@
 # <img src="https://github.com/CodeShayk/FeatureOne/blob/master/images/feature-flag.png" alt="feature-flag" style="width:60px;"/> FeatureOne v6.0.0
+
 [![GitHub Release](https://img.shields.io/github/v/release/CodeShayk/FeatureOne?logo=github&sort=semver)](https://github.com/CodeShayk/FeatureOne/releases/latest)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/CodeShayk/FeatureOne/blob/master/License.md) [![build-master](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml/badge.svg)](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml)
+[![OpenFeature](https://img.shields.io/badge/OpenFeature-Compliant-brightgreen)](https://openfeature.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/CodeShayk/FeatureOne/blob/master/License.md)
+[![build-master](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml/badge.svg)](https://github.com/CodeShayk/FeatureOne/actions/workflows/Build-Master.yml)
 [![CodeQL](https://github.com/CodeShayk/FeatureOne/actions/workflows/codeql.yml/badge.svg)](https://github.com/CodeShayk/FeatureOne/actions/workflows/codeql.yml)
 [![.Net](https://img.shields.io/badge/.Net_Standard-2.1-green)](https://dotnet.microsoft.com/en-us/download/netstandard/2.1)
 [![.Net](https://img.shields.io/badge/.Net-9.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 [![.Net](https://img.shields.io/badge/.Net-10.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 
-.Net Library to implement feature toggles.
---
-#### Nuget Packages
-| Package  | Latest | Details | 
-| --------| --------| --------|
-|FeatureOne |[![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Core feature toggle evaluation engine and built-in **CNCF OpenFeature Specification (v1.x)** provider (`FeatureOneProvider` under `FeatureOne.OpenFeature` namespace). **v6.0.0**: OpenFeature specification provider integrated directly into core library. |
-|FeatureOne.SQL| [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | Provides SQL storage provider for implementing feature toggles using `SQL` backend. **v6.0.0**: net10.0 support, package upgrades. |
-|FeatureOne.File |[![NuGet version](https://badge.fury.io/nu/FeatureOne.File.svg)](https://badge.fury.io/nu/FeatureOne.File) | Provides File storage provider for implementing feature toggles using `File System` backend. **v6.0.0**: net10.0 support, package upgrades. |
+> **FeatureOne** is a high-performance, lightweight, and fully **CNCF OpenFeature Specification (v1.x)** compliant feature flagging library for .NET applications.
+
+---
+
+## 🚀 OpenFeature Specification & Compliance
+
+FeatureOne features a native **OpenFeature Specification Provider** (`FeatureOneProvider` under the `FeatureOne.OpenFeature` namespace) built directly into the core library. This allows you to evaluate feature toggles using vendor-neutral OpenFeature SDK clients while leveraging FeatureOne's powerful condition strategies, custom storage providers, and caching mechanisms.
+
+### Key OpenFeature Highlights
+- **Standardized Provider (`FeatureOneProvider`)**: Implements `OpenFeature.FeatureProvider` for vendor-agnostic feature flagging.
+- **Typed Flag Evaluation**: Supports `Boolean`, `String`, `Integer`, `Double`, and `Structure` flag resolutions.
+- **Evaluation Context Claims Mapping**: Converts OpenFeature `TargetingKey` and `EvaluationContext` attributes seamlessly to FeatureOne user claims.
+- **Full Hook Lifecycle Adaptability**: Participates in OpenFeature's 5-stage Hook pipeline (`BeforeAsync` $\rightarrow$ `Resolve` $\rightarrow$ `AfterAsync` / `ErrorAsync` $\rightarrow$ `FinallyAsync`) with native logger hooks (`FeatureOneLoggingHook`).
+- **Provider Status & Events**: Fully manages provider lifecycle states (`ProviderStatus.NotReady`, `Ready`, `Error`) and event propagation.
+- **ASP.NET Core DI Integration**: Easily registered via `services.AddFeatureOneOpenFeature()`.
+
+```csharp
+using FeatureOne.OpenFeature;
+using OpenFeature;
+using OpenFeature.Model;
+
+// Register FeatureOne as the global OpenFeature provider
+await Api.Instance.SetProviderAsync(new FeatureOneProvider());
+
+// Evaluate flags using standard OpenFeature Client
+var client = Api.Instance.GetClient();
+var context = EvaluationContext.Builder().SetTargetingKey("usr_123").Set("tier", "gold").Build();
+
+bool showWidget = await client.GetBooleanValueAsync("dashboard_widget", false, context);
+```
+
+---
+
+#### NuGet Packages
+| Package | Latest | Details |
+|---|---|---|
+| **FeatureOne** | [![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Core feature evaluation engine and built-in **CNCF OpenFeature Specification (v1.x)** provider (`FeatureOneProvider` under `FeatureOne.OpenFeature` namespace). **v6.0.0**: OpenFeature provider built directly into core library. |
+| **FeatureOne.SQL** | [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | SQL storage provider for implementing feature toggles using relational database backends (MSSQL, SQLite, PostgreSQL, MySQL). |
+| **FeatureOne.File** | [![NuGet version](https://badge.fury.io/nu/FeatureOne.File.svg)](https://badge.fury.io/nu/FeatureOne.File) | File storage provider for implementing feature toggles using JSON configuration files. |
+
+---
 
 ## Concept
-### What is a feature toggle?
-Feature toggle is a mechanism that allows code to be turned “on” or “off” remotely without the need for a deploy. Feature toggles are commonly used in applications to gradually roll out new features, allowing teams to test changes on a small subset of users before releasing them to everyone.
 
-### How feature toggles work
-Feature toggle is typically a logical check added to codebase to execute or ignore certain functionality in context based on evaluated status of the toggle at runitme.
+### What is a Feature Toggle?
+Feature toggle is a mechanism that allows code to be turned “on” or “off” remotely without requiring a deployment. Feature toggles are commonly used in applications to gradually roll out new features, test changes on a small subset of users, or instantly disable features during emergencies.
 
-In code, the functionality to be released is wrapped so that it can be controlled by the status of a feature toggle. If the status of the feature toggle is “on”, then the wrapped functionality is executed. If the status of the feature toggle is “off”, then the wrapped functionality is skipped.  The statuses of each feature is provided by a store provider external to the application.
+### How Feature Toggles Work
+Feature toggle is typically a logical check wrapped around application code to execute or skip functionality based on evaluated status at runtime.
 
-### The benefits of feature toggles
-The primary benefit of feature flagging is that it mitigates the risks associated with releasing changes to an application. Whether it be a new feature release or a small refactor, there is always the inherent risk of releasing new regressions. To mitigate this, changes to an application can be placed behind feature toggles, allowing them to be turned “on” or “off” in the event of an emergency.
+### Benefits of Feature Toggles
+- **Risk Mitigation**: Instant rollbacks without redeploying code.
+- **Continuous Delivery**: Merge incomplete code safely behind toggles.
+- **Targeted Rollouts**: Release features based on user claims, roles, tiers, date ranges, or regular expressions.
+- **Vendor-Neutral Standardization**: Standardize feature flagging across your organization via OpenFeature SDKs.
 
-## Getting Started?
+---
+
+## Getting Started
+
 ### i. Installation
-Install the latest nuget package as appropriate. 
+Install the latest NuGet package as appropriate for your project:
 
-`FeatureOne` - for installing FeatureOne core library with built-in OpenFeature support.
-```
+`FeatureOne` - Core library with built-in OpenFeature provider support.
+```bash
 NuGet\Install-Package FeatureOne
 ```
-`FeatureOne.SQL` - for installing FeatureOne with SQL storage provider.
-```
+
+`FeatureOne.SQL` - SQL storage provider for database backends.
+```bash
 NuGet\Install-Package FeatureOne.SQL
 ```
-`FeatureOne.File` - for installing FeatureOne with File system storage provider.
-```
+
+`FeatureOne.File` - File system storage provider for JSON configurations.
+```bash
 NuGet\Install-Package FeatureOne.File
 ```
 
-### ii. Developer Guide
+### ii. Developer Guide & Documentation
 
-Please see [Developer Guide](docs/DeveloperGuide.md) for details on how to implement FeatureOne in your project.
+- **[Developer Guide](docs/DeveloperGuide.md)**: In-depth setup, custom condition creation, storage provider implementations, and ASP.NET Core DI extensions.
+- **[GitHub Wiki](docs/wiki.md)**: Complete guide and API reference for FeatureOne & OpenFeature integration.
+
+---
 
 ## Support
 
-If you are having problems, please let me know by [raising a new issue](https://github.com/CodeShayk/FeatureOne/issues/new/choose).
+If you encounter issues or have questions, please [raise a new issue](https://github.com/CodeShayk/FeatureOne/issues/new/choose).
 
 ## License
 
-This project is licensed with the [MIT license](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
+
+---
 
 ## Version History
 The following previous versions are available:
 
-| Version                                                         | Release Notes                                                         |
-| ----------------------------------------------------------------| ----------------------------------------------------------------------|
-| [`v6.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v6.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v6.0.0) |
-| [`v5.2.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.2.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.2.0) |
-| [`v5.1.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.1.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.1.0) |
-| [`v5.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.0.0) |
-| [`v4.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v4.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v4.0.0) |
-| [`v3.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v3.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v3.0.0) |
-| [`v2.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v2.0.0) |  [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v2.0.0) |
+| Version | Release Notes |
+|---|---|
+| [`v6.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v6.0.0) | [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v6.0.0) |
+| [`v5.2.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.2.0) | [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.2.0) |
+| [`v5.1.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.1.0) | [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.1.0) |
+| [`v5.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v5.0.0) | [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v5.0.0) |
+| [`v4.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v4.0.0) | [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v4.0.0) |
+| [`v3.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v3.0.0) | [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v3.0.0) |
+| [`v2.0.0`](https://github.com/CodeShayk/FeatureOne/tree/v2.0.0) | [Notes](https://github.com/CodeShayk/FeatureOne/releases/tag/v2.0.0) |
+
+---
 
 ## Recent Releases
 
 | Version | Release Date | Type | Key Changes | Backward Compatibility |
-|--------|-------------|------|-------------|---------------------|
-| v5.0.0 | Previous | Initial | Core feature toggle functionality | N/A (Initial release) |
-| v5.1.0 | Nov 03, 2025 | Minor | **Security fixes** (ReDoS protection, secure type loading), **architectural improvements** (prefix matching, dependency injection), **new features** (DateRangeCondition, configuration validation), **DI integration** | High - maintains all existing functionality with minor security-related behavioral changes |
-| v5.2.0 | Mar 18, 2026 | Minor | **New condition** (RelationalCondition with 5 relational operators), **target framework** (added net10.0, removed netstandard2.0 and net8.0), **package upgrades** (all MS packages to 10.0.5), **expanded test coverage** (98%+ line coverage) | High - fully backward compatible, additive changes only |
-| v6.0.0 | Aug 16, 2026 | Major | **OpenFeature Specification Compliance** (official `FeatureOneProvider` implementation in core `FeatureOne` package under `FeatureOne.OpenFeature` namespace, `EvaluationContext` claims mapping, typed flag evaluation, DI extensions) | High - 100% backward compatible, additive features only |
+|---|---|---|---|---|
+| **v5.0.0** | Previous | Initial | Core feature toggle functionality | N/A (Initial release) |
+| **v5.1.0** | Nov 03, 2025 | Minor | **Security fixes** (ReDoS protection, secure type loading), **architectural improvements** (prefix matching, dependency injection), **new features** (DateRangeCondition, configuration validation), **DI integration** | High - maintains all existing functionality with minor security-related behavioral changes |
+| **v5.2.0** | Mar 18, 2026 | Minor | **New condition** (RelationalCondition with 5 relational operators), **target framework** (added net10.0, removed netstandard2.0 and net8.0), **package upgrades** (all MS packages to 10.0.5), **expanded test coverage** (98%+ line coverage) | High - fully backward compatible, additive changes only |
+| **v6.0.0** | Aug 16, 2026 | Major | **OpenFeature Specification Compliance** (official `FeatureOneProvider` implementation in core `FeatureOne` package under `FeatureOne.OpenFeature` namespace, `EvaluationContext` claims mapping, typed flag evaluation, DI extensions) | High - 100% backward compatible, additive features only |
+
+---
 
 ## Credits
-Thank you for reading. Please fork, explore, contribute and report. Happy Coding !! :)
+Thank you for exploring FeatureOne. Please fork, contribute, report issues, and star the repo! Happy Coding !! :)
