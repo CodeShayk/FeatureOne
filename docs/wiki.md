@@ -1,44 +1,60 @@
-# FeatureOne - Complete Guide & Documentation
+# FeatureOne - Complete Guide & Wiki Documentation
 
-Welcome to the official **FeatureOne Wiki**. FeatureOne is a high-performance, lightweight .NET feature flagging library supporting **.NET Standard 2.1**, **.NET 9.0**, and **.NET 10.0**, as well as full CNCF **OpenFeature Specification (v1.x)** compliance.
+Welcome to the official **FeatureOne Wiki**. FeatureOne is a high-performance, lightweight, and fully **CNCF OpenFeature Specification (v1.x)** compliant feature flagging library for .NET supporting **.NET Standard 2.1**, **.NET 9.0**, and **.NET 10.0**.
 
 ---
 
 ## Table of Contents
 
 1. [Introduction](#introduction)
-2. [What are Feature Toggles?](#what-are-feature-toggles)
-3. [Benefits of Feature Toggles](#benefits-of-feature-toggles)
-4. [Getting Started](#getting-started)
-5. [Core Concepts](#core-concepts)
-6. [Architecture Overview](#architecture-overview)
-7. [Installation](#installation)
-8. [Basic Usage](#basic-usage)
-9. [OpenFeature Specification Provider](#openfeature-specification-provider) ⭐ NEW v6.0.0
-10. [Dependency Injection Integration](#dependency-injection-integration)
-11. [Storage Providers](#storage-providers)
-12. [Condition Types](#condition-types)
-13. [Advanced Configuration & Validation](#advanced-configuration--validation)
-14. [Extending FeatureOne](#extending-featureone)
-15. [Best Practices](#best-practices)
-16. [Troubleshooting](#troubleshooting)
-17. [API Reference](#api-reference)
+2. [OpenFeature Specification & Compliance](#openfeature-specification--compliance) ⭐ NEW v6.0.0
+3. [What are Feature Toggles?](#what-are-feature-toggles)
+4. [Benefits of Feature Toggles](#benefits-of-feature-toggles)
+5. [Installation](#installation)
+6. [OpenFeature Quick Start Guide](#openfeature-quick-start-guide)
+7. [Dependency Injection Integration](#dependency-injection-integration)
+8. [Condition Strategies](#condition-strategies)
+9. [Storage Providers](#storage-providers)
+10. [OpenFeature Hooks & Lifecycle Adaptability](#openfeature-hooks--lifecycle-adaptability)
+11. [Advanced Configuration & Validation](#advanced-configuration--validation)
+12. [Extending FeatureOne](#extending-featureone)
+13. [Best Practices](#best-practices)
+14. [Troubleshooting](#troubleshooting)
+15. [API Reference & Project Structure](#api-reference--project-structure)
 
 ---
 
 ## Introduction
 
-**FeatureOne** is a feature toggle library for .NET applications. With FeatureOne, developers can wrap new functionality under conditional flag evaluations at runtime, permitting instant rollbacks, target user rollouts, time-based features, relational evaluations, and standardized OpenFeature integration without requiring code redeployments.
+**FeatureOne** is a vendor-neutral feature toggle library for enterprise .NET applications. FeatureOne enables developers to control program features dynamically at runtime using **CNCF OpenFeature Specification (v1.x)** standard clients (`FeatureOneProvider`), while leveraging native condition strategies, custom storage providers, and caching mechanisms.
 
 - **Target Frameworks**: `.NETStandard 2.1`, `.NET 9.0`, `.NET 10.0`
-- **Supported Storage Backends**: Memory, SQL (MSSQL, SQLite, PostgreSQL, MySQL, ODBC, OleDb), File System (JSON), Custom `IStorageProvider`
-- **OpenFeature Compliant**: Official `FeatureOneProvider` implementation in `FeatureOne.OpenFeature` package.
+- **Specification Compliance**: CNCF OpenFeature Specification (v1.x)
+- **Supported Storage Backends**: In-Memory, SQL (MSSQL, SQLite, PostgreSQL, MySQL, ODBC, OleDb), File System (JSON), and Custom `IStorageProvider`
+
+---
+
+## OpenFeature Specification & Compliance (⭐ v6.0.0)
+
+FeatureOne includes an official **OpenFeature Specification Provider** (`FeatureOneProvider` under the `FeatureOne.OpenFeature` namespace) built directly into the core `FeatureOne` library.
+
+### Compliance Matrix
+
+| OpenFeature Feature | Spec Compliance | FeatureOne Implementation |
+|---|---|---|
+| **FeatureProvider** | Spec 2.1 | `FeatureOneProvider` implementing `OpenFeature.FeatureProvider` |
+| **Typed Flag Evaluation** | Spec 2.2 | Full support for `ResolveBooleanValueAsync`, `ResolveStringValueAsync`, `ResolveIntegerValueAsync`, `ResolveDoubleValueAsync`, and `ResolveStructureValueAsync` |
+| **Resolution Details** | Spec 2.3 | Returns `ResolutionDetails<T>` with accurate `Reason` (`TARGETING_MATCH`, `DISABLED`, `ERROR`), `Variant` (`"on"`, `"off"`), and `ErrorType` (`FlagNotFound`, `ProviderNotReady`, `General`) |
+| **Provider Lifecycle** | Spec 2.4 | Implements `InitializeAsync`, `ShutdownAsync`, and status management (`ProviderStatus.NotReady`, `Ready`, `Error`) |
+| **Events System** | Spec 2.5 | Emits standard lifecycle events (`ProviderReady`, `ProviderError`, `ProviderConfigurationChanged`, `ProviderStale`) |
+| **Context Claims Mapping** | Spec 3.1 | Maps `TargetingKey` and attributes to FeatureOne user claims via `EvaluationContextExtensions.ToClaims()` |
+| **Hooks Architecture** | Spec 4.1 | Extends `Hook` with `FeatureOneLoggingHook` (participates in `BeforeAsync`, `AfterAsync`, `ErrorAsync`, `FinallyAsync`) |
 
 ---
 
 ## What are Feature Toggles?
 
-A **feature toggle** (or feature flag) is a software technique allowing developers to toggle application features "on" or "off" remotely.
+A **feature toggle** (or feature flag) is a software engineering technique allowing developers to enable or disable application features remotely without code redeployments.
 
 ```csharp
 var featureName = "dashboard_widget";
@@ -52,10 +68,19 @@ else
 }
 ```
 
-Flag status is dynamically evaluated based on:
-- **Storage Provider**: Fetches feature toggle definitions from storage medium.
-- **Conditions**: Evaluates toggle rules against user claims (e.g. email, role, tier, date/time).
-- **Operators**: Evaluates multiple conditions using logical `Operator.Any` (OR) or `Operator.All` (AND).
+Flag evaluation combines:
+- **Storage Provider**: Retrieves toggle definitions from your chosen storage backend.
+- **Conditions**: Evaluates rules against user claims (e.g. role, email, user tier, time range).
+- **Operators**: Evaluates constituent conditions using logical `Operator.Any` (OR) or `Operator.All` (AND).
+
+---
+
+## Benefits of Feature Toggles
+
+1. **Risk Mitigation**: Instant rollbacks without redeploying code.
+2. **Continuous Integration**: Safely merge incomplete features behind flags.
+3. **Targeted Rollouts**: Target features based on user claims, roles, tiers, or date windows.
+4. **Standardization**: Vendor-neutral standardization across teams via OpenFeature SDKs.
 
 ---
 
@@ -80,11 +105,9 @@ dotnet add package FeatureOne.File --version 6.0.0
 
 ---
 
-## OpenFeature Specification Provider (⭐ v6.0.0)
+## OpenFeature Quick Start Guide
 
-FeatureOne provides an official provider implementation (`FeatureOneProvider`) compliant with the CNCF **OpenFeature Specification (v1.x)**.
-
-### Quick Start with OpenFeature SDK
+### 1. Basic OpenFeature Client Evaluation
 
 ```csharp
 using FeatureOne.Core.Stores;
@@ -98,7 +121,7 @@ var fileConfig = new FileConfiguration { FilePath = @"C:\Config\Features.json" }
 var storageProvider = new FileStorageProvider(fileConfig);
 var featureStore = new FeatureStore(storageProvider);
 
-// 2. Set FeatureOneProvider as global provider
+// 2. Set FeatureOneProvider as global OpenFeature provider
 await Api.Instance.SetProviderAsync(new FeatureOneProvider(featureStore));
 
 // 3. Get OpenFeature Client
@@ -115,21 +138,26 @@ var context = EvaluationContext.Builder()
 bool isEnabled = await client.GetBooleanValueAsync("dashboard_widget", false, context);
 ```
 
-### ASP.NET Core Dependency Injection Setup
+---
+
+## Dependency Injection Integration
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
+    // Register FeatureStore
     services.AddSingleton<IFeatureStore>(sp => new FeatureStore(storageProvider));
-    services.AddFeatureOneOpenFeature(); // Automatically registers & sets as global provider
+    
+    // Registers FeatureOneProvider and sets as global OpenFeature provider
+    services.AddFeatureOneOpenFeature(); 
 }
 ```
 
 ---
 
-## Condition Types
+## Condition Strategies
 
-FeatureOne provides four out-of-the-box condition strategies:
+FeatureOne provides four built-in condition strategies out-of-the-box:
 
 ### 1. `SimpleCondition`
 Enables or disables a feature unconditionally:
@@ -144,7 +172,7 @@ Enables or disables a feature unconditionally:
 ```
 
 ### 2. `RegexCondition`
-Evaluates a Regular Expression pattern against a user claim:
+Evaluates a Regular Expression pattern against a user claim (with built-in ReDoS timeout protection):
 ```json
 {
   "admin_feature": {
@@ -231,10 +259,24 @@ Features.Initialize(() => new Features(new FeatureStore(storageProvider)));
 
 ---
 
+## OpenFeature Hooks & Lifecycle Adaptability
+
+FeatureOne adapts to OpenFeature's Hook pipeline (`BeforeAsync`, `AfterAsync`, `ErrorAsync`, `FinallyAsync`):
+
+```csharp
+var provider = new FeatureOneProvider(featureStore, logger);
+
+// Add native logger hook adapter to provider
+provider.AddHook(new FeatureOneLoggingHook(logger));
+
+await Api.Instance.SetProviderAsync(provider);
+```
+
+---
+
 ## API Reference & Project Structure
 
-- **Core Library**: [FeatureOne](docs/DeveloperGuide.md)
-- **OpenFeature Specification**: [FeatureOne.OpenFeature](docs/DeveloperGuide.md#featureoneopenfeature---openfeature-specification-provider)
-- **Release Summary**: [Release Summary](docs/release-summary.md)
-- **Release Table**: [Release Table](docs/release-table.md)
-- **Changelog**: [CHANGELOG](docs/CHANGELOG.md)
+- **[Developer Guide](docs/DeveloperGuide.md)**: Full implementation guide and C# code examples.
+- **[Release Summary](docs/release-summary.md)**: Technical summary of releases through v6.0.0.
+- **[Release Table](docs/release-table.md)**: Version matrix and backward compatibility guidelines.
+- **[CHANGELOG](docs/CHANGELOG.md)**: Detailed changelog by version.
