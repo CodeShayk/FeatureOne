@@ -2,38 +2,39 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net9.0;net10.0</TargetFrameworks>
-    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <GeneratedAssemblyInfoFile>AssemblyInfo.cs</GeneratedAssemblyInfoFile>
     <PackRelease>true</PackRelease>
     <IsPackable>true</IsPackable>
-    <AssemblyName>FeatureOne.SQL</AssemblyName>
-    <RootNamespace>FeatureOne.SQL</RootNamespace>
+    <AssemblyName>FeatureOne.OpenFeature</AssemblyName>
+    <RootNamespace>FeatureOne.OpenFeature</RootNamespace>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Title>FeatureOne.SQL</Title>
+    <Title>FeatureOne.OpenFeature</Title>
     <Authors>Code Shayk</Authors>
     <Company>Code Shayk</Company>
     <Product>FeatureOne</Product>
-    <Description>.Net library to implement feature toggles with SQL storage.</Description>
-    <Copyright>Copyright (c) 2025 Code Shayk</Copyright>
+    <Description>OpenFeature specification provider for FeatureOne feature flagging library.</Description>
+    <Copyright>Copyright (c) 2026 Code Shayk</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/CodeShayk/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; featureOne; SQL-Backend; SQL-Toggles; SQL</PackageTags>
+    <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; featureOne; OpenFeature; OpenFeature-Provider; OpenFeature-Specification</PackageTags>
     <Version>6.0.0</Version>
     <PackageLicenseFile>License.md</PackageLicenseFile>
     <PackageIcon>feature-flag.png</PackageIcon>
     <PackageReleaseNotes>
       Release Notes v6.0.0. - Targets .NetStandard 2.1, .Net 9.0 and .Net 10.0
-      Library to Implement Feature Toggles to hide/show program features with SQL storage.
+      Official OpenFeature specification provider implementation for FeatureOne feature flagging library.
 
       Major v6.0.0 Release Features:
-      - OpenFeature Specification (v1.x) provider compatibility via FeatureOne.OpenFeature package
-      - RelationalCondition with 5 relational operators (Equals, NotEquals, GreaterThan, GreaterThanOrEqual, LessThanOrEqual)
-      - Framework support for .NET Standard 2.1, .NET 9.0, and .NET 10.0
+      - Full OpenFeature Specification (v1.x) Provider compliance via FeatureOneProvider.
+      - Support for Boolean, String, Integer, Double, and Structure flag evaluations.
+      - EvaluationContext to FeatureOne Claims mapping (targetingKey, user attributes, custom claims).
+      - OpenFeature ResolutionDetails error codes (FlagNotFound, TypeMismatch, General) and evaluation reasons.
+      - ASP.NET Core Dependency Injection extensions for seamless OpenFeature setup.
     </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/CodeShayk/FeatureOne/wiki</PackageProjectUrl>
   </PropertyGroup>
@@ -54,12 +55,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
-    <PackageReference Include="System.Text.Json" Version="10.0.5" />
+    <ProjectReference Include="..\FeatureOne\FeatureOne.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FeatureOne\FeatureOne.csproj" />
+    <PackageReference Include="OpenFeature" Version="2.14.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
   </ItemGroup>
 
 </Project>

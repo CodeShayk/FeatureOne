@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net9.0;net10.0</TargetFrameworks>
@@ -22,28 +22,17 @@
     <RepositoryUrl>https://github.com/codeshayk/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; featureOne; File-system; File-Backend; File-Toggles;</PackageTags>
-    <Version>5.2.0</Version>
+    <Version>6.0.0</Version>
     <PackageLicenseFile>License.md</PackageLicenseFile>
     <PackageIcon>feature-flag.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v5.2.0. - Targets .NetStandard 2.1, .Net 9.0 and .Net 10.0
+      Release Notes v6.0.0. - Targets .NetStandard 2.1, .Net 9.0 and .Net 10.0
       Library to Implement Feature Toggles to hide/show program features with File system storage.
 
-      New Features:
-      - Added RelationalCondition for claim-based relational comparisons (Equals, NotEquals, GreaterThan, GreaterThanOrEqual, LessThanOrEqual)
-
-      Framework and Package Updates:
-      - Added net10.0 target framework
-      - Removed netstandard2.0 and net8.0 target frameworks
-      - Upgraded all Microsoft packages to 10.0.5
-
-      Provides Out of box Simple, Regex, DateRange and Relational toggle conditions.
-      Provides Out of box support for File system storage provider to store toggles on disk file.
-      Provides the support for default memory caching via configuration.
-      Provides extensibility for custom implementations ie.
-      -- Provides extensibility for implementing custom toggle conditions for bespoke use cases.
-      -- Provides extensibility for implementing custom caching provider.
-      -- Provides extensibility for implementing custom toggle deserializer for bespoke scenarios.
+      Major v6.0.0 Release Features:
+      - OpenFeature Specification (v1.x) provider compatibility via FeatureOne.OpenFeature package
+      - RelationalCondition with 5 relational operators (Equals, NotEquals, GreaterThan, GreaterThanOrEqual, LessThanOrEqual)
+      - Framework support for .NET Standard 2.1, .NET 9.0, and .NET 10.0
     </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/CodeShayk/FeatureOne/wiki</PackageProjectUrl>
   </PropertyGroup>

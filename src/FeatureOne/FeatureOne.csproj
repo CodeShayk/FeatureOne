@@ -21,29 +21,18 @@
     <RepositoryUrl>https://github.com/CodeShayk/FeatureOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>feature-toggle; feature-flag; feature-flags; feature-toggles; featureOne</PackageTags>
-    <Version>5.2.0</Version>
+    <Version>6.0.0</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>feature-flag.png</PackageIcon>
     <PackageReleaseNotes>
-      Release Notes v5.2.0 Core Functionality :- Targets .NetStandard 2.1, .Net 9.0 and .Net 10.0
-      Library to Implement Feature Toggles to hide/show program features. Does not contain storage provider.
+      Release Notes v6.0.0 Core Functionality :- Targets .NetStandard 2.1, .Net 9.0 and .Net 10.0
+      Library to Implement Feature Toggles to hide/show program features.
 
-      New Features:
-      - Added RelationalCondition for claim-based relational comparisons (Equals, NotEquals, GreaterThan, GreaterThanOrEqual, LessThanOrEqual)
-
-      Framework and Package Updates:
-      - Added net10.0 target framework
-      - Removed netstandard2.0 and net8.0 target frameworks
-      - Upgraded all Microsoft packages to 10.0.5
-
-      Test Coverage:
-      - Expanded unit test coverage to 98%+ line coverage
-
-      Provides Out of box Simple, Regex and Relational toggle conditions.
-      Provides extensibility for custom implementations ie.
-      -- No storage exists by default. Requires `IStorageProvider` implementation to plugin in backend data store for stored features.
-      -- Provides extensibility to implement custom toggle conditions for bespoke use cases.
-      -- Provides extensibility for custom toggle deserializer for bespoke scenarios.
+      Major v6.0.0 Release Features:
+      - Full OpenFeature Specification (v1.x) Provider support via new FeatureOne.OpenFeature package.
+      - Interoperability enhancements: Exposed FeatureStore property on Features facade for open integration.
+      - Multi-targeted for .NET Standard 2.1, .NET 9.0, and .NET 10.0.
+      - Comprehensive unit test coverage (98%+ line coverage across 216 tests).
     </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/CodeShayk/FeatureOne/wiki</PackageProjectUrl>
     </PropertyGroup>

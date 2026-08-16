@@ -542,3 +542,47 @@ iii. With other overloads - Custom cache and Toggle Condition deserializer.
     Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
 ```
 
+## FeatureOne.OpenFeature - OpenFeature Specification Provider
+
+The `FeatureOne.OpenFeature` package provides an official provider implementation (`FeatureOneProvider`) for the CNCF **OpenFeature Specification** standard.
+
+### Installation
+```
+NuGet\Install-Package FeatureOne.OpenFeature
+```
+
+### Usage with OpenFeature SDK
+
+#### Option A. Global Registration
+```csharp
+// 1. Setup FeatureOne FeatureStore
+var storageProvider = new FileStorageProvider(configuration);
+var featureStore = new FeatureStore(storageProvider);
+
+// 2. Register FeatureOneProvider with OpenFeature API
+await OpenFeature.Api.Instance.SetProviderAsync(new FeatureOneProvider(featureStore));
+
+// 3. Obtain standard OpenFeature Client
+var client = OpenFeature.Api.Instance.GetClient();
+
+// 4. Evaluate feature flags with EvaluationContext
+var context = EvaluationContext.Builder()
+    .SetTargetingKey("usr_12345")
+    .Set("email", "john@gbk.com")
+    .Set("tier", "gold")
+    .Build();
+
+bool isWidgetEnabled = await client.GetBooleanValueAsync("dashboard_widget", false, context);
+```
+
+#### Option B. ASP.NET Core Dependency Injection
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    // Register FeatureStore & OpenFeature Provider
+    services.AddSingleton<IFeatureStore>(sp => new FeatureStore(storageProvider));
+    services.AddFeatureOneOpenFeature(); // Automatically registers & sets as global provider
+}
+```
+
+
