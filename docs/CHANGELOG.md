@@ -3,14 +3,28 @@
 ## [6.0.0] - 2026-08-16
 
 ### Added
-- **New Package**: `FeatureOne.OpenFeature` implementing official OpenFeature Specification (v1.x) `FeatureProvider`.
-- **OpenFeature Provider**: `FeatureOneProvider` with full support for Boolean, String, Integer, Double, and Structure flag resolution.
+- **OpenFeature Provider**: `FeatureOneProvider` implementing the OpenFeature Specification (v1.x) `FeatureProvider`, shipped **inside the core `FeatureOne` package** under the `FeatureOne.OpenFeature` namespace. Full support for Boolean, String, Integer, Double, and Structure flag resolution (the non-boolean resolvers are projections of the boolean result, not multivariate values).
 - **Context Mapping**: `EvaluationContextExtensions` mapping OpenFeature `TargetingKey` and attributes to FeatureOne user claims.
-- **Dependency Injection**: `AddFeatureOneOpenFeature` extension methods for ASP.NET Core `IServiceCollection` and `OpenFeature.Api.Instance`.
+- **Dependency Injection**: `AddFeatureOneOpenFeature` extension methods for ASP.NET Core `IServiceCollection`, including an options overload for hook configuration. Global provider registration runs from an `IHostedService` at startup rather than from the DI factory.
+- **Custom Condition Registration**: `ConditionDeserializer.Register<T>("Name")` for user-defined `ICondition` types, preserving the deny-by-default type allow list introduced in v5.1.0.
 - **Core Interoperability**: Exposed `FeatureStore` property on `Features` class for open provider integration.
 
+### Fixed
+- **Non-string `EvaluationContext` attributes were silently dropped** during claims mapping — integer, double, list and structure attributes never reached conditions, which then evaluated as disabled with no error reported.
+- **`InitializeAsync` could never report failure**, leaving every provider error-state guard unreachable.
+- **A missing feature store reported `FlagNotFound`**, indistinguishable from a genuinely absent flag; it now reports `ProviderNotReady`.
+- **Global OpenFeature provider registration was a side effect of the DI factory**, so it never ran unless something resolved `FeatureOneProvider`, and it blocked on an async call inside the factory.
+- **`ConditionDeserializer` re-parsed the toggle JSON once per writable property** during hydration.
+- **`RelationalOperator.LessThan` was never implemented** — it fell through to the switch default and always returned `false`.
+- **`RelationalCondition` compared numeric claims lexicographically**, ranking `"9"` above `"18"`.
+- **`RelationalCondition` string comparison was culture-sensitive**, making results machine-dependent.
+
+### Changed
+- Condition deserialization failures now throw `FeatureOneConfigurationException` (derived from `Exception`) instead of a bare `Exception`.
+- `RelationalCondition` now compares numerically when both the claim value and the configured value parse as numbers, and ordinally otherwise. Toggles comparing numeric claims with `GreaterThan`, `GreaterThanOrEqual`, `LessThan`, or `LessThanOrEqual` will evaluate differently — correctly — than in v5.2.0. `Equals` also matches equivalent numeric forms, so `"5.0"` now equals `"5"`.
+
 ### Quality & Testing
-- **Test Suite**: Added `FeatureOne.OpenFeature.Tests` with 100% pass rate across OpenFeature resolution types, context mapping, error codes, and global client integration.
+- **Test Suite**: 260 tests passing across all four test projects, including 49 in `FeatureOne.OpenFeature.Tests` covering resolution types, context mapping, error codes, provider lifecycle, hook concurrency, DI registration, and global client integration.
 
 ## [5.2.0] - 2026-03-18
 

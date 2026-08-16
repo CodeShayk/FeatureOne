@@ -173,18 +173,146 @@ public class RelationalConditionTests
     }
 
     // ──────────────────────────────────────────────
-    // LessThan — defined in enum but not in switch;
-    // falls through to default and returns false.
+    // LessThan
     // ──────────────────────────────────────────────
 
     [Test]
-    public void Evaluate_LessThan_ReturnsDefaultFalse()
+    public void Evaluate_LessThan_WhenClaimIsLess_ShouldReturnTrue()
     {
-        // LessThan is not handled in the switch statement; default branch returns false.
         var condition = new RelationalCondition { Claim = "tier", Operator = RelationalOperator.LessThan, Value = "gold" };
         var claims = new Dictionary<string, string> { { "tier", "bronze" } };
 
+        Assert.That(condition.Evaluate(claims), Is.True);
+    }
+
+    [Test]
+    public void Evaluate_LessThan_WhenClaimIsEqual_ShouldReturnFalse()
+    {
+        var condition = new RelationalCondition { Claim = "tier", Operator = RelationalOperator.LessThan, Value = "gold" };
+        var claims = new Dictionary<string, string> { { "tier", "gold" } };
+
         Assert.That(condition.Evaluate(claims), Is.False);
+    }
+
+    [Test]
+    public void Evaluate_LessThan_WhenClaimIsGreater_ShouldReturnFalse()
+    {
+        var condition = new RelationalCondition { Claim = "tier", Operator = RelationalOperator.LessThan, Value = "bronze" };
+        var claims = new Dictionary<string, string> { { "tier", "gold" } };
+
+        Assert.That(condition.Evaluate(claims), Is.False);
+    }
+
+    [Test]
+    public void Evaluate_LessThan_WithNumericClaim_ShouldCompareNumerically()
+    {
+        var condition = new RelationalCondition { Claim = "age", Operator = RelationalOperator.LessThan, Value = "18" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "age", "9" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "age", "21" } }), Is.False);
+    }
+
+    // ──────────────────────────────────────────────
+    // Numeric comparison
+    // ──────────────────────────────────────────────
+
+    [Test]
+    public void Evaluate_GreaterThan_WithNumericClaim_ShouldNotCompareLexicographically()
+    {
+        // Digit-by-digit ordering would rank "9" above "18"; arithmetic ordering must not.
+        var condition = new RelationalCondition { Claim = "age", Operator = RelationalOperator.GreaterThan, Value = "18" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "age", "9" } }), Is.False);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "age", "21" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "age", "100" } }), Is.True);
+    }
+
+    [Test]
+    public void Evaluate_GreaterThanOrEqual_WithNumericClaim_ShouldCompareNumerically()
+    {
+        var condition = new RelationalCondition { Claim = "seats", Operator = RelationalOperator.GreaterThanOrEqual, Value = "5" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "seats", "5" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "seats", "40" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "seats", "4" } }), Is.False);
+    }
+
+    [Test]
+    public void Evaluate_LessThanOrEqual_WithNumericClaim_ShouldCompareNumerically()
+    {
+        var condition = new RelationalCondition { Claim = "score", Operator = RelationalOperator.LessThanOrEqual, Value = "90" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "score", "9" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "score", "90" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "score", "91" } }), Is.False);
+    }
+
+    [Test]
+    public void Evaluate_WithDecimalClaim_ShouldCompareNumerically()
+    {
+        var condition = new RelationalCondition { Claim = "ratio", Operator = RelationalOperator.GreaterThan, Value = "1.5" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "ratio", "1.75" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "ratio", "1.25" } }), Is.False);
+    }
+
+    [Test]
+    public void Evaluate_WithNegativeNumbers_ShouldCompareNumerically()
+    {
+        var condition = new RelationalCondition { Claim = "balance", Operator = RelationalOperator.GreaterThan, Value = "-10" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "balance", "-5" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "balance", "-50" } }), Is.False);
+    }
+
+    [Test]
+    public void Evaluate_Equals_WithEquivalentNumericForms_ShouldMatch()
+    {
+        var condition = new RelationalCondition { Claim = "seats", Operator = RelationalOperator.Equals, Value = "5" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "seats", "5.0" } }), Is.True);
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "seats", "05" } }), Is.True);
+    }
+
+    [Test]
+    public void Evaluate_WithLargeIntegerClaim_ShouldNotLosePrecision()
+    {
+        // Beyond double's exact integer range; decimal comparison keeps these distinct.
+        var condition = new RelationalCondition { Claim = "id", Operator = RelationalOperator.GreaterThan, Value = "9007199254740992" };
+
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "id", "9007199254740993" } }), Is.True);
+    }
+
+    [Test]
+    public void Evaluate_WithNumericClaimAndNonNumericTarget_ShouldFallBackToStringComparison()
+    {
+        var condition = new RelationalCondition { Claim = "tier", Operator = RelationalOperator.GreaterThan, Value = "gold" };
+
+        // "9" vs "gold": digits sort before letters ordinally.
+        Assert.That(condition.Evaluate(new Dictionary<string, string> { { "tier", "9" } }), Is.False);
+    }
+
+    [Test]
+    public void Evaluate_StringComparison_ShouldBeOrdinalNotCultureSensitive()
+    {
+        var original = System.Globalization.CultureInfo.CurrentCulture;
+        try
+        {
+            var condition = new RelationalCondition { Claim = "tier", Operator = RelationalOperator.GreaterThan, Value = "Gold" };
+            var claims = new Dictionary<string, string> { { "tier", "gold" } };
+
+            System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            var underEnglish = condition.Evaluate(claims);
+
+            System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("sv-SE");
+            var underSwedish = condition.Evaluate(claims);
+
+            Assert.That(underEnglish, Is.EqualTo(underSwedish));
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentCulture = original;
+        }
     }
 
     // ──────────────────────────────────────────────

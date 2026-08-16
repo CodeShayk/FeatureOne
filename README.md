@@ -9,43 +9,113 @@
 [![.Net](https://img.shields.io/badge/.Net-9.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 [![.Net](https://img.shields.io/badge/.Net-10.0-blue)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 
-> **FeatureOne** is a high-performance, lightweight, and fully **CNCF OpenFeature Specification (v1.x)** compliant feature flagging library for .NET applications.
+> **FeatureOne** is a high-performance, lightweight feature flagging library for .NET. Use it through its
+> native API, or through any **CNCF OpenFeature Specification (v1.x)** client — both are first-class,
+> fully supported ways to consume the same evaluation engine.
 
 ---
 
-## 🚀 OpenFeature Specification & Compliance
+## Two Ways to Use FeatureOne
 
-FeatureOne features a native **OpenFeature Specification Provider** (`FeatureOneProvider` under the `FeatureOne.OpenFeature` namespace) built directly into the core library. This allows you to evaluate feature toggles using vendor-neutral OpenFeature SDK clients while leveraging FeatureOne's powerful condition strategies, custom storage providers, and caching mechanisms.
+FeatureOne ships one evaluation engine — storage providers, condition strategies, caching and claims-based
+targeting — with two equally supported front doors. Pick whichever fits your codebase; you can also mix them
+in the same application, since both read the same `IFeatureStore`.
 
-### Key OpenFeature Highlights
-- **Standardized Provider (`FeatureOneProvider`)**: Implements `OpenFeature.FeatureProvider` for vendor-agnostic feature flagging.
-- **Typed Flag Evaluation**: Supports `Boolean`, `String`, `Integer`, `Double`, and `Structure` flag resolutions.
-- **Evaluation Context Claims Mapping**: Converts OpenFeature `TargetingKey` and `EvaluationContext` attributes seamlessly to FeatureOne user claims.
-- **Full Hook Lifecycle Adaptability**: Participates in OpenFeature's 5-stage Hook pipeline (`BeforeAsync` $\rightarrow$ `Resolve` $\rightarrow$ `AfterAsync` / `ErrorAsync` $\rightarrow$ `FinallyAsync`) with native logger hooks (`FeatureOneLoggingHook`).
-- **Provider Status & Events**: Fully manages provider lifecycle states (`ProviderStatus.NotReady`, `Ready`, `Error`) and event propagation.
-- **ASP.NET Core DI Integration**: Easily registered via `services.AddFeatureOneOpenFeature()`.
+| | **Native API** | **OpenFeature Provider** |
+|---|---|---|
+| Entry point | `IFeatures` / `Features.Current` | `OpenFeature.Api.Instance.GetClient()` |
+| Call style | Synchronous `IsEnabled(...)` | Asynchronous `GetBooleanValueAsync(...)` |
+| Targeting input | `ClaimsPrincipal`, `IEnumerable<Claim>`, or a claims dictionary | `EvaluationContext` (mapped to claims automatically) |
+| Extra dependency | None | OpenFeature SDK (already included in the `FeatureOne` package) |
+| Choose it when | You want the smallest possible surface area, synchronous call sites, or direct use of ASP.NET Core `ClaimsPrincipal` | You want vendor-neutral flag APIs, portability across flag backends, or OpenFeature hooks and telemetry |
+
+Neither is a wrapper around the other in a way that costs you functionality: conditions, operators, storage
+providers and caching behave identically through both.
+
+### A. Native API
 
 ```csharp
+using FeatureOne;
+using FeatureOne.Core.Stores;
+using FeatureOne.File;
+
+// 1. Build the store over your chosen storage provider
+var fileConfig = new FileConfiguration { FilePath = @"C:\Config\Features.json" };
+var featureStore = new FeatureStore(new FileStorageProvider(fileConfig));
+
+// 2. Initialize the global facade (or inject IFeatures - see below)
+Features.Initialize(() => new Features(featureStore));
+
+// 3. Evaluate
+if (Features.Current.IsEnabled("dashboard_widget", User))   // User is a ClaimsPrincipal
+{
+    ShowDashboardWidget();
+}
+```
+
+With dependency injection:
+
+```csharp
+services.AddFeatureOneWithFileStorage(new FileConfiguration { FilePath = "Features.json" });
+
+// then inject IFeatures anywhere
+public class DashboardController(IFeatures features)
+{
+    public IActionResult Index()
+        => features.IsEnabled("dashboard_widget", User) ? View("Widget") : View("Default");
+}
+```
+
+### B. OpenFeature Provider
+
+```csharp
+using FeatureOne.Core.Stores;
+using FeatureOne.File;
 using FeatureOne.OpenFeature;
 using OpenFeature;
 using OpenFeature.Model;
 
-// Register FeatureOne as the global OpenFeature provider
-await Api.Instance.SetProviderAsync(new FeatureOneProvider());
+// 1. Build the store over your chosen storage provider
+var fileConfig = new FileConfiguration { FilePath = @"C:\Config\Features.json" };
+var featureStore = new FeatureStore(new FileStorageProvider(fileConfig));
 
-// Evaluate flags using standard OpenFeature Client
+// 2. Register FeatureOne as the OpenFeature provider
+await Api.Instance.SetProviderAsync(new FeatureOneProvider(featureStore));
+
+// 3. Evaluate through a standard OpenFeature client
 var client = Api.Instance.GetClient();
-var context = EvaluationContext.Builder().SetTargetingKey("usr_123").Set("tier", "gold").Build();
+var context = EvaluationContext.Builder()
+    .SetTargetingKey("usr_123")
+    .Set("tier", "gold")
+    .Build();
 
 bool showWidget = await client.GetBooleanValueAsync("dashboard_widget", false, context);
 ```
+
+With dependency injection:
+
+```csharp
+services.AddFeatureOneWithFileStorage(new FileConfiguration { FilePath = "Features.json" });
+services.AddFeatureOneOpenFeature();   // registers the provider and sets it globally on startup
+
+// then inject IFeatureClient anywhere, or resolve Api.Instance.GetClient()
+```
+
+The `FeatureOneProvider` lives in the `FeatureOne.OpenFeature` namespace inside the core **FeatureOne**
+package — there is no separate package to install.
+
+> **Note on flag types.** FeatureOne is a boolean toggle engine. The provider implements all five
+> OpenFeature resolvers, but the non-boolean ones are projections of the same boolean result
+> (`String` → `"true"`/`"false"`, `Integer` → `1`/`0`, `Double` → `1.0`/`0.0`, `Structure` → a wrapped
+> boolean). They are not multivariate flag support. Prefer `GetBooleanValueAsync` unless a typed call site
+> makes one of the projections convenient.
 
 ---
 
 #### NuGet Packages
 | Package | Latest | Details |
 |---|---|---|
-| **FeatureOne** | [![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Core feature evaluation engine and built-in **CNCF OpenFeature Specification (v1.x)** provider (`FeatureOneProvider` under `FeatureOne.OpenFeature` namespace). **v6.0.0**: OpenFeature provider built directly into core library. |
+| **FeatureOne** | [![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Core evaluation engine, native `IFeatures` API, and the built-in **CNCF OpenFeature Specification (v1.x)** provider (`FeatureOneProvider`, `FeatureOne.OpenFeature` namespace). |
 | **FeatureOne.SQL** | [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | SQL storage provider for implementing feature toggles using relational database backends (MSSQL, SQLite, PostgreSQL, MySQL). |
 | **FeatureOne.File** | [![NuGet version](https://badge.fury.io/nu/FeatureOne.File.svg)](https://badge.fury.io/nu/FeatureOne.File) | File storage provider for implementing feature toggles using JSON configuration files. |
 
@@ -67,12 +137,25 @@ Feature toggle is typically a logical check wrapped around application code to e
 
 ---
 
+## Capabilities
+
+Available identically through both the native API and the OpenFeature provider:
+
+- **Condition strategies**: `SimpleCondition`, `RegexCondition` (with ReDoS timeout protection), `RelationalCondition`, `DateRangeCondition`, plus your own via `ICondition`.
+- **Operators**: combine conditions with `Operator.Any` (OR) or `Operator.All` (AND).
+- **Storage providers**: SQL, JSON file, or your own `IStorageProvider`.
+- **Caching**: pluggable `ICache` with configurable expiry.
+- **Custom conditions**: register your own condition types with `ConditionDeserializer.Register<T>("Name")`.
+- **Logging**: pluggable `IFeatureLogger`; on the OpenFeature side, `FeatureOneLoggingHook` bridges the hook pipeline to the same logger.
+
+---
+
 ## Getting Started
 
 ### i. Installation
 Install the latest NuGet package as appropriate for your project:
 
-`FeatureOne` - Core library with built-in OpenFeature provider support.
+`FeatureOne` - Core library, native API, and built-in OpenFeature provider.
 ```bash
 NuGet\Install-Package FeatureOne
 ```
@@ -90,7 +173,7 @@ NuGet\Install-Package FeatureOne.File
 ### ii. Developer Guide & Documentation
 
 - **[Developer Guide](docs/DeveloperGuide.md)**: In-depth setup, custom condition creation, storage provider implementations, and ASP.NET Core DI extensions.
-- **[GitHub Wiki](docs/wiki.md)**: Complete guide and API reference for FeatureOne & OpenFeature integration.
+- **[GitHub Wiki](docs/wiki.md)**: Complete guide and API reference, covering both the native API and OpenFeature integration.
 
 ---
 
@@ -126,7 +209,7 @@ The following previous versions are available:
 | **v5.0.0** | Previous | Initial | Core feature toggle functionality | N/A (Initial release) |
 | **v5.1.0** | Nov 03, 2025 | Minor | **Security fixes** (ReDoS protection, secure type loading), **architectural improvements** (prefix matching, dependency injection), **new features** (DateRangeCondition, configuration validation), **DI integration** | High - maintains all existing functionality with minor security-related behavioral changes |
 | **v5.2.0** | Mar 18, 2026 | Minor | **New condition** (RelationalCondition with 5 relational operators), **target framework** (added net10.0, removed netstandard2.0 and net8.0), **package upgrades** (all MS packages to 10.0.5), **expanded test coverage** (98%+ line coverage) | High - fully backward compatible, additive changes only |
-| **v6.0.0** | Aug 16, 2026 | Major | **OpenFeature Specification Compliance** (official `FeatureOneProvider` implementation in core `FeatureOne` package under `FeatureOne.OpenFeature` namespace, `EvaluationContext` claims mapping, typed flag evaluation, DI extensions) | High - 100% backward compatible, additive features only |
+| **v6.0.0** | Aug 16, 2026 | Major | **OpenFeature Specification Compliance** (`FeatureOneProvider` in the core `FeatureOne` package under the `FeatureOne.OpenFeature` namespace, `EvaluationContext` claims mapping, typed flag evaluation, DI extensions), **custom condition registration** (`ConditionDeserializer.Register<T>`) | High - backward compatible for the native API; condition deserialization now throws `FeatureOneConfigurationException` instead of `Exception` |
 
 ---
 

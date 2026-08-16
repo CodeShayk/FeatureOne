@@ -129,7 +129,7 @@ namespace FeatureOne.Tests.Json
             };
 
             // Act & Assert
-            Assert.Throws<Exception>(() => _deserializer.Deserialize(json));
+            Assert.Throws<FeatureOneConfigurationException>(() => _deserializer.Deserialize(json));
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace FeatureOne.Tests.Json
             var json = new JsonObject { ["type"] = "SimpleAttacker" }; // Similar to "Simple" but not valid
 
             // Act & Assert
-            Assert.Throws<Exception>(() => _deserializer.Deserialize(json));
+            Assert.Throws<FeatureOneConfigurationException>(() => _deserializer.Deserialize(json));
         }
 
         [Test]

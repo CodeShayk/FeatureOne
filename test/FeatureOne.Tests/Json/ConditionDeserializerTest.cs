@@ -37,7 +37,7 @@ public class ConditionDeserializerTest
         // Invalid type
         var invalidJson = new JsonObject();
         invalidJson["type"] = "NonExistent";
-        Assert.Throws<Exception>(() => deserializer.Deserialize(invalidJson));
+        Assert.Throws<FeatureOneConfigurationException>(() => deserializer.Deserialize(invalidJson));
 
         // Null condition
         Assert.Throws<ArgumentNullException>(() => deserializer.Deserialize(null));
@@ -67,6 +67,6 @@ public class ConditionDeserializerTest
         // Try to load a potentially dangerous type - should fail
         var dangerousJson = new JsonObject();
         dangerousJson["type"] = "System.IO.FileInfo"; // This should not be allowed
-        Assert.Throws<Exception>(() => deserializer.Deserialize(dangerousJson));
+        Assert.Throws<FeatureOneConfigurationException>(() => deserializer.Deserialize(dangerousJson));
     }
 }

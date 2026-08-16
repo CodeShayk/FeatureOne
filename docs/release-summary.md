@@ -44,24 +44,28 @@ This document provides a comprehensive, technical summary of all FeatureOne libr
 ### Release v6.0.0 (Major Release: OpenFeature Specification Compliance)
 - **Release Date**: August 16, 2026
 - **Summary**:
-  Major milestone release introducing full **CNCF OpenFeature Specification (v1.x)** compliance through the official `FeatureOne.OpenFeature` provider package.
+  Major milestone release introducing full **CNCF OpenFeature Specification (v1.x)** compliance. The provider ships **inside the core `FeatureOne` package** under the `FeatureOne.OpenFeature` namespace — there is no separate package. FeatureOne now offers two equally supported APIs over the same evaluation engine: the native `IFeatures` API and the OpenFeature provider.
 
 - **Key Highlights**:
-  1. **`FeatureOne.OpenFeature` NuGet Package**:
+  1. **OpenFeature Provider (built into `FeatureOne`)**:
      - Introduces `FeatureOneProvider` inheriting from OpenFeature's `FeatureProvider`.
-     - Full support for typed flag evaluation: `ResolveBooleanValueAsync`, `ResolveStringValueAsync`, `ResolveIntegerValueAsync`, `ResolveDoubleValueAsync`, and `ResolveStructureValueAsync`.
-     - Returns standard `ResolutionDetails<T>` with accurate `Reason` (`TARGETING_MATCH`, `DISABLED`, `ERROR`), `Variant` (`"on"`, `"off"`), and `ErrorType` (`FlagNotFound`, `General`).
+     - Full support for typed flag evaluation: `ResolveBooleanValueAsync`, `ResolveStringValueAsync`, `ResolveIntegerValueAsync`, `ResolveDoubleValueAsync`, and `ResolveStructureValueAsync`. The non-boolean resolvers are projections of the boolean toggle result, not multivariate flag values.
+     - Returns standard `ResolutionDetails<T>` with accurate `Reason` (`TARGETING_MATCH`, `DISABLED`, `ERROR`), `Variant` (`"on"`, `"off"`), and `ErrorType` (`FlagNotFound`, `ProviderNotReady`, `General`).
   2. **EvaluationContext Claim Mapping**:
-     - Extension methods `ToClaims()` mapping OpenFeature `EvaluationContext` attributes to FeatureOne user claims.
+     - Extension method `ToClaims()` mapping OpenFeature `EvaluationContext` attributes — strings, booleans, integers, doubles, `DateTime`, lists and structures — to FeatureOne user claims, using the invariant culture for numbers.
      - Automatic mapping of `TargetingKey` to standard claims (`"targetingKey"`, `"sub"`, `"user_id"`).
   3. **Core Facade Interoperability**:
      - Exposed `FeatureStore` property on `Features` facade (`Features.Current.FeatureStore`).
-     - **100% Backward Compatibility**: All existing APIs, storage providers, and custom condition implementations remain fully compatible.
+     - The native API remains fully backward compatible; storage providers and custom condition implementations are unaffected.
   4. **Dependency Injection**:
-     - Added `AddFeatureOneOpenFeature()` extension methods for ASP.NET Core `IServiceCollection` and `OpenFeature.Api.Instance` global provider initialization.
-  5. **Comprehensive Verification**:
-     - Introduced `test/FeatureOne.OpenFeature.Tests` suite with 18 specialized spec compliance tests.
-     - Total test suite count expanded to **216 tests** with 100% pass rate.
+     - Added `AddFeatureOneOpenFeature()` extension methods for ASP.NET Core `IServiceCollection`, plus an options overload for hook configuration. Global provider registration runs from an `IHostedService` at application start rather than as a side effect of the DI factory.
+  5. **Provider Lifecycle**:
+     - `InitializeAsync` validates store availability and reports `ProviderStatus.Error`; a missing store surfaces as `ProviderNotReady` rather than `FlagNotFound`.
+  6. **Custom Condition Registration**:
+     - `ConditionDeserializer.Register<T>("Name")` registers user-defined `ICondition` types, preserving the deny-by-default type allow list from v5.1.0.
+  7. **Comprehensive Verification**:
+     - `test/FeatureOne.OpenFeature.Tests` expanded to 49 tests covering resolution types, context mapping, error codes, provider lifecycle, hook concurrency and DI registration.
+     - Total test suite count expanded to **260 tests** with 100% pass rate.
 
 ---
 
@@ -80,8 +84,7 @@ This document provides a comprehensive, technical summary of all FeatureOne libr
 
 | Package | Latest Version | Description | Target Frameworks |
 |---|---|---|---|
-| **FeatureOne** | `6.0.0` | Core feature toggle evaluation engine and condition strategies | `netstandard2.1`, `net9.0`, `net10.0` |
-| **FeatureOne.OpenFeature** | `6.0.0` | CNCF OpenFeature Specification provider (`FeatureOneProvider`) | `netstandard2.1`, `net9.0`, `net10.0` |
+| **FeatureOne** | `6.0.0` | Core evaluation engine, condition strategies, native `IFeatures` API, and the built-in CNCF OpenFeature Specification provider (`FeatureOneProvider`, `FeatureOne.OpenFeature` namespace) | `netstandard2.1`, `net9.0`, `net10.0` |
 | **FeatureOne.SQL** | `6.0.0` | SQL storage provider (MSSQL, SQLite, PostgreSQL, MySQL, ODBC, OleDb) | `netstandard2.1`, `net9.0`, `net10.0` |
 | **FeatureOne.File** | `6.0.0` | File system storage provider with JSON toggle configuration | `netstandard2.1`, `net9.0`, `net10.0` |
 
@@ -94,7 +97,8 @@ FeatureOne maintains a strict **zero-breaking-change** contract for existing pub
 1. **Upgrading from v5.x to v6.0.0**:
    - Update NuGet package references to `6.0.0`.
    - Existing code using `Features.Current.IsEnabled(...)` or custom `IStorageProvider` will continue working with zero modifications.
-   - To integrate with OpenFeature SDK, install `FeatureOne.OpenFeature` and call `builder.Services.AddFeatureOneOpenFeature()`.
+   - To integrate with the OpenFeature SDK, add `using FeatureOne.OpenFeature;` and call `builder.Services.AddFeatureOneOpenFeature()` — the provider is already in the `FeatureOne` package, so no extra install is needed.
+   - Condition deserialization failures now throw `FeatureOneConfigurationException` (derived from `Exception`) instead of a bare `Exception`; update any code asserting on the exact exception type.
 
 ---
 
