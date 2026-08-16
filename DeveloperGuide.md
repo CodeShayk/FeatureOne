@@ -7,6 +7,10 @@ Install the latest nuget package as appropriate.
 ```
 NuGet\Install-Package FeatureOne
 ```
+`FeatureOne.OpenFeature` - for installing FeatureOne with OpenFeature specification provider.
+```
+NuGet\Install-Package FeatureOne.OpenFeature
+```
 `FeatureOne.SQL` - for installing FeatureOne with SQL storage provider.
 ```
 NuGet\Install-Package FeatureOne.SQL
@@ -16,18 +20,18 @@ NuGet\Install-Package FeatureOne.SQL
 NuGet\Install-Package FeatureOne.File
 ```
 
-ii. Implementation: How to use FeatureOne
---
+## ii. Implementation: How to use FeatureOne
+
 ### Step 1. Add Feature IsEnabled Check in Code.
 In order to release a new functionality or feature - say eg. Dashboard Widget.
 Add logical check in codebase to wrap the functionality under a `feature toggle`.
 > the logical check evaluates status of the toggle configured for the feature in store at runtime.
 
-```
+```csharp
  var featureName = "dashboard_widget"; // Name of functionality or feature to toggle.
- if(Features.Current.IsEnable(featureName){ // See other IsEnable() overloads
+ if(Features.Current.IsEnabled(featureName)){ // See other IsEnabled() overloads
 	showDashboardWidget();
-}
+ }
 ```
 
 
@@ -37,7 +41,7 @@ A toggle constitutes a collection of `conditions` that evaluate separately when 
 > Toggles run at runtime based on consitituent conditions that evaluate separately against user claims (generally logged in user principal).
 
 Below is a serialized JSON representation of a Feature Toggle.
-```
+```json
 {
   "feature_name":{ -- Feature name
         "toggle":{ -- Toggle definition for the feature 
@@ -47,7 +51,7 @@ Below is a serialized JSON representation of a Feature Toggle.
                                   --     `all` conditions are met.
            
             "conditions":[{ -- collection of conditions
-                "type":"simple|regex" -- type of condition
+                "type":"simple|regex|relational|daterange" -- type of condition
                  
                  .... other type specific properties, See below for details.                  
             }]
@@ -57,7 +61,7 @@ Below is a serialized JSON representation of a Feature Toggle.
 ```
 
 ### Condition Types 
-There are two types of toggle conditions that can be used out of box. 
+There are four built-in types of toggle conditions that can be used out of box. 
 
 #### i. Simple Condition
 `Simple` condition allows toggle with simple enable or disable of the given feature. User claims are not taken into account for this condition.
@@ -181,6 +185,44 @@ var feature = new Feature
     }
   }
 }
+```
+
+#### iv. DateRange Condition
+`DateRange` condition (class `DateRangeCondition`) allows enabling a feature only within a specified UTC start and end date/time window.
+
+Below is the serialized representation of a toggle with a date range condition.
+```json
+{
+  "holiday_banner": {
+    "toggle": {
+      "operator": "any",
+      "conditions": [{
+        "type": "DateRange",
+        "startDate": "2026-12-01T00:00:00Z",
+        "endDate": "2026-12-25T23:59:59Z"
+      }]
+    }
+  }
+}
+```
+C# representation of a feature with a date range condition is
+```csharp
+var feature = new Feature
+{
+  Name = "holiday_banner",
+  Toggle = new Toggle
+  {
+    Operator = Operator.Any,
+    Conditions = new[]
+    {
+        new DateRangeCondition
+        {
+            StartDate = new DateTime(2026, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+            EndDate = new DateTime(2026, 12, 25, 23, 59, 59, DateTimeKind.Utc)
+        }
+    }
+  }
+};
 ```
 
 ### Step 3. Implement Storage Provider.
