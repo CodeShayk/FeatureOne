@@ -263,5 +263,34 @@ namespace FeatureOne.OpenFeature.Tests
             Assert.That(hooks.Count, Is.EqualTo(1));
             Assert.That(hooks[0], Is.EqualTo(mockHook.Object));
         }
+
+        [Test]
+        public async Task FeatureOneLoggingHook_LifecycleMethods_DelegatesToFeatureOneLogger()
+        {
+            var mockLogger = new Mock<IFeatureLogger>();
+            var loggingHook = new FeatureOneLoggingHook(mockLogger.Object);
+
+            var hookContext = new HookContext<bool>(
+                "test_flag",
+                false,
+                global::OpenFeature.Constant.FlagValueType.Boolean,
+                new ClientMetadata("test_client", "1.0"),
+                new Metadata("FeatureOne Provider"),
+                EvaluationContext.Empty);
+
+            await loggingHook.BeforeAsync(hookContext);
+            mockLogger.Verify(l => l.Info(It.Is<string>(s => s.Contains("Before"))), Times.Once);
+
+            var details = new FlagEvaluationDetails<bool>("test_flag", true, errorType: ErrorType.None, reason: Reason.TargetingMatch, variant: "on");
+            await loggingHook.AfterAsync(hookContext, details);
+            mockLogger.Verify(l => l.Info(It.Is<string>(s => s.Contains("After"))), Times.Once);
+
+            var ex = new InvalidOperationException("Test exception");
+            await loggingHook.ErrorAsync(hookContext, ex);
+            mockLogger.Verify(l => l.Error(It.Is<string>(s => s.Contains("Error")), ex), Times.Once);
+
+            await loggingHook.FinallyAsync(hookContext, details);
+            mockLogger.Verify(l => l.Info(It.Is<string>(s => s.Contains("Finally"))), Times.Once);
+        }
     }
 }
