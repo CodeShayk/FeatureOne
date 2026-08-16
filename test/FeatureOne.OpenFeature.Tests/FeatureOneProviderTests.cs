@@ -239,5 +239,29 @@ namespace FeatureOne.OpenFeature.Tests
 
             Assert.That(registeredProvider, Is.Not.Null);
         }
+
+        [Test]
+        public async Task Lifecycle_InitializeAsyncAndShutdownAsync_UpdatesStatus()
+        {
+            Assert.That(provider.GetStatus(), Is.EqualTo(ProviderStatus.NotReady));
+
+            await provider.InitializeAsync(EvaluationContext.Empty);
+            Assert.That(provider.GetStatus(), Is.EqualTo(ProviderStatus.Ready));
+
+            await provider.ShutdownAsync();
+            Assert.That(provider.GetStatus(), Is.EqualTo(ProviderStatus.NotReady));
+        }
+
+        [Test]
+        public void ProviderHooks_AddHook_ShouldBeExposedInGetProviderHooks()
+        {
+            var mockHook = new Mock<Hook>();
+            provider.AddHook(mockHook.Object);
+
+            var hooks = provider.GetProviderHooks();
+            Assert.That(hooks, Is.Not.Null);
+            Assert.That(hooks.Count, Is.EqualTo(1));
+            Assert.That(hooks[0], Is.EqualTo(mockHook.Object));
+        }
     }
 }

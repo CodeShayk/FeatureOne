@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -12,13 +13,15 @@ using OpenFeature.Model;
 namespace FeatureOne.OpenFeature
 {
     /// <summary>
-    /// OpenFeature provider implementation for FeatureOne.
+    /// OpenFeature specification compliant provider implementation for FeatureOne.
     /// </summary>
     public class FeatureOneProvider : FeatureProvider
     {
         private readonly IFeatureStore featureStore;
         private readonly IFeatureLogger logger;
         private readonly Metadata metadata = new Metadata("FeatureOne Provider");
+        private readonly List<Hook> hooks = new List<Hook>();
+        private ProviderStatus status = ProviderStatus.NotReady;
 
         /// <summary>
         /// Initializes a new instance of <see cref="FeatureOneProvider"/> using global <see cref="Features.Current"/>.
@@ -41,11 +44,68 @@ namespace FeatureOne.OpenFeature
         /// <inheritdoc />
         public override Metadata GetMetadata() => metadata;
 
+        /// <summary>
+        /// Returns the current provider status.
+        /// </summary>
+        /// <returns>The provider status.</returns>
+        public ProviderStatus GetStatus() => status;
+
+        /// <inheritdoc />
+        public override IImmutableList<Hook> GetProviderHooks() => hooks.ToImmutableList();
+
+        /// <summary>
+        /// Adds a provider-level hook to the FeatureOne provider.
+        /// </summary>
+        /// <param name="hook">The hook instance.</param>
+        public void AddHook(Hook hook)
+        {
+            if (hook != null)
+            {
+                hooks.Add(hook);
+            }
+        }
+
+        /// <inheritdoc />
+        public override Task InitializeAsync(EvaluationContext context, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var store = featureStore ?? Features.Current?.FeatureStore;
+                status = ProviderStatus.Ready;
+                logger?.Info("FeatureOneProvider, Action='InitializeAsync', Message='Provider initialized successfully'");
+            }
+            catch (Exception ex)
+            {
+                status = ProviderStatus.Error;
+                logger?.Error("FeatureOneProvider, Action='InitializeAsync', Message='Initialization failed'", ex);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc />
+        public override Task ShutdownAsync(CancellationToken cancellationToken = default)
+        {
+            status = ProviderStatus.NotReady;
+            logger?.Info("FeatureOneProvider, Action='ShutdownAsync', Message='Provider shut down'");
+            return Task.CompletedTask;
+        }
+
         /// <inheritdoc />
         public override Task<ResolutionDetails<bool>> ResolveBooleanValueAsync(string flagKey, bool defaultValue, EvaluationContext context = null, CancellationToken cancellationToken = default)
         {
             try
             {
+                if (status == ProviderStatus.Error)
+                {
+                    return Task.FromResult(new ResolutionDetails<bool>(
+                        flagKey,
+                        defaultValue,
+                        errorType: ErrorType.ProviderNotReady,
+                        reason: Reason.Error,
+                        errorMessage: "FeatureOneProvider is in an error state."));
+                }
+
                 var feature = GetFeature(flagKey);
                 if (feature == null)
                 {
@@ -83,6 +143,16 @@ namespace FeatureOne.OpenFeature
         {
             try
             {
+                if (status == ProviderStatus.Error)
+                {
+                    return Task.FromResult(new ResolutionDetails<string>(
+                        flagKey,
+                        defaultValue,
+                        errorType: ErrorType.ProviderNotReady,
+                        reason: Reason.Error,
+                        errorMessage: "FeatureOneProvider is in an error state."));
+                }
+
                 var feature = GetFeature(flagKey);
                 if (feature == null)
                 {
@@ -119,6 +189,16 @@ namespace FeatureOne.OpenFeature
         {
             try
             {
+                if (status == ProviderStatus.Error)
+                {
+                    return Task.FromResult(new ResolutionDetails<int>(
+                        flagKey,
+                        defaultValue,
+                        errorType: ErrorType.ProviderNotReady,
+                        reason: Reason.Error,
+                        errorMessage: "FeatureOneProvider is in an error state."));
+                }
+
                 var feature = GetFeature(flagKey);
                 if (feature == null)
                 {
@@ -155,6 +235,16 @@ namespace FeatureOne.OpenFeature
         {
             try
             {
+                if (status == ProviderStatus.Error)
+                {
+                    return Task.FromResult(new ResolutionDetails<double>(
+                        flagKey,
+                        defaultValue,
+                        errorType: ErrorType.ProviderNotReady,
+                        reason: Reason.Error,
+                        errorMessage: "FeatureOneProvider is in an error state."));
+                }
+
                 var feature = GetFeature(flagKey);
                 if (feature == null)
                 {
@@ -191,6 +281,16 @@ namespace FeatureOne.OpenFeature
         {
             try
             {
+                if (status == ProviderStatus.Error)
+                {
+                    return Task.FromResult(new ResolutionDetails<Value>(
+                        flagKey,
+                        defaultValue,
+                        errorType: ErrorType.ProviderNotReady,
+                        reason: Reason.Error,
+                        errorMessage: "FeatureOneProvider is in an error state."));
+                }
+
                 var feature = GetFeature(flagKey);
                 if (feature == null)
                 {
