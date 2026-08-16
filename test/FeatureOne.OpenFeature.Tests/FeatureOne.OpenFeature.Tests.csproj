@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FeatureOne\FeatureOne.csproj" />
-    <ProjectReference Include="..\..\src\FeatureOne.OpenFeature\FeatureOne.OpenFeature.csproj" />
   </ItemGroup>
 
 </Project>

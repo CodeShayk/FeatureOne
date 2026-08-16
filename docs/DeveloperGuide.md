@@ -3,13 +3,9 @@
 ## i. Installation
 Install the latest nuget package as appropriate. 
 
-`FeatureOne` - for installing FeatureOne for custom `IStorageProvider` implementation.
+`FeatureOne` - core FeatureOne library with built-in OpenFeature specification provider (`FeatureOneProvider`).
 ```
 NuGet\Install-Package FeatureOne
-```
-`FeatureOne.OpenFeature` - for installing FeatureOne with OpenFeature specification provider.
-```
-NuGet\Install-Package FeatureOne.OpenFeature
 ```
 `FeatureOne.SQL` - for installing FeatureOne with SQL storage provider.
 ```

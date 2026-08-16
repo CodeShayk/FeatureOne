@@ -63,22 +63,17 @@ Flag status is dynamically evaluated based on:
 
 Install NuGet packages according to your requirements:
 
-### 1. Core Package (Custom Storage Provider)
+### 1. Core Package (with built-in OpenFeature support)
 ```bash
 dotnet add package FeatureOne --version 6.0.0
 ```
 
-### 2. OpenFeature Specification Provider
-```bash
-dotnet add package FeatureOne.OpenFeature --version 6.0.0
-```
-
-### 3. SQL Storage Provider
+### 2. SQL Storage Provider
 ```bash
 dotnet add package FeatureOne.SQL --version 6.0.0
 ```
 
-### 4. File System Storage Provider
+### 3. File System Storage Provider
 ```bash
 dotnet add package FeatureOne.File --version 6.0.0
 ```

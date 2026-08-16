@@ -11,8 +11,7 @@
 #### Nuget Packages
 | Package  | Latest | Details | 
 | --------| --------| --------|
-|FeatureOne |[![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Provides core functionality to implement feature toggles with `no` backend storage provider. Needs package consumer to provide `IStorageProvider` implementation. Ideal for use case that requires custom storage backend. **v6.0.0**: OpenFeature specification provider support, exposed FeatureStore property. |
-|FeatureOne.OpenFeature| [![NuGet version](https://badge.fury.io/nu/FeatureOne.OpenFeature.svg)](https://badge.fury.io/nu/FeatureOne.OpenFeature) | Provides OpenFeature specification provider (`FeatureOneProvider`) for CNCF OpenFeature SDK compliance. **v6.0.0**: Initial Release. |
+|FeatureOne |[![NuGet version](https://badge.fury.io/nu/FeatureOne.svg)](https://badge.fury.io/nu/FeatureOne) | Core feature toggle evaluation engine and built-in **CNCF OpenFeature Specification (v1.x)** provider (`FeatureOneProvider` under `FeatureOne.OpenFeature` namespace). **v6.0.0**: OpenFeature specification provider integrated directly into core library. |
 |FeatureOne.SQL| [![NuGet version](https://badge.fury.io/nu/FeatureOne.SQL.svg)](https://badge.fury.io/nu/FeatureOne.SQL) | Provides SQL storage provider for implementing feature toggles using `SQL` backend. **v6.0.0**: net10.0 support, package upgrades. |
 |FeatureOne.File |[![NuGet version](https://badge.fury.io/nu/FeatureOne.File.svg)](https://badge.fury.io/nu/FeatureOne.File) | Provides File storage provider for implementing feature toggles using `File System` backend. **v6.0.0**: net10.0 support, package upgrades. |
 
@@ -32,13 +31,9 @@ The primary benefit of feature flagging is that it mitigates the risks associate
 ### i. Installation
 Install the latest nuget package as appropriate. 
 
-`FeatureOne` - for installing FeatureOne for custom `IStorageProvider` implementation.
+`FeatureOne` - for installing FeatureOne core library with built-in OpenFeature support.
 ```
 NuGet\Install-Package FeatureOne
-```
-`FeatureOne.OpenFeature` - for installing FeatureOne OpenFeature specification provider.
-```
-NuGet\Install-Package FeatureOne.OpenFeature
 ```
 `FeatureOne.SQL` - for installing FeatureOne with SQL storage provider.
 ```
@@ -81,9 +76,7 @@ The following previous versions are available:
 | v5.0.0 | Previous | Initial | Core feature toggle functionality | N/A (Initial release) |
 | v5.1.0 | Nov 03, 2025 | Minor | **Security fixes** (ReDoS protection, secure type loading), **architectural improvements** (prefix matching, dependency injection), **new features** (DateRangeCondition, configuration validation), **DI integration** | High - maintains all existing functionality with minor security-related behavioral changes |
 | v5.2.0 | Mar 18, 2026 | Minor | **New condition** (RelationalCondition with 5 relational operators), **target framework** (added net10.0, removed netstandard2.0 and net8.0), **package upgrades** (all MS packages to 10.0.5), **expanded test coverage** (98%+ line coverage) | High - fully backward compatible, additive changes only |
-| v6.0.0 | Aug 16, 2026 | Major | **OpenFeature Specification Compliance** (official `FeatureOneProvider` implementation, `FeatureOne.OpenFeature` package, `EvaluationContext` claims mapping, typed flag evaluation, DI extensions) | High - 100% backward compatible, additive features only |
+| v6.0.0 | Aug 16, 2026 | Major | **OpenFeature Specification Compliance** (official `FeatureOneProvider` implementation in core `FeatureOne` package under `FeatureOne.OpenFeature` namespace, `EvaluationContext` claims mapping, typed flag evaluation, DI extensions) | High - 100% backward compatible, additive features only |
 
 ## Credits
 Thank you for reading. Please fork, explore, contribute and report. Happy Coding !! :)
-
-
