@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net9.0;net10.0</TargetFrameworks>
@@ -27,7 +27,7 @@
     <PackageIcon>feature-flag.png</PackageIcon>
     <PackageReleaseNotes>
       Release Notes v6.0.0. - Targets .NetStandard 2.1, .Net 9.0 and .Net 10.0
-      Library to Implement Feature Toggles to hide/show program features with File system storage.
+      Library to Implement Feature Toggles to hide/show program features with SQL storage.
 
       Major v6.0.0 Release Features:
       - OpenFeature Specification (v1.x) provider compatibility via FeatureOne.OpenFeature package
