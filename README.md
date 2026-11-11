@@ -1,4 +1,4 @@
-# <img src="https://github.com/CodeShayk/FeatureOne/blob/master/images/feature-flag.png" alt="feature-flag" style="width:60px;"/> FeatureOne v6.0.0
+# FeatureOne v6.0.0
 
 [![GitHub Release](https://img.shields.io/github/v/release/CodeShayk/FeatureOne?logo=github&sort=semver)](https://github.com/CodeShayk/FeatureOne/releases/latest)
 [![OpenFeature](https://img.shields.io/badge/OpenFeature-Compliant-brightgreen)](https://openfeature.dev/)
