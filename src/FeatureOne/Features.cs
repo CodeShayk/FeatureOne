@@ -15,6 +15,7 @@ namespace FeatureOne
         private readonly IFeatureLogger logger;
         private static readonly ConfigurationValidator validator = new ConfigurationValidator();
         public static Features Current { get; private set; }
+        public IFeatureStore FeatureStore => featureStore;
 
         public Features(IFeatureStore featureStore) : this(featureStore, new DefaultLogger(null))
         { }

@@ -3,7 +3,7 @@
 ## i. Installation
 Install the latest nuget package as appropriate. 
 
-`FeatureOne` - for installing FeatureOne for custom `IStorageProvider` implementation.
+`FeatureOne` - core FeatureOne library with built-in OpenFeature specification provider (`FeatureOneProvider`).
 ```
 NuGet\Install-Package FeatureOne
 ```
@@ -16,18 +16,18 @@ NuGet\Install-Package FeatureOne.SQL
 NuGet\Install-Package FeatureOne.File
 ```
 
-ii. Implementation: How to use FeatureOne
---
+## ii. Implementation: How to use FeatureOne
+
 ### Step 1. Add Feature IsEnabled Check in Code.
 In order to release a new functionality or feature - say eg. Dashboard Widget.
 Add logical check in codebase to wrap the functionality under a `feature toggle`.
 > the logical check evaluates status of the toggle configured for the feature in store at runtime.
 
-```
+```csharp
  var featureName = "dashboard_widget"; // Name of functionality or feature to toggle.
- if(Features.Current.IsEnable(featureName){ // See other IsEnable() overloads
+ if(Features.Current.IsEnabled(featureName)){ // See other IsEnabled() overloads
 	showDashboardWidget();
-}
+ }
 ```
 
 
@@ -37,7 +37,7 @@ A toggle constitutes a collection of `conditions` that evaluate separately when 
 > Toggles run at runtime based on consitituent conditions that evaluate separately against user claims (generally logged in user principal).
 
 Below is a serialized JSON representation of a Feature Toggle.
-```
+```json
 {
   "feature_name":{ -- Feature name
         "toggle":{ -- Toggle definition for the feature 
@@ -47,7 +47,7 @@ Below is a serialized JSON representation of a Feature Toggle.
                                   --     `all` conditions are met.
            
             "conditions":[{ -- collection of conditions
-                "type":"simple|regex" -- type of condition
+                "type":"simple|regex|relational|daterange" -- type of condition
                  
                  .... other type specific properties, See below for details.                  
             }]
@@ -57,7 +57,7 @@ Below is a serialized JSON representation of a Feature Toggle.
 ```
 
 ### Condition Types 
-There are two types of toggle conditions that can be used out of box. 
+There are four built-in types of toggle conditions that can be used out of box. 
 
 #### i. Simple Condition
 `Simple` condition allows toggle with simple enable or disable of the given feature. User claims are not taken into account for this condition.
@@ -130,7 +130,7 @@ var feature = new Feature
 ```
 
 #### iii. Relational Condition
-`Relational` condition (class `RelationalCondition`) allows evaluating a user claim value against a fixed value using a relational operator. This is useful for enabling features based on user tiers, roles, or any string-comparable claim.
+`Relational` condition (class `RelationalCondition`) allows evaluating a user claim value against a fixed value using a relational operator. This is useful for enabling features based on numeric thresholds (age, seat count, score) or on user tiers, roles, and other comparable string claims.
 
 Supported operators (`RelationalOperator` enum):
 
@@ -138,12 +138,20 @@ Supported operators (`RelationalOperator` enum):
 |---|---|
 | `Equals` | Claim value equals the configured value |
 | `NotEquals` | Claim value does not equal the configured value |
-| `GreaterThan` | Claim value is lexicographically greater than the configured value |
-| `GreaterThanOrEqual` | Claim value is lexicographically greater than or equal to the configured value |
-| `LessThanOrEqual` | Claim value is lexicographically less than or equal to the configured value |
-| `LessThan` | Defined in enum but **not yet implemented** — always returns `false` |
+| `GreaterThan` | Claim value is greater than the configured value |
+| `GreaterThanOrEqual` | Claim value is greater than or equal to the configured value |
+| `LessThan` | Claim value is less than the configured value |
+| `LessThanOrEqual` | Claim value is less than or equal to the configured value |
 
-> **Note:** String comparison is ordinal (via `string.Compare`). Both the claim value and the configured value are trimmed of leading/trailing whitespace before comparison.
+> **How values are compared.** Claims are stored as strings, so the comparison strategy is chosen from the
+> values themselves: when **both** the claim value and the configured value parse as numbers they are
+> compared **numerically**; otherwise they are compared as **ordinal strings**. So `age > 18` behaves
+> arithmetically (`"9"` is *not* greater than `"18"`), while `tier >= "gold"` still orders lexically.
+> Numeric parsing uses the invariant culture, and string comparison is ordinal, so results never vary with
+> the ambient culture. Both values are trimmed of leading/trailing whitespace before comparison.
+>
+> Because numeric comparison also applies to `Equals`, equivalent numeric forms match: a claim of `"5.0"`
+> equals a configured value of `"5"`.
 
 Below is the serialized representation of a toggle with a logical condition.
 ```
@@ -181,6 +189,44 @@ var feature = new Feature
     }
   }
 }
+```
+
+#### iv. DateRange Condition
+`DateRange` condition (class `DateRangeCondition`) allows enabling a feature only within a specified UTC start and end date/time window.
+
+Below is the serialized representation of a toggle with a date range condition.
+```json
+{
+  "holiday_banner": {
+    "toggle": {
+      "operator": "any",
+      "conditions": [{
+        "type": "DateRange",
+        "startDate": "2026-12-01T00:00:00Z",
+        "endDate": "2026-12-25T23:59:59Z"
+      }]
+    }
+  }
+}
+```
+C# representation of a feature with a date range condition is
+```csharp
+var feature = new Feature
+{
+  Name = "holiday_banner",
+  Toggle = new Toggle
+  {
+    Operator = Operator.Any,
+    Conditions = new[]
+    {
+        new DateRangeCondition
+        {
+            StartDate = new DateTime(2026, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+            EndDate = new DateTime(2026, 12, 25, 23, 59, 59, DateTimeKind.Utc)
+        }
+    }
+  }
+};
 ```
 
 ### Step 3. Implement Storage Provider.
@@ -310,6 +356,38 @@ JSON Serialized representation is
   }
 
 ```
+
+#### Registering the custom condition
+
+Condition types are resolved from an explicit allow list rather than by loading arbitrary type names from
+configuration, so a custom condition must be **registered** before it can be deserialized from JSON.
+Register it once at startup and pass the deserializer to your storage provider:
+
+```csharp
+var conditions = new ConditionDeserializer()
+    .Register<TimeCondition>("Time");   // matches "type":"Time" in the JSON above
+
+// via dependency injection
+services.AddFeatureOneWithFileStorage(configuration,
+    deserializer: new ToggleDeserializer(conditions));
+
+// or when bootstrapping manually
+var storageProvider = new FileStorageProvider(configuration,
+    new FileReader(configuration),
+    new ToggleDeserializer(conditions),
+    new FeatureCache());
+```
+
+`Register` accepts either the bare name or the postfixed name — `"Time"` and `"TimeCondition"` register and
+resolve identically. Registrations are per-`ConditionDeserializer` instance, not global, so reuse the same
+instance across your application.
+
+Registration throws `FeatureOneConfigurationException` if the type does not implement `ICondition`, is not
+concrete, or has no parameterless constructor. Deserializing a toggle that references an unregistered
+condition type throws the same exception, listing the types that *are* registered.
+
+Custom conditions work identically whether you evaluate through the native `IFeatures` API or through the
+OpenFeature provider.
 
 `Please Note` Any custom condition implementation should only include `primitive type` properties to work with `default` ICondition `deserialization`. When you need to implement a much complex toggle condition with `non-primitive` properties then you need to provide `custom` implementation of `IConditionDeserializer` to support its deserialization to toggle condition object.
 
@@ -541,4 +619,134 @@ iii. With other overloads - Custom cache and Toggle Condition deserializer.
 
     Features.Initialize(() => new Features(new FeatureStore(storageProvider, logger), logger));
 ```
+
+FeatureOne.OpenFeature - OpenFeature Specification Provider
+--
+
+Everything above uses FeatureOne's **native API** (`Features.Current.IsEnabled(...)` / `IFeatures`). This
+section covers the equally supported alternative: evaluating the same toggles through a standard
+**CNCF OpenFeature Specification (v1.x)** client.
+
+`FeatureOneProvider` lives in the `FeatureOne.OpenFeature` namespace **inside the core `FeatureOne`
+package** — there is no separate package to install. Storage providers, conditions, operators, caching and
+logging all behave identically through both APIs; only the call surface differs.
+
+### Choosing between the native API and OpenFeature
+
+| | **Native API** | **OpenFeature Provider** |
+|---|---|---|
+| Entry point | `IFeatures` / `Features.Current` | `OpenFeature.Api.Instance.GetClient()` |
+| Call style | Synchronous `bool IsEnabled(...)` | Asynchronous `Task<bool> GetBooleanValueAsync(...)` |
+| Targeting input | `ClaimsPrincipal`, `IEnumerable<Claim>`, `IDictionary<string,string>` | `EvaluationContext` |
+| Missing flag | Returns `false`, logs a warning | Returns your default with `ErrorType.FlagNotFound` |
+| Observability | `IFeatureLogger` | `IFeatureLogger` plus the OpenFeature hook pipeline |
+| Choose it when | You want the smallest surface area, synchronous call sites, or direct `ClaimsPrincipal` targeting | You want vendor-neutral call sites, portability across flag backends, or OpenFeature hooks |
+
+Both can be used in the same application — they read the same `IFeatureStore`.
+
+### Option A. Global Registration
+```csharp
+// 1. Setup FeatureOne FeatureStore
+var storageProvider = new FileStorageProvider(configuration);
+var featureStore = new FeatureStore(storageProvider);
+
+// 2. Register FeatureOneProvider with OpenFeature API
+await OpenFeature.Api.Instance.SetProviderAsync(new FeatureOneProvider(featureStore));
+
+// 3. Obtain standard OpenFeature Client
+var client = OpenFeature.Api.Instance.GetClient();
+
+// 4. Evaluate feature flags with EvaluationContext
+var context = EvaluationContext.Builder()
+    .SetTargetingKey("usr_12345")
+    .Set("email", "john@gbk.com")
+    .Set("tier", "gold")
+    .Build();
+
+bool isWidgetEnabled = await client.GetBooleanValueAsync("dashboard_widget", false, context);
+```
+
+### Option B. ASP.NET Core Dependency Injection
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    // Registers IStorageProvider, IFeatureLogger, IFeatureStore and IFeatures
+    services.AddFeatureOneWithFileStorage(configuration);
+
+    // Registers FeatureOneProvider, reusing the IFeatureStore registered above
+    services.AddFeatureOneOpenFeature();
+}
+```
+
+Global provider registration is performed by an `IHostedService` on application start rather than as a side
+effect of the DI factory, so it happens whether or not anything in your application resolves
+`FeatureOneProvider`.
+
+To configure hooks, or to register the provider without making it global:
+
+```csharp
+services.AddFeatureOneOpenFeature(options =>
+{
+    options.SetAsGlobalProvider = false;      // resolve FeatureOneProvider yourself instead
+    options.EnableLoggingHook  = true;        // bridge the hook pipeline to IFeatureLogger
+    options.AddHook(new MyTelemetryHook());
+});
+```
+
+### EvaluationContext to claims mapping
+
+`ToClaims()` converts the `EvaluationContext` into the claims dictionary your conditions evaluate against:
+
+| Context input | Claim value |
+|---|---|
+| `TargetingKey` | Set as `targetingKey`, `sub`, and `user_id` |
+| String | Used verbatim |
+| Boolean | `"true"` / `"false"` |
+| Integer | Invariant-culture digits, e.g. `95` |
+| Double | Invariant-culture round-trip form, e.g. `1.5` |
+| `DateTime` | ISO-8601 round-trip (`"o"`) format |
+| List / structure | JSON serialized |
+| Null | Omitted |
+
+Keys are matched case-insensitively. Numbers use the invariant culture so `RelationalCondition` parses them
+consistently regardless of the ambient culture.
+
+### Flag types
+
+FeatureOne is a boolean toggle engine. All five OpenFeature resolvers are implemented, but the non-boolean
+ones are projections of the same boolean result:
+
+| Resolver | Enabled | Disabled |
+|---|---|---|
+| `ResolveBooleanValueAsync` | `true` | `false` |
+| `ResolveStringValueAsync` | `"true"` | `"false"` |
+| `ResolveIntegerValueAsync` | `1` | `0` |
+| `ResolveDoubleValueAsync` | `1.0` | `0.0` |
+| `ResolveStructureValueAsync` | `Value(true)` | `Value(false)` |
+
+These are not multivariate flag values — `GetStringValueAsync("theme", "dark")` returns `"true"` or
+`"false"`, never a theme name. Prefer `GetBooleanValueAsync`.
+
+### Error semantics
+
+| Situation | `ErrorType` | Returned value |
+|---|---|---|
+| Flag absent from the store | `FlagNotFound` | Your default |
+| No `IFeatureStore` available, or initialization failed | `ProviderNotReady` | Your default |
+| Condition evaluation threw | `General` | Your default |
+
+`InitializeAsync` sets `ProviderStatus.Error` when no `IFeatureStore` can be resolved. A missing store is
+reported as `ProviderNotReady` rather than `FlagNotFound`, so a misconfigured application is not mistaken
+for a typo'd flag key.
+
+### Hooks
+
+```csharp
+var provider = new FeatureOneProvider(featureStore, logger);
+provider.AddHook(new FeatureOneLoggingHook(logger));   // Before / After / Error / Finally
+await OpenFeature.Api.Instance.SetProviderAsync(provider);
+```
+
+`FeatureOneLoggingHook` routes the OpenFeature hook lifecycle to the same `IFeatureLogger` the native API
+uses, so both call surfaces log through one implementation.
 
